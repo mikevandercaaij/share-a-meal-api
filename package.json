@@ -16,5 +16,8 @@
     "bugs": {
         "url": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1/issues"
     },
-    "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme"
+    "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme",
+    "dependencies": {
+        "express": "^4.17.3"
+    }
 }
