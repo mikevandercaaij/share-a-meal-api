@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
-
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.json());
@@ -94,6 +93,7 @@ app.get("/", (req, res) => {
     res.end();
 });
 
+//
 //UC-201 Register as a new user
 app.post("/user", (req, res) => {
     // if (res.statusCode >= 200 && res.statusCode <= 299) {
