@@ -6,7 +6,18 @@ const bodyParser = require("body-parser");
 
 app.use(bodyParser.json());
 
-let database = [];
+let database = [
+    {
+        id: 0,
+        firstName: "Mike",
+        lastName: "van der Caaij",
+        street: "Gareelweg 11",
+        isActive: true,
+        emailAddress: "m.vandercaaij@student.avans.nl",
+        password: "secret",
+        phoneNumber: "06 38719633",
+    },
+];
 let id = 0;
 
 const users = [
