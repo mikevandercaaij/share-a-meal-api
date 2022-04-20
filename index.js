@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
-
 const port = process.env.PORT || 3000;
+
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.json());
+
+let database = [];
+let id = 0;
 
 const users = [
     {
@@ -70,6 +76,8 @@ app.get("/", (req, res) => {
             message: "Something went terribly wrong",
         };
     }
+
+    res.status();
     res.write(JSON.stringify(result));
     res.send();
     res.end();
@@ -77,20 +85,37 @@ app.get("/", (req, res) => {
 
 //UC-201 Register as a new user
 app.post("/user", (req, res) => {
-    res.send("User created!");
-
-    if (res.statusCode >= 200 && res.statusCode <= 299) {
-        res.send("User created!");
-    } else {
-        res.send("Forbidden.");
-    }
-    res.end();
+    // if (res.statusCode >= 200 && res.statusCode <= 299) {
+    //     res.status(res.statusCode).json({
+    //         status: res.statusCode,
+    //         result: "User created!",
+    //     });
+    // } else {
+    //     res.send("Forbidden.");
+    // }
+    // res.end();
+    let user = req.body;
+    console.log(user);
+    id++;
+    user = {
+        id,
+        ...user,
+    };
+    database.push(user);
+    console.log(database);
+    res.status(201).json({
+        status: 201,
+        result: database,
+    });
 });
 
 //UC-202 Get all users
 app.get("/user", (req, res) => {
     if (res.statusCode >= 200 && res.statusCode <= 299) {
-        res.send(JSON.stringify(users));
+        res.status(200).json({
+            status: res.statusCode,
+            result: database,
+        });
     } else {
         res.send("Unauthorized. You need to create a new user first, and login, to get a valid JWT.");
     }
@@ -115,19 +140,33 @@ app.get("/user/profile", (req, res) => {
 
 //UC-204 Get single user by ID
 app.get("/user/:id", (req, res) => {
-    const id = req.params.id;
-    if (res.statusCode >= 200 && res.statusCode <= 299) {
-        if (id >= 0 && id <= users.length - 1) {
-            res.send(JSON.stringify(users[id]));
-        } else {
-            res.send("User doesn't exist.");
-        }
-    } else if (res.statusCode === 403) {
-        res.send("Forbidden, no access");
+    const id = Number(req.params.id);
+    let user = database.filter((item) => item.id === id);
+
+    if (user.length > 0) {
+        res.status(200).json({
+            status: 200,
+            result: user,
+        });
     } else {
-        res.send("Forbidden.");
+        res.status(404).json({
+            status: 404,
+            result: `User with ID ${id} not found`,
+        });
     }
-    res.end();
+
+    // if (res.statusCode >= 200 && res.statusCode <= 299) {
+    //     if (id >= 0 && id <= users.length - 1) {
+    //         res.send(JSON.stringify(users[id]));
+    //     } else {
+    //         res.send("User doesn't exist.");
+    //     }
+    // } else if (res.statusCode === 403) {
+    //     res.send("Forbidden, no access");
+    // } else {
+    //     res.send("Forbidden.");
+    // }
+    // res.end();
 });
 
 //UC-205 Update a single user
