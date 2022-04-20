@@ -15,7 +15,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1.git
+git remote add origin https://github.com/mikevandercaaij/share-a-meal-api.git
 git branch -M main
 git push -uf origin main
 ```
