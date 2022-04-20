@@ -191,7 +191,7 @@ app.delete("/user/:id", (req, res) => {
 
     if (res.statusCode >= 200 && res.statusCode <= 299) {
         if (id >= 0 && id <= users.length - 1) {
-            database = database.filter((item) => item.id != id);
+            database = database.filter((item) => item.id !== id);
             console.log(database);
             res.send("User deleted!");
         } else {
