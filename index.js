@@ -74,22 +74,11 @@ const users = [
 
 //get request on root
 app.get("/", (req, res) => {
-    let result;
-    if (res.statusCode >= 200 && res.statusCode <= 299) {
-        result = {
-            code: 200,
-            message: "Hello World",
-        };
-    } else {
-        result = {
-            code: res.statusCode,
-            message: "Something went terribly wrong",
-        };
-    }
+    res.status(200).json({
+        code: 200,
+        message: "Hello World",
+    });
 
-    res.status();
-    res.write(JSON.stringify(result));
-    res.send();
     res.end();
 });
 
@@ -198,10 +187,12 @@ app.put("/user/:id", (req, res) => {
 
 //UC-206 Delete a user
 app.delete("/user/:id", (req, res) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
     if (res.statusCode >= 200 && res.statusCode <= 299) {
         if (id >= 0 && id <= users.length - 1) {
+            database = database.filter((item) => item.id != id);
+            console.log(database);
             res.send("User deleted!");
         } else {
             res.send("User doesn't exist.");
