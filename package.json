@@ -4,7 +4,8 @@
     "description": "nodejs server",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon index.js",
+        "start": "node index.js",
+        "dev": "nodemon index.js",
         "test": "test"
     },
     "repository": {
@@ -19,5 +20,8 @@
     "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme",
     "dependencies": {
         "express": "^4.17.3"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.15"
     }
 }
