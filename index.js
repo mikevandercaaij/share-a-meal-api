@@ -33,12 +33,8 @@ app.get("/", (req, res) => {
 //TODO:UC-201
 //UC-201 Register as a new user
 app.post("/user", (req, res) => {
+    //put request body in a variable
     let user = req.body;
-    id++;
-    user = {
-        id,
-        ...user,
-    };
 
     //boolean thats used to see if an email is already used
     let addUser = true;
@@ -51,6 +47,15 @@ app.post("/user", (req, res) => {
     });
 
     if (addUser) {
+        //increment id so it's always unique
+        id++;
+
+        //make user object from request body
+        user = {
+            id,
+            ...user,
+        };
+
         //add user if the email is unique
         database.push(user);
 
