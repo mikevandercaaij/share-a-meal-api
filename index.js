@@ -10,18 +10,8 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 //array that holds all user data
-let database = [
-    {
-        id: 0,
-        firstName: "Mike",
-        lastName: "van der Caaij",
-        street: "Gareelweg 11",
-        isActive: true,
-        emailAddress: "m.vandercaaij@student.avans.nl",
-        password: "secret",
-        phoneNumber: "06 38719633",
-    },
-];
+let database = [];
+
 //id value will decide user id
 let id = 0;
 
