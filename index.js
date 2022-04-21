@@ -107,6 +107,7 @@ app.get("/user/:id", (req, res) => {
 
     //check if user is in database
     if (user.length > 0) {
+        //return successful status + result
         res.status(200).json({
             status: 200,
             result: user,
@@ -130,6 +131,8 @@ app.put("/user/:id", (req, res) => {
 
     //set user object with given request body
     let user = req.body;
+
+    //make user object from request body
     user = {
         id,
         ...user,
@@ -142,8 +145,10 @@ app.put("/user/:id", (req, res) => {
     if (existingUser.length > 0) {
         //get index of user in array
         userIndex = database.findIndex((obj) => obj.id === id);
+
         //use index to change object to new object
         database[userIndex] = user;
+
         //return successful status + updated user
         res.status(201).json({
             status: 201,
@@ -173,6 +178,7 @@ app.delete("/user/:id", (req, res) => {
     if (user.length > 0) {
         //add all users to filtered array except for the user with the same id
         database = database.filter((item) => item.id !== id);
+
         //send successful status
         res.status(201).json({
             status: 201,
