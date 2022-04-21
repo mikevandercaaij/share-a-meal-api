@@ -84,15 +84,6 @@ app.get("/", (req, res) => {
 
 //UC-201 Register as a new user
 app.post("/user", (req, res) => {
-    // if (res.statusCode >= 200 && res.statusCode <= 299) {
-    //     res.status(res.statusCode).json({
-    //         status: res.statusCode,
-    //         result: "User created!",
-    //     });
-    // } else {
-    //     res.send("Forbidden.");
-    // }
-    // res.end();
     let user = req.body;
     console.log(user);
     id++;
@@ -153,27 +144,22 @@ app.get("/user/:id", (req, res) => {
             result: `User with ID ${id} not found`,
         });
     }
-
-    // if (res.statusCode >= 200 && res.statusCode <= 299) {
-    //     if (id >= 0 && id <= users.length - 1) {
-    //         res.send(JSON.stringify(users[id]));
-    //     } else {
-    //         res.send("User doesn't exist.");
-    //     }
-    // } else if (res.statusCode === 403) {
-    //     res.send("Forbidden, no access");
-    // } else {
-    //     res.send("Forbidden.");
-    // }
-    // res.end();
+    res.end();
 });
 
 //UC-205 Update a single user
 app.put("/user/:id", (req, res) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
     if (res.statusCode >= 200 && res.statusCode <= 299) {
-        if (id >= 0 && id <= users.length - 1) {
-            res.send("User updated!");
+        if (id >= 0 && id <= users.length) {
+            let user = req.body;
+            user = {
+                id,
+                ...user,
+            };
+            userIndex = database.findIndex((obj) => obj.id === id);
+            database[userIndex] = user;
+            res.send(JSON.stringify(database));
         } else {
             res.send("User doesn't exist.");
         }
