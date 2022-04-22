@@ -149,12 +149,33 @@ app.put("/user/:id", (req, res) => {
         //use index to change object to new object
         database[userIndex] = user;
 
-        //return successful status + updated user
-        res.status(201).json({
-            status: 201,
-            message: "User has been updated successfully.",
-            response: user,
+        //if (altered) email isn't already taken by another user the changes will be accepted
+        let acceptChanges = true;
+
+        //make filtered array of all users except current one
+        const otherUsers = database.filter((item) => item.id !== id);
+
+        //check if (altered) email is already in use by someone else
+        otherUsers.forEach((el) => {
+            if (el.emailAddress === user.emailAddress) {
+                acceptChanges = false;
+            }
         });
+
+        if (acceptChanges) {
+            //return successful status + updated user
+            res.status(201).json({
+                status: 201,
+                message: "User has been updated successfully.",
+                response: user,
+            });
+        } else {
+            //return false status if email is already in use by another user
+            res.status(409).json({
+                status: 409,
+                message: `Altered email (${user.emailAddress}) is already in use by another user.`,
+            });
+        }
     } else {
         //if the user isn't found return a fitting error response
         res.status(404).json({
