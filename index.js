@@ -151,12 +151,6 @@ app.put("/api/user/:id", (req, res, next) => {
 
     //check if there actually is a user in the filtered array
     if (existingUser.length > 0) {
-        //get index of user in array
-        userIndex = database.findIndex((obj) => obj.id === id);
-
-        //use index to change object to new object
-        database[userIndex] = user;
-
         //if (altered) email isn't already taken by another user the changes will be accepted
         let acceptChanges = true;
 
@@ -171,6 +165,12 @@ app.put("/api/user/:id", (req, res, next) => {
         });
 
         if (acceptChanges) {
+            //get index of user in array
+            userIndex = database.findIndex((obj) => obj.id === id);
+
+            //use index to change object to new object
+            database[userIndex] = user;
+
             //return successful status + updated user
             res.status(201).json({
                 status: 201,
