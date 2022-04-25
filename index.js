@@ -1,13 +1,12 @@
 //instantiate installed modules
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
 
 //set port to either predefined server port or 3000 that can be used for local testing
 const port = process.env.PORT || 3000;
 
 //enable app to parse json
-app.use(bodyParser.json());
+app.use(express.json());
 
 //array that holds all user data
 let database = [];
@@ -30,9 +29,8 @@ app.get("/", (req, res) => {
     res.end();
 });
 
-//TODO:UC-201
 //UC-201 Register as a new user
-app.post("/user", (req, res) => {
+app.post("/api/user", (req, res) => {
     //put request body in a variable
     let user = req.body;
 
@@ -74,7 +72,7 @@ app.post("/user", (req, res) => {
 });
 
 //UC-202 Get all users
-app.get("/user", (req, res) => {
+app.get("/api/user", (req, res) => {
     //if request if successful return all users
     res.status(200).json({
         status: res.statusCode,
@@ -86,7 +84,7 @@ app.get("/user", (req, res) => {
 });
 
 //UC-203 Request personal user profile
-app.get("/user/profile", (req, res) => {
+app.get("/api/user/profile", (req, res) => {
     //On successful get request, display json object showing functionality hasn't been added yet.
     res.status(200).json({
         code: 200,
@@ -98,14 +96,21 @@ app.get("/user/profile", (req, res) => {
 });
 
 //UC-204 Get single user by ID
-app.get("/user/:id", (req, res) => {
+app.get("/api/user/:id", (req, res, next) => {
     //save parameter (id) in variable
     const id = Number(req.params.id);
+
+    //check if parameter is a number
+    if (isNaN(id)) {
+        return next();
+    }
+
+    console.log("joe");
 
     //look for user with same id as given in the parameters
     let user = database.filter((item) => item.id === id);
 
-    //check if user is in database
+    // check if user is in database
     if (user.length > 0) {
         //return successful status + result
         res.status(200).json({
@@ -125,9 +130,14 @@ app.get("/user/:id", (req, res) => {
 });
 
 //UC-205 Update a single user
-app.put("/user/:id", (req, res) => {
+app.put("/api/user/:id", (req, res, next) => {
     //save parameter (id) in variable
     const id = Number(req.params.id);
+
+    //check if parameter is a number
+    if (isNaN(id)) {
+        return next();
+    }
 
     //set user object with given request body
     let user = req.body;
@@ -189,9 +199,14 @@ app.put("/user/:id", (req, res) => {
 });
 
 //UC-206 Delete a user
-app.delete("/user/:id", (req, res) => {
+app.delete("/api/user/:id", (req, res, next) => {
     //save parameter (id) in variable
     const id = Number(req.params.id);
+
+    //check if parameter is a number
+    if (isNaN(id)) {
+        return next();
+    }
 
     //look for user with same id as given in the parameters
     let user = database.filter((item) => item.id === id);
@@ -212,6 +227,17 @@ app.delete("/user/:id", (req, res) => {
             message: `Can't delete user with an id of ${id} because it doesn't exist`,
         });
     }
+
+    //end response process
+    res.end();
+});
+
+//when there is an invalid request
+app.all("*", (req, res) => {
+    res.status(400).json({
+        status: 400,
+        result: "Endpoint not found.",
+    });
 
     //end response process
     res.end();
