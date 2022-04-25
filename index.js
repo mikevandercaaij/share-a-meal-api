@@ -105,8 +105,6 @@ app.get("/api/user/:id", (req, res, next) => {
         return next();
     }
 
-    console.log("joe");
-
     //look for user with same id as given in the parameters
     let user = database.filter((item) => item.id === id);
 
