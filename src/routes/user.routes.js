@@ -24,7 +24,7 @@ router.get("/", (req, res) => {
 });
 
 //UC-201 Register as a new user
-router.post("/api/user", userController.addUser);
+router.post("/api/user", userController.validateUser, userController.addUser);
 
 //UC-202 Get all users
 router.get("/api/user", userController.getAllUsers);
@@ -36,7 +36,7 @@ router.get("/api/user/profile", userController.getUserProfile);
 router.get("/api/user/:id", userController.getUserByID);
 
 //UC-205 Update a single user
-router.put("/api/user/:id", userController.updateUser);
+router.put("/api/user/:id", userController.validateUser, userController.updateUser);
 
 //UC-206 Delete a user
 router.delete("/api/user/:id", userController.deleteUser);

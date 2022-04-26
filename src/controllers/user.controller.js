@@ -1,11 +1,38 @@
+const assert = require("assert");
+const { nextTick } = require("process");
+
 //array that holds all user data
 let database = [];
 
 //id value will decide user id
 let id = 0;
 
+//validate user
+exports.validateUser = (req, res, next) => {
+    const user = req.body;
+    let { firstName, lastName, street, city, isActive, emailAddress, password, phoneNumber } = user;
+
+    try {
+        assert(typeof firstName === "string", "First Name must be a string");
+        assert(typeof lastName === "string", "Last Name must be a string");
+        assert(typeof street === "string", "Street must be a string");
+        assert(typeof city === "string", "City Name must be a string");
+        assert(typeof isActive === "boolean", "isActive must be a string");
+        assert(typeof emailAddress === "string", "Email Address must be a string");
+        assert(typeof password === "string", "Password must be a string");
+        assert(typeof phoneNumber === "string", "Phone Number must be a string");
+        next();
+    } catch (err) {
+        const error = {
+            status: 400,
+            result: err.message,
+        };
+        next(error);
+    }
+};
+
 //UC-201 Register as a new user
-exports.addUser = (req, res) => {
+exports.addUser = (req, res, next) => {
     //put request body in a variable
     let user = req.body;
 
@@ -39,10 +66,11 @@ exports.addUser = (req, res) => {
         });
     } else {
         //return status + error message
-        res.status(409).json({
+        const error = {
             status: 409,
             message: `User with the email ${user.emailAddress} already exists.`,
-        });
+        };
+        next(error);
     }
 };
 
@@ -92,10 +120,11 @@ exports.getUserByID = (req, res, next) => {
         });
     } else {
         //if the user isn't found return a fitting error response
-        res.status(404).json({
+        const error = {
             status: 404,
             message: `User with an id of ${id} doesn't exist`,
-        });
+        };
+        next(error);
     }
 
     //end response process
@@ -154,17 +183,19 @@ exports.updateUser = (req, res, next) => {
             });
         } else {
             //return false status if email is already in use by another user
-            res.status(409).json({
+            const error = {
                 status: 409,
                 message: `Altered email (${user.emailAddress}) is already in use by another user.`,
-            });
+            };
+            next(error);
         }
     } else {
         //if the user isn't found return a fitting error response
-        res.status(404).json({
+        const error = {
             status: 404,
             message: `Can't update user with an id of ${id} because it doesn't exist`,
-        });
+        };
+        next(error);
     }
 
     //end response process
@@ -172,7 +203,7 @@ exports.updateUser = (req, res, next) => {
 };
 
 //UC-206 Delete a user
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = (err, req, res, next) => {
     //save parameter (id) in variable
     const id = Number(req.params.id);
 
@@ -195,10 +226,11 @@ exports.deleteUser = (req, res, next) => {
         });
     } else {
         //if the user isn't found return a fitting error response
-        res.status(404).json({
+        const error = {
             status: 404,
             message: `Can't delete user with an id of ${id} because it doesn't exist`,
-        });
+        };
+        next(error);
     }
 
     //end response process

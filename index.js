@@ -14,13 +14,18 @@ app.use(userRouter);
 
 //when there is an invalid request
 app.all("*", (req, res) => {
-    res.status(400).json({
-        status: 400,
+    res.status(404).json({
+        status: 404,
         result: "Endpoint not found.",
     });
 
     //end response process
     res.end();
+});
+
+//error handler
+app.use((err, req, res, next) => {
+    res.status(err.status).json(err);
 });
 
 //make server listen to given ports
