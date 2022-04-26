@@ -32,6 +32,8 @@ router.get("/api/user", userController.getAllUsers);
 //UC-203 Request personal user profile
 router.get("/api/user/profile", userController.getUserProfile);
 
+router.route("/api/user/:id");
+
 //UC-204 Get single user by ID
 router.get("/api/user/:id", userController.getUserByID);
 

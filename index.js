@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 //enable app to parse json
 app.use(express.json());
 
-//load al user routes
+//User routes
 app.use(userRouter);
 
 //when there is an invalid request
@@ -32,3 +32,6 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log("Server running at " + port);
 });
+
+//export app for testing
+module.exports = app;

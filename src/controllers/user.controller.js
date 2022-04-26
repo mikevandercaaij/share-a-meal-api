@@ -21,13 +21,13 @@ exports.validateUser = (req, res, next) => {
         assert(typeof emailAddress === "string", "Email Address must be a string");
         assert(typeof password === "string", "Password must be a string");
         assert(typeof phoneNumber === "string", "Phone Number must be a string");
-        next();
+        return next();
     } catch (err) {
         const error = {
             status: 400,
             result: err.message,
         };
-        next(error);
+        return next(error);
     }
 };
 
@@ -70,7 +70,7 @@ exports.addUser = (req, res, next) => {
             status: 409,
             message: `User with the email ${user.emailAddress} already exists.`,
         };
-        next(error);
+        return next(error);
     }
 };
 
@@ -124,7 +124,7 @@ exports.getUserByID = (req, res, next) => {
             status: 404,
             message: `User with an id of ${id} doesn't exist`,
         };
-        next(error);
+        return next(error);
     }
 
     //end response process
@@ -187,7 +187,7 @@ exports.updateUser = (req, res, next) => {
                 status: 409,
                 message: `Altered email (${user.emailAddress}) is already in use by another user.`,
             };
-            next(error);
+            return next(error);
         }
     } else {
         //if the user isn't found return a fitting error response
@@ -195,7 +195,7 @@ exports.updateUser = (req, res, next) => {
             status: 404,
             message: `Can't update user with an id of ${id} because it doesn't exist`,
         };
-        next(error);
+        return next(error);
     }
 
     //end response process
@@ -203,7 +203,7 @@ exports.updateUser = (req, res, next) => {
 };
 
 //UC-206 Delete a user
-exports.deleteUser = (err, req, res, next) => {
+exports.deleteUser = (req, res, next) => {
     //save parameter (id) in variable
     const id = Number(req.params.id);
 
@@ -230,7 +230,7 @@ exports.deleteUser = (err, req, res, next) => {
             status: 404,
             message: `Can't delete user with an id of ${id} because it doesn't exist`,
         };
-        next(error);
+        return next(error);
     }
 
     //end response process
