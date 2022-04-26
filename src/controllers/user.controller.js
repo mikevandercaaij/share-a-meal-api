@@ -1,7 +1,3 @@
-let controller = {
-    addMovie: (req, res) => {},
-};
-
 //array that holds all user data
 let database = [];
 
@@ -9,7 +5,7 @@ let database = [];
 let id = 0;
 
 //UC-201 Register as a new user
-exports.addMovie = (req, res) => {
+exports.addUser = (req, res) => {
     //put request body in a variable
     let user = req.body;
 
@@ -51,7 +47,7 @@ exports.addMovie = (req, res) => {
 };
 
 //UC-202 Get all users
-exports.getAllMovies = (req, res) => {
+exports.getAllUsers = (req, res) => {
     //if request if successful return all users
     res.status(200).json({
         status: res.statusCode,

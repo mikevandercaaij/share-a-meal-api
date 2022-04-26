@@ -24,10 +24,10 @@ router.get("/", (req, res) => {
 });
 
 //UC-201 Register as a new user
-router.post("/api/user", userController.addMovie);
+router.post("/api/user", userController.addUser);
 
 //UC-202 Get all users
-router.get("/api/user", userController.getAllMovies);
+router.get("/api/user", userController.getAllUsers);
 
 //UC-203 Request personal user profile
 router.get("/api/user/profile", userController.getUserProfile);
