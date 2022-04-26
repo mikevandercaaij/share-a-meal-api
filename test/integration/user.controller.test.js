@@ -8,8 +8,9 @@ const server = require(path.join(__dirname, "../../") + "/index");
 chai.should();
 chai.use(chaiHttp);
 
-describe("Manage users", () => {
-    describe("UC-201 register user api/user", () => {
+//UC-201 Register as new user
+describe("UC-201 Register as new user", () => {
+    describe("TC-201-1 Required input is missing", () => {
         beforeEach((done) => {
             database = [];
             done();
@@ -35,7 +36,5 @@ describe("Manage users", () => {
                     done();
                 });
         });
-        it.skip("other test");
-        it.skip("other test");
     });
 });

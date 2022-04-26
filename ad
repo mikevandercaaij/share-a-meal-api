@@ -1,0 +1,215 @@
+[33mcommit 698c484397a17c3065405ea21007c260f63c6434[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 16:40:41 2022 +0200
+
+    cleaned up code
+
+[33mcommit 6a030d84ea594eb7d04442b25f2d0e84b876c7dc[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 15:58:48 2022 +0200
+
+    altered workflow
+
+[33mcommit 1f483c44ee9173803c53e9674c084c345cd12ed6[m[33m ([m[1;32mfeature-testing[m[33m)[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 15:56:48 2022 +0200
+
+    added tests
+
+[33mcommit 0720cd3d08d7fd9c51f7c10322604038d3556e15[m[33m ([m[1;32mfeature-error-handler[m[33m)[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 11:48:23 2022 +0200
+
+    skeleton error handling in controller
+
+[33mcommit f6cc6bdb2aeb6c4757804a3da3d475ff5195736a[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 10:37:55 2022 +0200
+
+    cleaned userRouter
+
+[33mcommit 0b2d967b0910398c0e476bc685ece50dd23f74ea[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 10:32:17 2022 +0200
+
+    Create userController
+
+[33mcommit 8bc9ab781a9b2f813315f59e372057d59234a598[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 26 10:06:15 2022 +0200
+
+    Add route
+
+[33mcommit 019e4a61ce0e5a5ea7c1740d0770633e0868996d[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Mon Apr 25 23:38:53 2022 +0200
+
+    fixed update user bug
+
+[33mcommit c9732195a9ea2c421c534afe2c1dcb5e7dc8a82a[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Mon Apr 25 20:44:40 2022 +0200
+
+    fixed routing + bad request response
+
+[33mcommit 8c53be046920b4fbb4da8a8fb90ebed7c3ce7b47[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Mon Apr 25 20:43:29 2022 +0200
+
+    fixed routing + bad request response
+
+[33mcommit 3afeef7c62edc5fca71d9fa39139b8c75020a6ad[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 02:12:05 2022 +0200
+
+    fixed unique email bug when updating user
+
+[33mcommit 57d3acbeba0ae1f3e6b5eb25eaa9ec7fd1f0b3dc[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 01:30:32 2022 +0200
+
+    removed grammar mistake
+
+[33mcommit 1e71a0919550eba7a776a038e2f5ec246263caaf[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 01:26:20 2022 +0200
+
+    cleaned code
+
+[33mcommit 59cda5bad4ea7847e65dedc3d492033f23166ff0[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 01:24:24 2022 +0200
+
+    fixed auto increment id bug with adding user
+
+[33mcommit ea5120512d01ddde62ecc4bff76314d796df6078[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 01:16:20 2022 +0200
+
+    removed dummy data from array
+
+[33mcommit 9d68ca1a70d82cdba5fb17c3cc3495d154bccbcf[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Fri Apr 22 01:13:04 2022 +0200
+
+    added all functionality for user + comments
+
+[33mcommit 62ea1f15d483feab25e89fe4b3a3f3d80ae545b3[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Thu Apr 21 17:38:12 2022 +0200
+
+    added put functionality
+
+[33mcommit 5b448cead5ddd58c6e06bdda47d1a431bc678bee[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 21:33:23 2022 +0200
+
+    fixed remove functionality
+
+[33mcommit 8336b4097353ece251e21376f87697bc33d100b6[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 21:30:24 2022 +0200
+
+    added remove functionality
+
+[33mcommit 50ebbffa0234915c272ab54ba94093a9da129e31[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 17:06:32 2022 +0200
+
+    heroku deploy test
+
+[33mcommit fd4fcfd1b7093cd26e1d251294bec94881996509[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 17:03:41 2022 +0200
+
+    altered heroku deploy branch
+
+[33mcommit 13891090df418a89e0de5513062f7bf37e0b0c19[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 17:01:50 2022 +0200
+
+    test deploy heroku
+
+[33mcommit 5249258580eb90ba38c9af5cda1e043b3c098801[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 16:58:42 2022 +0200
+
+    test
+
+[33mcommit 5b390a5f122c2790c0a9c5edb6c29935c1ba1658[m
+Merge: 5b49c30 3b7fd28
+Author: Mike <72087008+mikevandercaaij@users.noreply.github.com>
+Date:   Wed Apr 20 16:54:48 2022 +0200
+
+    Merge pull request #2 from mikevandercaaij/master
+    
+    dummy database data
+
+[33mcommit 3b7fd28a0b83f5f8f4df8a0a0109a696a29dabe8[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 16:51:57 2022 +0200
+
+    dummy database data
+
+[33mcommit 5b49c301453b0d906617a8c86dc6a42bb920d951[m
+Author: Mike <72087008+mikevandercaaij@users.noreply.github.com>
+Date:   Wed Apr 20 16:49:48 2022 +0200
+
+    Update README.md
+
+[33mcommit 1682de5338b8118985e0dc62acd7434d11dc9881[m
+Author: Mike <72087008+mikevandercaaij@users.noreply.github.com>
+Date:   Wed Apr 20 16:41:22 2022 +0200
+
+    Create main.yml
+
+[33mcommit bd318090a2787bd42a05f6b82863053c1f3d2d9f[m
+Merge: 6fbcdcf 4f3d739
+Author: Mike <72087008+mikevandercaaij@users.noreply.github.com>
+Date:   Wed Apr 20 16:30:39 2022 +0200
+
+    Merge pull request #1 from mikevandercaaij/feature-express
+    
+    Feature express
+
+[33mcommit 6fbcdcff4cb6cee2ff305425680b9a9e79a6ab33[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 16:28:18 2022 +0200
+
+    first commit
+
+[33mcommit 4f3d739689eb5175941c9518ac5eef781067fd13[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 16:23:42 2022 +0200
+
+    first commit
+
+[33mcommit 0101c5a781c7ff2aea5be9d62c26ce1a3a4cb14a[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Wed Apr 20 15:06:39 2022 +0200
+
+    nodemon added
+
+[33mcommit 67c71c921ba30ca44920a48f81ab91736a93758d[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 19 21:43:51 2022 +0200
+
+    added express + starter routing api
+
+[33mcommit 4224e857f80d8fbfbddf533fc79a819888bd0617[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 19 13:03:38 2022 +0200
+
+    port fixed
+
+[33mcommit 67a9727fe06a2344a07ff3d418cc31d0f52a1ae9[m
+Author: Mike van der Caaij <mvdc2000@hotmail.nl>
+Date:   Tue Apr 19 12:49:57 2022 +0200
+
+    First commit
+
+[33mcommit 00d223fec22086c62ad34ed35c8f75ba62bffe15[m
+Author: Mike van der Caaij <m.vandercaaij@student.avans.nl>
+Date:   Tue Apr 19 10:06:49 2022 +0000
+
+    Initial commit
