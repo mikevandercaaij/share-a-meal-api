@@ -36,5 +36,6 @@ describe("Manage users", () => {
                 });
         });
         it.skip("other test");
+        it.skip("other test");
     });
 });

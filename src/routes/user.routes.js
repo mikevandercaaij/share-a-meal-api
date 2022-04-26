@@ -3,9 +3,7 @@ const router = express.Router();
 const path = require("path");
 const userController = require(path.join(__dirname, "../") + "controllers/user.controller");
 
-router.route("/api/user");
-router.get((req, res) => {});
-
+//add router to exports
 module.exports = router;
 
 //get request on root
@@ -23,22 +21,28 @@ router.get("/", (req, res) => {
     res.end();
 });
 
-//UC-201 Register as a new user
-router.post("/api/user", userController.validateUser, userController.addUser);
+//catch all request for "/api/user/"
+router
+    .route("/api/user")
 
-//UC-202 Get all users
-router.get("/api/user", userController.getAllUsers);
+    //UC-201 Register as a new user
+    .post(userController.validateUser, userController.addUser)
+
+    //UC-202 Get all users
+    .get(userController.getAllUsers);
 
 //UC-203 Request personal user profile
 router.get("/api/user/profile", userController.getUserProfile);
 
-router.route("/api/user/:id");
+//catch all request for "/api/user/:id"
+router
+    .route("/api/user/:id")
 
-//UC-204 Get single user by ID
-router.get("/api/user/:id", userController.getUserByID);
+    //UC-204 Get single user by ID
+    .get(userController.getUserByID)
 
-//UC-205 Update a single user
-router.put("/api/user/:id", userController.validateUser, userController.updateUser);
+    //UC-205 Update a single user
+    .put(userController.validateUser, userController.updateUser)
 
-//UC-206 Delete a user
-router.delete("/api/user/:id", userController.deleteUser);
+    //UC-206 Delete a user
+    .delete(userController.deleteUser);

@@ -10,8 +10,11 @@ let id = 0;
 //validate user
 exports.validateUser = (req, res, next) => {
     const user = req.body;
+
+    //localize all req body values
     let { firstName, lastName, street, city, isActive, emailAddress, password, phoneNumber } = user;
 
+    //check if all values are of a certain type
     try {
         assert(typeof firstName === "string", "First Name must be a string");
         assert(typeof lastName === "string", "Last Name must be a string");
@@ -21,13 +24,15 @@ exports.validateUser = (req, res, next) => {
         assert(typeof emailAddress === "string", "Email Address must be a string");
         assert(typeof password === "string", "Password must be a string");
         assert(typeof phoneNumber === "string", "Phone Number must be a string");
+
+        //if so run next function
         return next();
     } catch (err) {
-        const error = {
+        //if not return error
+        return next({
             status: 400,
             result: err.message,
-        };
-        return next(error);
+        });
     }
 };
 
@@ -66,11 +71,10 @@ exports.addUser = (req, res, next) => {
         });
     } else {
         //return status + error message
-        const error = {
+        return next({
             status: 409,
             message: `User with the email ${user.emailAddress} already exists.`,
-        };
-        return next(error);
+        });
     }
 };
 
@@ -120,11 +124,10 @@ exports.getUserByID = (req, res, next) => {
         });
     } else {
         //if the user isn't found return a fitting error response
-        const error = {
+        return next({
             status: 404,
             message: `User with an id of ${id} doesn't exist`,
-        };
-        return next(error);
+        });
     }
 
     //end response process
@@ -183,19 +186,17 @@ exports.updateUser = (req, res, next) => {
             });
         } else {
             //return false status if email is already in use by another user
-            const error = {
+            return next({
                 status: 409,
                 message: `Altered email (${user.emailAddress}) is already in use by another user.`,
-            };
-            return next(error);
+            });
         }
     } else {
         //if the user isn't found return a fitting error response
-        const error = {
+        return next({
             status: 404,
             message: `Can't update user with an id of ${id} because it doesn't exist`,
-        };
-        return next(error);
+        });
     }
 
     //end response process
@@ -226,11 +227,10 @@ exports.deleteUser = (req, res, next) => {
         });
     } else {
         //if the user isn't found return a fitting error response
-        const error = {
+        return next({
             status: 404,
             message: `Can't delete user with an id of ${id} because it doesn't exist`,
-        };
-        return next(error);
+        });
     }
 
     //end response process
