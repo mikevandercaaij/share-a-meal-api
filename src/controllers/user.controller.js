@@ -1,8 +1,20 @@
 const assert = require("assert");
 const { nextTick } = require("process");
+const MailChecker = require("mailchecker");
 
 //array that holds all user data
-let database = [];
+let database = [
+    {
+        firstName: "Mike",
+        lastName: "van der Caaij",
+        street: "Gareelweg 11",
+        city: "Heerle",
+        isActive: true,
+        emailAddress: "m.vandercaaij@student.avans.nl", //this email is already in use === user exists
+        password: "geheim",
+        phoneNumber: "06 38719633",
+    },
+];
 
 //id value will decide user id
 let id = 0;
@@ -16,14 +28,17 @@ exports.validateUser = (req, res, next) => {
 
     //check if all values are of a certain type
     try {
-        assert(typeof firstName === "string", "First Name must be a string");
-        assert(typeof lastName === "string", "Last Name must be a string");
-        assert(typeof street === "string", "Street must be a string");
-        assert(typeof city === "string", "City Name must be a string");
-        assert(typeof isActive === "boolean", "isActive must be a string");
-        assert(typeof emailAddress === "string", "Email Address must be a string");
-        assert(typeof password === "string", "Password must be a string");
-        assert(typeof phoneNumber === "string", "Phone Number must be a string");
+        assert(typeof firstName === "string", "First Name must be a string.");
+        assert(typeof lastName === "string", "Last Name must be a string.");
+        assert(typeof street === "string", "Street must be a string.");
+        assert(typeof city === "string", "City Name must be a string.");
+        assert(typeof isActive === "boolean", "isActive must be a string.");
+        assert(typeof emailAddress === "string", "Email Address must be a string.");
+        assert(typeof password === "string", "Password must be a string.");
+        assert(typeof phoneNumber === "string", "Phone Number must be a string.");
+
+        //check if email is valid
+        assert(MailChecker.isValid(emailAddress), "Email is not valid.");
 
         //if so run next function
         return next();
