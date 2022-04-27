@@ -5,6 +5,7 @@ const MailChecker = require("mailchecker");
 //array that holds all user data
 let database = [
     {
+        id: 0,
         firstName: "Mike",
         lastName: "van der Caaij",
         street: "Gareelweg 11",
