@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { nextTick } = require("process");
+const dbconnection = require("../../database/dbconnection");
 const MailChecker = require("mailchecker");
 
 //array that holds all user data
@@ -96,14 +96,24 @@ exports.addUser = (req, res, next) => {
 
 //UC-202 Get all users
 exports.getAllUsers = (req, res) => {
-    //if request if successful return all users
-    res.status(200).json({
-        status: res.statusCode,
-        result: database,
-    });
+    dbconnection.getConnection((err, connection) => {
+        if (err) throw err;
 
-    //end response process
-    res.end();
+        connection.query("SELECT * FROM user", (error, results, fields) => {
+            connection.release();
+
+            if (error) throw error;
+
+            //send back all results
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+
+            //end response process
+            res.end();
+        });
+    });
 };
 
 //UC-203 Request personal user profile

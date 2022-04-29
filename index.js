@@ -2,9 +2,10 @@
 const express = require("express");
 const app = express();
 const userRouter = require(__dirname + "/src/routes/user.routes");
+require("dotenv").config();
 
 //set port to either predefined server port or 3000 that can be used for local testing
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 //enable app to parse json
 app.use(express.json());

@@ -20,8 +20,10 @@
     "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme",
     "dependencies": {
         "body-parser": "^1.20.0",
+        "dotenv": "^16.0.0",
         "express": "^4.17.3",
         "mailchecker": "^4.1.16",
+        "mysql": "^2.18.1",
         "path": "^0.12.7"
     },
     "devDependencies": {
