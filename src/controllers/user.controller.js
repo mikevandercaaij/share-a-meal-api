@@ -2,30 +2,12 @@ const assert = require("assert");
 const dbconnection = require("../../database/dbconnection");
 const MailChecker = require("mailchecker");
 
-//array that holds all user data
-let database = [
-    {
-        id: 0,
-        firstName: "Mike",
-        lastName: "van der Caaij",
-        street: "Gareelweg 11",
-        city: "Heerle",
-        isActive: true,
-        emailAddress: "m.vandercaaij@student.avans.nl", //this email is already in use === user exists
-        password: "geheim",
-        phoneNumber: "06 38719633",
-    },
-];
-
-//id value will decide user id
-let id = 0;
-
 //validate user
 exports.validateUser = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
-    let { firstName, lastName, street, city, isActive, emailAddress, password, phoneNumber } = user;
+    let { firstName, lastName, street, city, isActive, emailAdress, password, phoneNumber } = user;
 
     //check if all values are of a certain type
     try {
@@ -34,14 +16,13 @@ exports.validateUser = (req, res, next) => {
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
         assert(typeof isActive === "boolean", "isActive must be a string.");
-        assert(typeof emailAddress === "string", "Email Address must be a string.");
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
         assert(typeof password === "string", "Password must be a string.");
         assert(typeof phoneNumber === "string", "Phone Number must be a string.");
 
         //check if email is valid
-        assert(MailChecker.isValid(emailAddress), "Email is not valid.");
+        assert(MailChecker.isValid(emailAdress), "Email is not valid.");
 
-        //if so run next function
         return next();
     } catch (err) {
         //if not return error
@@ -54,44 +35,56 @@ exports.validateUser = (req, res, next) => {
 
 //UC-201 Register as a new user
 exports.addUser = (req, res, next) => {
-    //put request body in a variable
-    let user = req.body;
+    dbconnection.getConnection((err, connection) => {
+        if (err) throw err;
 
-    //boolean thats used to see if an email is already used
-    let addUser = true;
+        //put request body in a variable
+        const { firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city } = req.body;
 
-    //check if given email is already in use
-    database.forEach((el) => {
-        if (el.emailAddress === user.emailAddress) {
-            addUser = false;
-        }
+        //boolean thats used to see if an email is already used
+        let addUser = false;
+
+        //store all users
+        let allUsers;
+
+        connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, function (error, results, fields) {
+            if (err) throw err;
+            const count = results[0].count;
+
+            if (count === 0) {
+                console.log(count);
+                addUser = true;
+            }
+
+            if (addUser) {
+                //insert new user into users
+                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, phoneNumber, street, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, phoneNumber, street, city], (error, results, fields) => {
+                    if (error) throw error;
+
+                    //get all users (including the newly added one)
+                    connection.query("SELECT * FROM user", (error, results, fields) => {
+                        if (error) throw error;
+                        connection.release();
+                        allUsers = results;
+
+                        //return successful status + result
+                        res.status(201).json({
+                            status: 201,
+                            result: allUsers,
+                        });
+                    });
+                });
+            } else {
+                //return status + error message
+                return next({
+                    status: 409,
+                    message: `User with the email ${emailAdress} already exists.`,
+                });
+            }
+            //end response process
+            res.end();
+        });
     });
-
-    if (addUser) {
-        //increment id so it's always unique
-        id++;
-
-        //make user object from request body
-        user = {
-            id,
-            ...user,
-        };
-
-        //add user if the email is unique
-        database.push(user);
-
-        //return successful status + result
-        res.status(201).json({
-            status: 201,
-            result: database,
-        });
-    } else {
-        //return status + error message
-        return next({
-            status: 409,
-            message: `User with the email ${user.emailAddress} already exists.`,
-        });
-    }
 };
 
 //UC-202 Get all users
@@ -138,26 +131,28 @@ exports.getUserByID = (req, res, next) => {
         return next();
     }
 
-    //look for user with same id as given in the parameters
-    let user = database.filter((item) => item.id === id);
+    dbconnection.getConnection((err, connection) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM user WHERE id = ?", id, function (error, results, fields) {
+            if (err) throw err;
 
-    // check if user is in database
-    if (user.length > 0) {
-        //return successful status + result
-        res.status(200).json({
-            status: 200,
-            result: user,
+            if (results.length > 0) {
+                //return successful status + result
+                res.status(200).json({
+                    status: 200,
+                    result: results[0],
+                });
+            } else {
+                //if the user isn't found return a fitting error response
+                return next({
+                    status: 404,
+                    message: `User with an id of ${id} doesn't exist`,
+                });
+            }
+            //end response process
+            res.end();
         });
-    } else {
-        //if the user isn't found return a fitting error response
-        return next({
-            status: 404,
-            message: `User with an id of ${id} doesn't exist`,
-        });
-    }
-
-    //end response process
-    res.end();
+    });
 };
 
 //UC-205 Update a single user
@@ -192,7 +187,7 @@ exports.updateUser = (req, res, next) => {
 
         //check if (altered) email is already in use by someone else
         otherUsers.forEach((el) => {
-            if (el.emailAddress === user.emailAddress) {
+            if (el.emailAdress === user.emailAdress) {
                 acceptChanges = false;
             }
         });
@@ -214,7 +209,7 @@ exports.updateUser = (req, res, next) => {
             //return false status if email is already in use by another user
             return next({
                 status: 409,
-                message: `Altered email (${user.emailAddress}) is already in use by another user.`,
+                message: `Altered email (${user.emailAdress}) is already in use by another user.`,
             });
         }
     } else {
