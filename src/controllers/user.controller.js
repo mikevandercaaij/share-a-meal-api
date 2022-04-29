@@ -15,7 +15,7 @@ exports.validateUser = (req, res, next) => {
         assert(typeof lastName === "string", "Last Name must be a string.");
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
-        assert(typeof isActive === "boolean", "isActive must be a string.");
+        assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a string.");
         assert(typeof emailAdress === "string", "Email Address must be a string.");
         assert(typeof password === "string", "Password must be a string.");
         assert(typeof phoneNumber === "string", "Phone Number must be a string.");
@@ -35,43 +35,54 @@ exports.validateUser = (req, res, next) => {
 
 //UC-201 Register as a new user
 exports.addUser = (req, res, next) => {
+    //create connection to database
     dbconnection.getConnection((err, connection) => {
+        //throw error if something went wrong
         if (err) throw err;
 
         //put request body in a variable
         const { firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city } = req.body;
 
-        //boolean thats used to see if an email is already used
-        let addUser = false;
-
-        //store all users
-        let allUsers;
-
-        connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, function (error, results, fields) {
+        connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
+            //throw error if something went wrong
             if (err) throw err;
+
+            //boolean thats used to see if an email is already used
+            let addUser = false;
+
+            //store count of
             const count = results[0].count;
 
+            //if the email is unique register user
             if (count === 0) {
-                console.log(count);
                 addUser = true;
             }
 
             if (addUser) {
                 //insert new user into users
-                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, phoneNumber, street, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, phoneNumber, street, city], (error, results, fields) => {
-                    if (error) throw error;
+                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, phoneNumber, street, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, phoneNumber, street, city], (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
 
                     //get all users (including the newly added one)
-                    connection.query("SELECT * FROM user", (error, results, fields) => {
-                        if (error) throw error;
+                    connection.query("SELECT * FROM user", (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
+
+                        //close connection
                         connection.release();
-                        allUsers = results;
+
+                        //store all users in variable
+                        let allUsers = results;
 
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
                             result: allUsers,
                         });
+
+                        //end response process
+                        res.end();
                     });
                 });
             } else {
@@ -81,21 +92,24 @@ exports.addUser = (req, res, next) => {
                     message: `User with the email ${emailAdress} already exists.`,
                 });
             }
-            //end response process
-            res.end();
         });
     });
 };
 
 //UC-202 Get all users
 exports.getAllUsers = (req, res) => {
+    //create connection to database
     dbconnection.getConnection((err, connection) => {
+        //throw error if something went wrong
         if (err) throw err;
 
-        connection.query("SELECT * FROM user", (error, results, fields) => {
-            connection.release();
+        //get all users
+        connection.query("SELECT * FROM user", (err, results, fields) => {
+            //throw error if something went wrong
+            if (err) throw err;
 
-            if (error) throw error;
+            //close connection
+            connection.release();
 
             //send back all results
             res.status(200).json({
@@ -123,25 +137,33 @@ exports.getUserProfile = (req, res) => {
 
 //UC-204 Get single user by ID
 exports.getUserByID = (req, res, next) => {
-    //save parameter (id) in variable
-    const id = Number(req.params.id);
-
-    //check if parameter is a number
-    if (isNaN(id)) {
-        return next();
-    }
-
     dbconnection.getConnection((err, connection) => {
+        //throw error if something went wrong
         if (err) throw err;
-        connection.query("SELECT * FROM user WHERE id = ?", id, function (error, results, fields) {
+
+        //save parameter (id) in variable
+        const id = Number(req.params.id);
+
+        //check if parameter is a number
+        if (isNaN(id)) {
+            return next();
+        }
+
+        //get requested user's data
+        connection.query("SELECT * FROM user WHERE id = ?", id, (err, results, fields) => {
+            //throw error if something went wrong
             if (err) throw err;
 
+            //show data if user exists
             if (results.length > 0) {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
                     result: results[0],
                 });
+
+                //end response process
+                res.end();
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
@@ -149,79 +171,83 @@ exports.getUserByID = (req, res, next) => {
                     message: `User with an id of ${id} doesn't exist`,
                 });
             }
-            //end response process
-            res.end();
         });
     });
 };
 
 //UC-205 Update a single user
 exports.updateUser = (req, res, next) => {
-    //save parameter (id) in variable
-    const id = Number(req.params.id);
+    //create connection
+    dbconnection.getConnection((err, connection) => {
+        //throw error if something went wrong
+        if (err) throw err;
 
-    //check if parameter is a number
-    if (isNaN(id)) {
-        return next();
-    }
+        //save parameter (id) in variable
+        const id = Number(req.params.id);
 
-    //set user object with given request body
-    let user = req.body;
+        //check if parameter is a number
+        if (isNaN(id)) {
+            return next();
+        }
 
-    //make user object from request body
-    user = {
-        id,
-        ...user,
-    };
+        //set user object with given request body
+        let user = req.body;
 
-    //filtered array with user that has the same id
-    let existingUser = database.filter((item) => item.id === id);
+        connection.query("SELECT COUNT(id) as count FROM user WHERE id = ?", id, (err, results, fields) => {
+            //throw error if something went wrong
+            if (err) throw err;
 
-    //check if there actually is a user in the filtered array
-    if (existingUser.length > 0) {
-        //if (altered) email isn't already taken by another user the changes will be accepted
-        let acceptChanges = true;
+            //store query output either 0 or 1
+            const userFound = results[0].count;
 
-        //make filtered array of all users except current one
-        const otherUsers = database.filter((item) => item.id !== id);
+            //if user exists
+            if (userFound) {
+                connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ? AND id <> ?", [user.emailAdress, id], (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
 
-        //check if (altered) email is already in use by someone else
-        otherUsers.forEach((el) => {
-            if (el.emailAdress === user.emailAdress) {
-                acceptChanges = false;
+                    //store if email is valid or not, can either be 0 or 1
+                    const unValidEmail = results[0].count;
+
+                    if (!unValidEmail) {
+                        //put request body in a variable
+                        const { firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city } = req.body;
+
+                        //update user
+                        connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, phoneNumber = ?, street = ?, city = ? WHERE ID = ?", [firstName, lastName, emailAdress, password, phoneNumber, street, city, id], (err, results, fields) => {
+                            //throw error if something went wrong
+                            if (err) throw err;
+
+                            //close connection
+                            connection.release();
+
+                            //return successful status + updated user
+                            res.status(201).json({
+                                status: 201,
+                                message: "User has been updated successfully.",
+                                response: user,
+                            });
+
+                            //end response process
+                            res.end();
+                        });
+                    } else {
+                        //return false status if email is already in use by another user
+                        return next({
+                            status: 409,
+                            message: `Altered email (${user.emailAdress}) is already in use by another user.`,
+                        });
+                    }
+                });
+            } else {
+                //if the user isn't found return a fitting error response
+                return next({
+                    status: 404,
+                    message: `Can't update user with an id of ${id} because it doesn't exist`,
+                });
             }
         });
-
-        if (acceptChanges) {
-            //get index of user in array
-            userIndex = database.findIndex((obj) => obj.id === id);
-
-            //use index to change object to new object
-            database[userIndex] = user;
-
-            //return successful status + updated user
-            res.status(201).json({
-                status: 201,
-                message: "User has been updated successfully.",
-                response: user,
-            });
-        } else {
-            //return false status if email is already in use by another user
-            return next({
-                status: 409,
-                message: `Altered email (${user.emailAdress}) is already in use by another user.`,
-            });
-        }
-    } else {
-        //if the user isn't found return a fitting error response
-        return next({
-            status: 404,
-            message: `Can't update user with an id of ${id} because it doesn't exist`,
-        });
-    }
-
-    //end response process
-    res.end();
+    });
 };
 
 //UC-206 Delete a user
@@ -234,26 +260,35 @@ exports.deleteUser = (req, res, next) => {
         return next();
     }
 
-    //look for user with same id as given in the parameters
-    let user = database.filter((item) => item.id === id);
+    //create connection
+    dbconnection.getConnection((err, connection) => {
+        //throw error if something went wrong
+        if (err) throw err;
 
-    if (user.length > 0) {
-        //add all users to filtered array except for the user with the same id
-        database = database.filter((item) => item.id !== id);
+        connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
+            //throw error if something went wrong
+            if (err) throw err;
 
-        //send successful status
-        res.status(201).json({
-            status: 201,
-            message: "User has been successfully deleted.",
+            //close connection
+            connection.release();
+
+            //if a row has been deleted
+            if (results.affectedRows === 1) {
+                //send successful status
+                res.status(201).json({
+                    status: 201,
+                    message: "User has been successfully deleted.",
+                });
+
+                //end response process
+                res.end();
+            } else {
+                //if the user isn't found return a fitting error response
+                return next({
+                    status: 404,
+                    message: `Can't delete user with an id of ${id} because it doesn't exist`,
+                });
+            }
         });
-    } else {
-        //if the user isn't found return a fitting error response
-        return next({
-            status: 404,
-            message: `Can't delete user with an id of ${id} because it doesn't exist`,
-        });
-    }
-
-    //end response process
-    res.end();
+    });
 };

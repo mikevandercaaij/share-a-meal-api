@@ -44,7 +44,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
                 street: "Gareelweg 11",
                 city: "Heerle",
                 isActive: true,
-                emailAddress: "test",
+                emailAddress: "testingemail",
                 password: "geheim",
                 phoneNumber: "06 38719633",
             })
