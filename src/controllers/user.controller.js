@@ -1,6 +1,7 @@
 const assert = require("assert");
 const dbconnection = require("../../database/dbconnection");
 const MailChecker = require("mailchecker");
+const { passwordStrength } = require("check-password-strength");
 
 //validate user
 exports.validateUser = (req, res, next) => {
@@ -15,10 +16,22 @@ exports.validateUser = (req, res, next) => {
         assert(typeof lastName === "string", "Last Name must be a string.");
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
-        assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a string.");
+        assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a boolean or number.");
         assert(typeof emailAdress === "string", "Email Address must be a string.");
         assert(typeof password === "string", "Password must be a string.");
         assert(typeof phoneNumber === "string", "Phone Number must be a string.");
+
+        //check if password is valid
+        let goodPassword = false;
+        switch (passwordStrength(password).value) {
+            case "Medium":
+                goodPassword = true;
+                break;
+            case "Strong":
+                goodPassword = true;
+                break;
+        }
+        assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
 
         //check if email is valid
         assert(MailChecker.isValid(emailAdress), "Email is not valid.");
