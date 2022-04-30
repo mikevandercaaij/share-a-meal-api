@@ -2,6 +2,7 @@ const assert = require("assert");
 const dbconnection = require("../../database/dbconnection");
 const MailChecker = require("mailchecker");
 const { passwordStrength } = require("check-password-strength");
+const { phone } = require("phone");
 
 //validate user
 exports.validateUser = (req, res, next) => {
@@ -35,6 +36,9 @@ exports.validateUser = (req, res, next) => {
 
         //check if email is valid
         assert(MailChecker.isValid(emailAdress), "Email is not valid.");
+
+        //validate phone number
+        assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
 
         return next();
     } catch (err) {
@@ -78,20 +82,17 @@ exports.addUser = (req, res, next) => {
                     if (err) throw err;
 
                     //get all users (including the newly added one)
-                    connection.query("SELECT * FROM user", (err, results, fields) => {
+                    connection.query("SELECT * FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
                         //close connection
                         connection.release();
 
-                        //store all users in variable
-                        let allUsers = results;
-
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
-                            result: allUsers,
+                            result: results,
                         });
 
                         //end response process
@@ -140,7 +141,7 @@ exports.getAllUsers = (req, res) => {
 exports.getUserProfile = (req, res) => {
     //On successful get request, display json object showing functionality hasn't been added yet.
     res.status(200).json({
-        code: 200,
+        status: 200,
         message: "This functionality has not been added yet.",
     });
 
