@@ -81,7 +81,7 @@ exports.addUser = (req, res, next) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
-                    //get all users (including the newly added one)
+                    //get user
                     connection.query("SELECT * FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
