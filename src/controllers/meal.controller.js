@@ -138,8 +138,7 @@ exports.updateMeal = (req, res, next) => {
                     //return successful status + updated meal
                     res.status(201).json({
                         status: 201,
-                        message: "Meal has been updated successfully.",
-                        response: meal,
+                        result: meal,
                     });
 
                     //end response process
@@ -250,7 +249,7 @@ exports.deleteMeal = (req, res, next) => {
                 //send successful status
                 res.status(201).json({
                     status: 201,
-                    message: "Meal has been successfully deleted.",
+                    message: "Meal has been deleted successfully.",
                 });
 
                 //end response process

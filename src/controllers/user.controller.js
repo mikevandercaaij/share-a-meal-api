@@ -238,8 +238,7 @@ exports.updateUser = (req, res, next) => {
                             //return successful status + updated user
                             res.status(201).json({
                                 status: 201,
-                                message: "User has been updated successfully.",
-                                response: user,
+                                result: user,
                             });
 
                             //end response process
@@ -291,7 +290,7 @@ exports.deleteUser = (req, res, next) => {
                 //send successful status
                 res.status(201).json({
                     status: 201,
-                    message: "User has been successfully deleted.",
+                    message: "User has been deleted successfully.",
                 });
 
                 //end response process
