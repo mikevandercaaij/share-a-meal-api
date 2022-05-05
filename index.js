@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
     res.status(err.status).json(err);
 });
 
-//make server listen to given ports
+//make server listen to given port
 app.listen(port, () => {
     console.log("Server running at " + port);
 });
