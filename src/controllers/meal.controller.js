@@ -41,21 +41,8 @@ exports.addMeal = (req, res, next) => {
         //put request body in a variable
         const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
-        //change allergenes object into a string
-        let allergenesString = "";
-
-        //add all allergenes values to a single string
-        for (let i = 0; i < allergenes.length; i++) {
-            allergenesString += allergenes[i];
-
-            //if it isnt the last allergie add a ","
-            if (i !== allergenes.length - 1) {
-                allergenesString += ",";
-            }
-        }
-
         //insert new meal into meals
-        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenesString, maxAmountOfParticipants, price], (err, results, fields) => {
+        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes.join(), maxAmountOfParticipants, price], (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -113,21 +100,8 @@ exports.updateMeal = (req, res, next) => {
                 //put request body in a variable
                 const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
-                //change allergenes object into a string
-                let allergenesString = "";
-
-                //add all allergenes values to a single string
-                for (let i = 0; i < allergenes.length; i++) {
-                    allergenesString += allergenes[i];
-
-                    //if it isnt the last allergie add a ","
-                    if (i !== allergenes.length - 1) {
-                        allergenesString += ",";
-                    }
-                }
-
                 //update meal
-                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenesString, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes.join(), maxAmountOfParticipants, price, id], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
