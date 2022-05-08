@@ -6,7 +6,7 @@ exports.validateMeal = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
-    let { name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price } = meal;
+    let { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = meal;
 
     //check if all values are of a certain type
     try {
@@ -14,7 +14,6 @@ exports.validateMeal = (req, res, next) => {
         assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
         assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
         assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsToTakeHome must be a boolean or number.");
-        assert(typeof dateTime === "string", "DateTime must be a string.");
         assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
         assert(typeof price === "number", "Price must be a number.");
         assert(typeof imageUrl === "string", "ImageUrl must be a string.");
@@ -40,7 +39,7 @@ exports.addMeal = (req, res, next) => {
         if (err) throw err;
 
         //put request body in a variable
-        const { name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
+        const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
         //change allergenes object into a string
         let allergenesString;
@@ -56,7 +55,7 @@ exports.addMeal = (req, res, next) => {
         }
 
         //insert new meal into meals
-        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenesString, maxAmountOfParticipants, price], (err, results, fields) => {
+        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenesString, maxAmountOfParticipants, price], (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -112,7 +111,7 @@ exports.updateMeal = (req, res, next) => {
             //if meal exists
             if (mealFound) {
                 //put request body in a variable
-                const { name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
+                const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
                 //change allergenes object into a string
                 let allergenesString;
@@ -128,7 +127,7 @@ exports.updateMeal = (req, res, next) => {
                 }
 
                 //update meal
-                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, dateTime = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, dateTime, imageUrl, allergenesString, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenesString, maxAmountOfParticipants, price, id], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
