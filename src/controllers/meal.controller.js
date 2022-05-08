@@ -42,7 +42,7 @@ exports.addMeal = (req, res, next) => {
         const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
         //change allergenes object into a string
-        let allergenesString;
+        let allergenesString = "";
 
         //add all allergenes values to a single string
         for (let i = 0; i < allergenes.length; i++) {
@@ -114,7 +114,7 @@ exports.updateMeal = (req, res, next) => {
                 const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
 
                 //change allergenes object into a string
-                let allergenesString;
+                let allergenesString = "";
 
                 //add all allergenes values to a single string
                 for (let i = 0; i < allergenes.length; i++) {
