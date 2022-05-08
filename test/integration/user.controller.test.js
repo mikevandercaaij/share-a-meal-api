@@ -15,6 +15,9 @@ let deletableUserId;
  * ALL TEST THAT HAVE BEEN COMMENT OUT ARE NOT POSSIBLE TO DO WITH THE
  * CURRENT STATE OF THE API/HOW FAR WE HAVE TO BE FOR NOW
  * (either due to authorization or parameters that need to be added like ?limit= or ?name=)
+ *
+ * no need to empty database beforehands since we create a user before deleting
+ * it and the database holds 4 users by default (that are not touched because we only delete the user we create)
  **/
 
 // UC-201 Register as new user
@@ -94,7 +97,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
                 firstName: "Klaas",
                 lastName: "Tilburg",
                 isActive: true,
-                emailAdress: "m.vandullemen@server.nl",
+                emailAdress: "m.vandullemen@server.nl", //email that exists
                 password: "dmG!F]!!6cUwK7JQ",
                 phoneNumber: "0612345678",
                 roles: "editor,guest",
