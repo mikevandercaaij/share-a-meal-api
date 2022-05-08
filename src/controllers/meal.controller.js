@@ -6,7 +6,7 @@ exports.validateMeal = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
-    let { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = meal;
+    let { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = meal;
 
     //check if all values are of a certain type
     try {
@@ -19,7 +19,10 @@ exports.validateMeal = (req, res, next) => {
         assert(typeof imageUrl === "string", "ImageUrl must be a string.");
         assert(typeof name === "string", "Name must be a string.");
         assert(typeof description === "string", "Description must be a string.");
-        assert(typeof allergenes === "object", "Allergenes must be an object.");
+
+        if (typeof meal.allergenes !== "undefined") {
+            assert(typeof meal.allergenes === "object", "Allergenes must be an object.");
+        }
 
         return next();
     } catch (err) {
@@ -39,10 +42,17 @@ exports.addMeal = (req, res, next) => {
         if (err) throw err;
 
         //put request body in a variable
-        const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
+        const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
+        let { allergenes } = req.body;
+
+        if (typeof allergenes === "undefined") {
+            allergenes = "";
+        } else {
+            allergenes = allergenes.join();
+        }
 
         //insert new meal into meals
-        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes.join(), maxAmountOfParticipants, price], (err, results, fields) => {
+        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price], (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -98,10 +108,17 @@ exports.updateMeal = (req, res, next) => {
             //if meal exists
             if (mealFound) {
                 //put request body in a variable
-                const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price } = req.body;
+                const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
+                let { allergenes } = req.body;
+
+                if (typeof allergenes === "undefined") {
+                    allergenes = "";
+                } else {
+                    allergenes = allergenes.join();
+                }
 
                 //update meal
-                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes.join(), maxAmountOfParticipants, price, id], (err, results, fields) => {
+                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 

@@ -24,7 +24,6 @@ describe("UC-301 Create a meal - POST /api/meal", () => {
                 isVegan: true,
                 isToTakeHome: true,
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                allergenes: ["gluten", "noten", "test"],
                 maxAmountOfParticipants: 6,
                 price: 6.75,
             })
@@ -48,7 +47,6 @@ describe("UC-301 Create a meal - POST /api/meal", () => {
                 isVegan: true,
                 isToTakeHome: true,
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                allergenes: ["gluten", "noten", "test"],
                 maxAmountOfParticipants: 6,
                 price: 6.75,
             })
@@ -81,7 +79,7 @@ describe("UC-302 Update meal - PUT /api/meal/:id", () => {
                 isVegan: true,
                 isToTakeHome: true,
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                allergenes: ["gluten", "noten", "test"],
+
                 maxAmountOfParticipants: 6,
                 price: 6.75,
             })
@@ -106,7 +104,7 @@ describe("UC-302 Update meal - PUT /api/meal/:id", () => {
                 isVegan: true,
                 isToTakeHome: true,
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                allergenes: ["gluten", "noten", "test"],
+
                 maxAmountOfParticipants: 6,
                 price: 6.75,
             })
@@ -128,7 +126,6 @@ describe("UC-302 Update meal - PUT /api/meal/:id", () => {
                 isVegan: true,
                 isToTakeHome: true,
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                allergenes: ["gluten", "noten", "test"],
                 maxAmountOfParticipants: 6,
                 price: 6.75,
             })
