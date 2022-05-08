@@ -1,3 +1,5 @@
+process.env.DB_DATABASE = process.env.DB_DATABASE || "share-a-meal-testdb";
+
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const path = require("path");
@@ -7,6 +9,13 @@ chai.should();
 chai.use(chaiHttp);
 
 let deletableUserId;
+
+//IMPORTANT//
+/**
+ * ALL TEST THAT HAVE BEEN COMMENT OUT ARE NOT POSSIBLE TO DO WITH THE
+ * CURRENT STATE OF THE API/HOW FAR WE HAVE TO BE FOR NOW
+ * (either due to authorization or parameters that need to be added like ?limit= or ?name=)
+ **/
 
 // UC-201 Register as new user
 describe("UC-201 Register as new user - POST /api/user", () => {

@@ -4,7 +4,6 @@ require("dotenv").config();
 const pool = mysql.createPool({
     connectionLimit: 10,
     waitForConnections: true,
-    connectionLimit: 10,
     queueLimit: 0,
     multipleStatements: true,
     host: process.env.DB_HOST,
