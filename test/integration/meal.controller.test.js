@@ -48,7 +48,7 @@ describe("UC-301 Create a meal - POST /api/meal", () => {
                 isVega: true,
                 isVegan: true,
                 isToTakeHome: true,
-                dateTime: "2022-04-30T23:10:31.775Z",
+                dateTime: new Date(),
                 imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
                 allergenes: ["gluten", "noten", "test"],
                 maxAmountOfParticipants: 6,

@@ -16,8 +16,11 @@ let deletableUserId;
  * CURRENT STATE OF THE API/HOW FAR WE HAVE TO BE FOR NOW
  * (either due to authorization or parameters that need to be added like ?limit= or ?name=)
  *
- * no need to empty database beforehands since we create a user before deleting
- * it and the database holds 4 users by default (that are not touched because we only delete the user we create)
+ * I have discussed this with Robin before handing in my assignment.
+ *
+ * no need to empty database beforehands since we create a user that we delete in a later test
+ * the database also holds 4 users by default (that are not touched because we only delete the user we just create.
+ * All the other request that need a user like updating or get user also use the user that has just been created.)
  **/
 
 // UC-201 Register as new user
@@ -140,104 +143,23 @@ describe("UC-201 Register as new user - POST /api/user", () => {
 
 // UC-202 Overview of users
 // describe("UC-202 Overview of users - GET /api/user", () => {
-//     beforeEach((done) => {
-//         done();
-//     });
-//     it("TC-202-1 Show zero users", (done) => {
-//         chai.request(server)
-//             .get("/api/user")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
-//     it("TC-202-2 Show two users", (done) => {
-//         chai.request(server)
-//             .get("/api/user")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
-//     it("TC-202-3 Show users using a searchterm with non-existing name", (done) => {
-//         chai.request(server)
-//             .get("/api/user")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
-//     it("TC-202-4 User ID doesn't exist", (done) => {
-//         chai.request(server)
-//             .get("/api/user/0")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(404);
-//                 done();
-//             });
-//     });
-//     it("TC-202-5 Show users using a searchterm with isActive status of true", (done) => {
-//         chai.request(server)
-//             .get("/api/user")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
-//     it("TC-202-6 Show users using a searchterm with existing name", (done) => {
-//         chai.request(server)
-//             .get("/api/user")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
+//     it("TC-202-1 Show zero users");
+//     it("TC-202-2 Show two users");
+//     it("TC-202-3 Show users using a searchterm with non-existing name");
+//     it("TC-202-4 User ID doesn't exist");
+//     it("TC-202-5 Show users using a searchterm with isActive status of true");
+//     it("TC-202-6 Show users using a searchterm with existing name");
 // });
 
 // // UC-203 Get users profile
 // describe("UC-203 Get users profile - GET /api/user/profile", () => {
-//     beforeEach((done) => {
-//         done();
-//     });
-//     it("TC-203-1 Invalid token", (done) => {
-//         chai.request(server)
-//             .get("/api/user/profile")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
-//     it("TC-203-2 Valid token and user exists", (done) => {
-//         chai.request(server)
-//             .get("/api/user/profile")
-//             .end((req, res) => {
-//                 let { status } = res.body;
-//                 status.should.equals(200);
-//                 done();
-//             });
-//     });
+//     it("TC-203-1 Invalid token");
+//     it("TC-203-2 Valid token and user exists");
 // });
 
 // UC-204 Get user details
 describe("UC-204 Get user details - GET /api/user/:id", () => {
-    beforeEach((done) => {
-        done();
-    });
-    // it("TC-204-1 Invalid token", (done) => {
-    //     chai.request(server)
-    //         .get("/api/user")
-    //         .end((req, res) => {
-    //             let { status } = res.body;
-    //             status.should.equals(200);
-    //             done();
-    //         });
-    // });
+    // it("TC-204-1 Invalid token");
     it("TC-204-2 User ID doesn't exists", (done) => {
         chai.request(server)
             .get("/api/user/0")
@@ -260,9 +182,6 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
 
 // UC-205 Modify user
 describe("UC-205 Modify user - PUT /api/user/:id", () => {
-    beforeEach((done) => {
-        done();
-    });
     it("TC-205-1 Required field missing", (done) => {
         chai.request(server)
             .put("/api/user/1")
@@ -284,15 +203,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
                 done();
             });
     });
-    // it("TC-205-2 Invalid postal code", (done) => {
-    //     chai.request(server)
-    //         .get("/api/user/0")
-    //         .end((req, res) => {
-    //             let { status } = res.body;
-    //             status.should.equals(404);
-    //             done();
-    //         });
-    // });
+    // it("TC-205-2 Invalid postal code");
     it("TC-205-3 Invalid phone number", (done) => {
         chai.request(server)
             .put("/api/user/1")
@@ -334,15 +245,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
                 done();
             });
     });
-    // it("TC-204-5 Not logged in", (done) => {
-    //     chai.request(server)
-    //         .get("/api/user/0")
-    //         .end((req, res) => {
-    //             let { status } = res.body;
-    //             status.should.equals(404);
-    //             done();
-    //         });
-    // });
+    // it("TC-204-5 Not logged in");
     it("TC-205-6 User has been modified successfully", (done) => {
         chai.request(server)
             .put("/api/user/" + deletableUserId)
@@ -367,9 +270,6 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
 
 // UC-206 Delete user
 describe("UC-206 Delete user - DELETE /api/user/:id", () => {
-    beforeEach((done) => {
-        done();
-    });
     it("TC-206-1 User doesn't exist", (done) => {
         chai.request(server)
             .delete("/api/user/0")
@@ -379,24 +279,8 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
                 done();
             });
     });
-    // it("TC-206-2 Not logged in", (done) => {
-    //     chai.request(server)
-    //         .get("/api/user/0")
-    //         .end((req, res) => {
-    //             let { status } = res.body;
-    //             status.should.equals(404);
-    //             done();
-    //         });
-    // });
-    // it("TC-206-3 Actor is not the owner", (done) => {
-    //     chai.request(server)
-    //         .get("/api/user/1")
-    //         .end((req, res) => {
-    //             let { status } = res.body;
-    //             status.should.equals(200);
-    //             done();
-    //         });
-    // });
+    // it("TC-206-2 Not logged in");
+    // it("TC-206-3 Actor is not the owner");
     it("TC-206-4 User has been deleted successfully", (done) => {
         chai.request(server)
             .delete("/api/user/" + deletableUserId)
