@@ -85,7 +85,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
                 firstName: "Klaas",
                 lastName: "Tilburg",
                 isActive: true,
-                emailAdress: "m.vandercaaij@student.nl",
+                emailAdress: "m.vandullemen@server.nl",
                 password: "dmG!F]!!6cUwK7JQ",
                 phoneNumber: "0612345678",
                 roles: "editor,guest",
