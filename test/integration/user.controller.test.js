@@ -82,16 +82,15 @@ describe("UC-201 Register as new user - POST /api/user", () => {
         chai.request(server)
             .post("/api/user")
             .send({
-                id: 41,
-                firstName: "Mike",
-                lastName: "van der Caaij",
-                isActive: 1,
-                emailAdress: "m.vandercaaij@student.nl", //email thats already in use
+                firstName: "Klaas",
+                lastName: "Tilburg",
+                isActive: true,
+                emailAdress: "m.vandercaaij@student.nl",
                 password: "dmG!F]!!6cUwK7JQ",
-                phoneNumber: "0638719633",
+                phoneNumber: "0612345678",
                 roles: "editor,guest",
-                street: "Gareelwdsadaseg 11",
-                city: "Heerle",
+                street: "Hopstraat",
+                city: "Amsterdam",
             })
             .end((req, res) => {
                 res.should.be.an("object");
