@@ -45,7 +45,7 @@ exports.validateUser = (req, res, next) => {
     } catch (err) {
         //if not return error
         return next({
-            status: 400,
+            status: 403,
             message: err.message,
         });
     }
