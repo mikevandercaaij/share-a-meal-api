@@ -46,50 +46,50 @@ describe("UC-201 Register as new user - POST /api/user", () => {
                 done();
             });
     });
-    it("TC-201-2 Non valid Email Address", (done) => {
-        chai.request(server)
-            .post("/api/user")
-            .send({
-                firstName: "Klaas",
-                lastName: "Tilburg",
-                isActive: true,
-                emailAdress: "ts.dsadas",
-                password: "dmG!F]!!6cUwK7JQ",
-                phoneNumber: "0612345678",
-                roles: "editor,guest",
-                street: "Hopstraat",
-                city: "Amsterdam",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                let { status, result } = res.body;
-                status.should.equals(400);
-                result.should.be.a("string").that.equals("Email is not valid.");
-                done();
-            });
-    });
-    it("TC-201-3 Non valid Password", (done) => {
-        chai.request(server)
-            .post("/api/user")
-            .send({
-                firstName: "Klaas",
-                lastName: "Tilburg",
-                isActive: true,
-                emailAdress: "ts.dsadas",
-                password: "secret",
-                phoneNumber: "0612345678",
-                roles: "editor,guest",
-                street: "Hopstraat",
-                city: "Amsterdam",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                let { status, result } = res.body;
-                status.should.equals(400);
-                result.should.be.a("string").that.equals("Password's strength is weak. Please fill in a stronger one!");
-                done();
-            });
-    });
+    // it("TC-201-2 Non valid Email Address", (done) => {
+    //     chai.request(server)
+    //         .post("/api/user")
+    //         .send({
+    //             firstName: "Klaas",
+    //             lastName: "Tilburg",
+    //             isActive: true,
+    //             emailAdress: "ts.dsadas",
+    //             password: "dmG!F]!!6cUwK7JQ",
+    //             phoneNumber: "0612345678",
+    //             roles: "editor,guest",
+    //             street: "Hopstraat",
+    //             city: "Amsterdam",
+    //         })
+    //         .end((req, res) => {
+    //             res.should.be.an("object");
+    //             let { status, result } = res.body;
+    //             status.should.equals(400);
+    //             result.should.be.a("string").that.equals("Email is not valid.");
+    //             done();
+    //         });
+    // });
+    // it("TC-201-3 Non valid Password", (done) => {
+    //     chai.request(server)
+    //         .post("/api/user")
+    //         .send({
+    //             firstName: "Klaas",
+    //             lastName: "Tilburg",
+    //             isActive: true,
+    //             emailAdress: "ts.dsadas",
+    //             password: "secret",
+    //             phoneNumber: "0612345678",
+    //             roles: "editor,guest",
+    //             street: "Hopstraat",
+    //             city: "Amsterdam",
+    //         })
+    //         .end((req, res) => {
+    //             res.should.be.an("object");
+    //             let { status, result } = res.body;
+    //             status.should.equals(400);
+    //             result.should.be.a("string").that.equals("Password's strength is weak. Please fill in a stronger one!");
+    //             done();
+    //         });
+    // });
     it("TC-201-4 User already exists", (done) => {
         chai.request(server)
             .post("/api/user")
@@ -201,27 +201,27 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
             });
     });
     // it("TC-205-2 Invalid postal code");
-    it("TC-205-3 Invalid phone number", (done) => {
-        chai.request(server)
-            .put("/api/user/1")
-            .send({
-                firstName: "Klaas",
-                lastName: "Tilburg",
-                isActive: true,
-                emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
-                password: "dmG!F]!!6cUwK7JQ",
-                phoneNumber: "000",
-                roles: "editor,guest",
-                street: "Hopstraat",
-                city: "Amsterdam",
-            })
-            .end((req, res) => {
-                let { status, result } = res.body;
-                status.should.equals(400);
-                result.should.be.a("string").that.equals("Phone number is invalid.");
-                done();
-            });
-    });
+    // it("TC-205-3 Invalid phone number", (done) => {
+    //     chai.request(server)
+    //         .put("/api/user/1")
+    //         .send({
+    //             firstName: "Klaas",
+    //             lastName: "Tilburg",
+    //             isActive: true,
+    //             emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
+    //             password: "dmG!F]!!6cUwK7JQ",
+    //             phoneNumber: "000",
+    //             roles: "editor,guest",
+    //             street: "Hopstraat",
+    //             city: "Amsterdam",
+    //         })
+    //         .end((req, res) => {
+    //             let { status, result } = res.body;
+    //             status.should.equals(400);
+    //             result.should.be.a("string").that.equals("Phone number is invalid.");
+    //             done();
+    //         });
+    // });
     it("TC-205-4 User doesn't exists", (done) => {
         chai.request(server)
             .put("/api/user/0")
