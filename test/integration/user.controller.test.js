@@ -259,7 +259,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
             })
             .end((req, res) => {
                 let { status } = res.body;
-                status.should.equals(201);
+                status.should.equals(200);
                 done();
             });
     });
