@@ -243,8 +243,8 @@ exports.updateUser = (req, res, next) => {
                             connection.release();
 
                             //return successful status + updated user
-                            res.status(201).json({
-                                status: 201,
+                            res.status(200).json({
+                                status: 200,
                                 result: user,
                             });
 
@@ -262,7 +262,7 @@ exports.updateUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 403,
+                    status: 401,
                     message: `Can't update user with an id of ${id} because it doesn't exist`,
                 });
             }
