@@ -252,7 +252,13 @@ exports.updateUser = (req, res, next) => {
 
                     if (!unValidEmail) {
                         //put request body in a variable
-                        const { firstName, lastName, emailAdress, password, street, city } = req.body;
+
+                        const user = {
+                            ...oldUser,
+                            ...newUser,
+                        };
+
+                        const { firstName, lastName, emailAdress, password, street, city } = user;
 
                         //update user
                         connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE ID = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
@@ -265,7 +271,7 @@ exports.updateUser = (req, res, next) => {
                             //return successful status + updated user
                             res.status(200).json({
                                 status: 200,
-                                result: { ...oldUser, ...newUser },
+                                result: user,
                             });
 
                             //end response process
