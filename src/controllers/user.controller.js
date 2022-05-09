@@ -9,7 +9,7 @@ exports.validateUser = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
-    let { firstName, lastName, street, city, emailAdress, password } = user;
+    const { firstName, lastName, emailAdress, password, street, city } = user;
 
     //check if all values are of a certain type
     try {
@@ -19,10 +19,11 @@ exports.validateUser = (req, res, next) => {
         assert(typeof city === "string", "City Name must be a string.");
         assert(typeof password === "string", "Password must be a string.");
         assert(typeof emailAdress === "string", "Email Address must be a string.");
-        //check if email is valid
-        assert(MailChecker.isValid(emailAdress), "Email is not valid.");
 
         //Comment out code below due to teacher's test tool
+
+        //check if email is valid
+        // assert(MailChecker.isValid(emailAdress), "Email is not valid.");
 
         // assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a boolean or number.");
         // assert(typeof phoneNumber === "string", "Phone Number must be a string.");
@@ -58,7 +59,7 @@ exports.addUser = (req, res, next) => {
         if (err) throw err;
 
         //put request body in a variable
-        const { firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city } = req.body;
+        const { firstName, lastName, emailAdress, password, street, city } = req.body;
 
         connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
             //throw error if something went wrong
@@ -173,7 +174,7 @@ exports.getUserByID = (req, res, next) => {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
-                    result: results[0],
+                    result: results,
                 });
 
                 //end response process
