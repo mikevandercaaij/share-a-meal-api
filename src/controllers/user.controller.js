@@ -9,7 +9,7 @@ exports.validateUser = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
-    let { firstName, lastName, street, city, isActive, emailAdress, password, phoneNumber } = user;
+    let { firstName, lastName, street, city, emailAdress, password } = user;
 
     //check if all values are of a certain type
     try {
@@ -77,7 +77,7 @@ exports.addUser = (req, res, next) => {
 
             if (addUser) {
                 //insert new user into users
-                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, phoneNumber, street, city) VALUES (?, ?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, phoneNumber, street, city], (err, results, fields) => {
+                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, street, city) VALUES (?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, street, city], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
@@ -225,10 +225,10 @@ exports.updateUser = (req, res, next) => {
 
                     if (!unValidEmail) {
                         //put request body in a variable
-                        const { firstName, lastName, isActive, emailAdress, password, phoneNumber, street, city } = req.body;
+                        const { firstName, lastName, emailAdress, password, street, city } = req.body;
 
                         //update user
-                        connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, phoneNumber = ?, street = ?, city = ? WHERE ID = ?", [firstName, lastName, emailAdress, password, phoneNumber, street, city, id], (err, results, fields) => {
+                        connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE ID = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
                             //throw error if something went wrong
                             if (err) throw err;
 
