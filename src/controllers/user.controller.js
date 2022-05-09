@@ -52,7 +52,7 @@ exports.validateUserCreate = (req, res, next) => {
 };
 
 //validate user when it's being updated
-exports.validateUserCreate = (req, res, next) => {
+exports.validateUserUpdate = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
