@@ -180,7 +180,7 @@ exports.getUserByID = (req, res, next) => {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
-                    result: results,
+                    result: results[0],
                 });
 
                 //end response process
