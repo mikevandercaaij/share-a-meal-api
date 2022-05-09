@@ -181,7 +181,7 @@ exports.getUserByID = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 400,
+                    status: 404,
                     message: `User with an id of ${id} doesn't exist`,
                 });
             }
@@ -288,8 +288,8 @@ exports.deleteUser = (req, res, next) => {
             //if a row has been deleted
             if (results.affectedRows === 1) {
                 //send successful status
-                res.status(201).json({
-                    status: 201,
+                res.status(200).json({
+                    status: 200,
                     message: "User has been deleted successfully.",
                 });
 
@@ -299,7 +299,7 @@ exports.deleteUser = (req, res, next) => {
                 //if the user isn't found return a fitting error response
                 return next({
                     status: 400,
-                    message: `Can't delete user with an id of ${id} because it doesn't exist`,
+                    message: `User does not exist`,
                 });
             }
         });

@@ -162,7 +162,7 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
             .get("/api/user/0")
             .end((req, res) => {
                 let { status } = res.body;
-                status.should.equals(400);
+                status.should.equals(404);
                 done();
             });
     });
@@ -283,7 +283,7 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
             .delete("/api/user/" + deletableUserId)
             .end((req, res) => {
                 let { status } = res.body;
-                status.should.equals(201);
+                status.should.equals(200);
                 done();
             });
     });
