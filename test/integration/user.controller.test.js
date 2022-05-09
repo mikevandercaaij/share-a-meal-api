@@ -41,7 +41,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
             .end((req, res) => {
                 res.should.be.an("object");
                 let { status, message } = res.body;
-                status.should.equals(400);
+                status.should.equals(403);
                 message.should.be.a("string").that.equals("First Name must be a string.");
                 done();
             });
@@ -195,7 +195,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
             })
             .end((req, res) => {
                 let { status, message } = res.body;
-                status.should.equals(400);
+                status.should.equals(403);
                 message.should.be.a("string").that.equals("First Name must be a string.");
                 done();
             });
