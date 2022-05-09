@@ -17,12 +17,16 @@ exports.validateUser = (req, res, next) => {
         assert(typeof lastName === "string", "Last Name must be a string.");
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
-        assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a boolean or number.");
-        assert(typeof emailAdress === "string", "Email Address must be a string.");
         assert(typeof password === "string", "Password must be a string.");
-        assert(typeof phoneNumber === "string", "Phone Number must be a string.");
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
+        //check if email is valid
+        assert(MailChecker.isValid(emailAdress), "Email is not valid.");
 
-        //Comment out password stength check due to teacher's test tool
+        //Comment out code below due to teacher's test tool
+
+        // assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a boolean or number.");
+        // assert(typeof phoneNumber === "string", "Phone Number must be a string.");
+
         // let goodPassword = false;
         // switch (passwordStrength(password).value) {
         //     case "Medium":
@@ -34,10 +38,6 @@ exports.validateUser = (req, res, next) => {
         // }
         // assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
 
-        //check if email is valid
-        assert(MailChecker.isValid(emailAdress), "Email is not valid.");
-
-        //Comment out valid phonenumber check check due to teacher's test tool
         // assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
 
         return next();
