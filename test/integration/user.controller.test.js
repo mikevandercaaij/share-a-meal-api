@@ -150,7 +150,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
 //     it("TC-202-5 Show users using a searchterm with isActive status of true");
 //     it("TC-202-6 Show users using a searchterm with existing name");
 // });
-
+//
 // // UC-203 Get users profile
 // describe("UC-203 Get users profile - GET /api/user/profile", () => {
 //     it("TC-203-1 Invalid token");
