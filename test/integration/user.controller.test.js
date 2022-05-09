@@ -25,9 +25,6 @@ let deletableUserId;
 
 // UC-201 Register as new user
 describe("UC-201 Register as new user - POST /api/user", () => {
-    beforeEach((done) => {
-        done();
-    });
     it("TC-201-1 Required input is missing", (done) => {
         chai.request(server)
             .post("/api/user")
