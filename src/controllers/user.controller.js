@@ -93,7 +93,7 @@ exports.addUser = (req, res, next) => {
                         //return successful status + results
                         res.status(201).json({
                             status: 201,
-                            result: results,
+                            result: results[0],
                         });
 
                         //end response process
