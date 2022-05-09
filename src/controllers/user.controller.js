@@ -262,7 +262,7 @@ exports.updateUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 400,
+                    status: 403,
                     message: `Can't update user with an id of ${id} because it doesn't exist`,
                 });
             }
