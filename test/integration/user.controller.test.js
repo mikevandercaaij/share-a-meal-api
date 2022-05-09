@@ -284,6 +284,8 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
             .end((req, res) => {
                 let { status } = res.body;
                 status.should.equals(200);
+                res.body.should.have.property("message");
+
                 done();
             });
     });

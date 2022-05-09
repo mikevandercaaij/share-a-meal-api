@@ -5,7 +5,7 @@ const { passwordStrength } = require("check-password-strength");
 const { phone } = require("phone");
 
 //validate user when it's being created
-exports.validateUserCreate = (req, res, next) => {
+exports.validateUser = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
@@ -40,27 +40,6 @@ exports.validateUserCreate = (req, res, next) => {
         // assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
 
         // assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
-
-        return next();
-    } catch (err) {
-        //if not return error
-        return next({
-            status: 400,
-            message: err.message,
-        });
-    }
-};
-
-//validate user when it's being updated
-exports.validateUserUpdate = (req, res, next) => {
-    const user = req.body;
-
-    //localize all req body values
-    const { firstName } = user;
-
-    //check if all values are of a certain type
-    try {
-        assert(typeof firstName === "string", "First Name must be a string.");
 
         return next();
     } catch (err) {
