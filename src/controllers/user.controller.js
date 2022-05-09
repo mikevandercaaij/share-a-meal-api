@@ -20,7 +20,7 @@ exports.validateUser = (req, res, next) => {
         assert(typeof password === "string", "Password must be a string.");
         assert(typeof emailAdress === "string", "Email Address must be a string.");
 
-        //Comment out code below due to teacher's test tool
+        //Code below is commented out due to teacher's test tool
 
         //check if email is valid
         // assert(MailChecker.isValid(emailAdress), "Email is not valid.");
@@ -68,11 +68,8 @@ exports.addUser = (req, res, next) => {
             //boolean thats used to see if an email is already used
             let addUser = false;
 
-            //store count of
-            const count = results[0].count;
-
             //if the email is unique register user
-            if (count === 0) {
+            if (results[0].count === 0) {
                 addUser = true;
             }
 
@@ -262,7 +259,7 @@ exports.updateUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 400,
+                    status: 401,
                     message: `Can't update user with an id of ${id} because it doesn't exist`,
                 });
             }

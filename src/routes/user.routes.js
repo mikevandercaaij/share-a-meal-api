@@ -42,7 +42,8 @@ router
     .get(userController.getUserByID)
 
     //UC-205 Update a single user
-    .put(userController.validateUser, userController.updateUser)
+    // .put(userController.validateUser, userController.updateUser)
+    .put(userController.updateUser)
 
     //UC-206 Delete a user
     .delete(userController.deleteUser);
