@@ -90,6 +90,12 @@ exports.addUser = (req, res, next) => {
                         //close connection
                         connection.release();
 
+                        if (results[0].isActive === 1) {
+                            results[0].isActive = true;
+                        } else {
+                            results[0].isActive = false;
+                        }
+
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
