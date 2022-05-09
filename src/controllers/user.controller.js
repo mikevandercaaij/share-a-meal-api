@@ -181,7 +181,7 @@ exports.getUserByID = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 404,
+                    status: 400,
                     message: `User with an id of ${id} doesn't exist`,
                 });
             }
@@ -255,7 +255,7 @@ exports.updateUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 404,
+                    status: 400,
                     message: `Can't update user with an id of ${id} because it doesn't exist`,
                 });
             }
@@ -298,7 +298,7 @@ exports.deleteUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 404,
+                    status: 400,
                     message: `Can't delete user with an id of ${id} because it doesn't exist`,
                 });
             }
