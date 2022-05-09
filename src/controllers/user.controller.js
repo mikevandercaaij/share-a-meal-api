@@ -90,7 +90,7 @@ exports.addUser = (req, res, next) => {
                         //close connection
                         connection.release();
 
-                        //return successful status + results
+                        //return successful status + result
                         res.status(201).json({
                             status: 201,
                             result: results[0],

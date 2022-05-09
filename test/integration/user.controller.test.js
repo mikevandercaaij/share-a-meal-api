@@ -130,7 +130,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
                 let { status, result } = res.body;
 
                 //store id that can be used for the delete test later on
-                deletableUserId = result[result.length - 1].id;
+                deletableUserId = result.id;
 
                 status.should.equals(201);
                 done();
