@@ -183,10 +183,10 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
         chai.request(server)
             .put("/api/user/1")
             .send({
-                // missing firstname should end up failing
+                firstName: "Marie",
                 lastName: "Tilburg",
                 isActive: true,
-                emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
+                // missing email should end up failing
                 password: "dmG!F]!!6cUwK7JQ",
                 phoneNumber: "0612345678",
                 roles: "editor,guest",
@@ -196,7 +196,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
             .end((req, res) => {
                 let { status, message } = res.body;
                 status.should.equals(400);
-                message.should.be.a("string").that.equals("First Name must be a string.");
+                message.should.be.a("string").that.equals("Email Address must be a string.");
                 done();
             });
     });

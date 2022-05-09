@@ -26,7 +26,7 @@ router
     .route("/api/user")
 
     //UC-201 Register as a new user
-    .post(userController.validateUser, userController.addUser)
+    .post(userController.validateUserCreate, userController.addUser)
 
     //UC-202 Get all users
     .get(userController.getAllUsers);
@@ -42,7 +42,7 @@ router
     .get(userController.getUserByID)
 
     //UC-205 Update a single user
-    .put(userController.validateUser, userController.updateUser)
+    .put(userController.validateUserUpdate, userController.updateUser)
 
     //UC-206 Delete a user
     .delete(userController.deleteUser);

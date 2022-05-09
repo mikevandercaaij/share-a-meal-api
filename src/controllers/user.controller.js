@@ -5,7 +5,7 @@ const { passwordStrength } = require("check-password-strength");
 const { phone } = require("phone");
 
 //validate user when it's being created
-exports.validateUser = (req, res, next) => {
+exports.validateUserCreate = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
@@ -40,6 +40,27 @@ exports.validateUser = (req, res, next) => {
         // assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
 
         // assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
+
+        return next();
+    } catch (err) {
+        //if not return error
+        return next({
+            status: 400,
+            message: err.message,
+        });
+    }
+};
+
+//validate user when it's being created
+exports.validateUserUpdate = (req, res, next) => {
+    const user = req.body;
+
+    //localize all req body values
+    const { emailAdress } = user;
+
+    //check if all values are of a certain type
+    try {
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
 
         return next();
     } catch (err) {
@@ -203,6 +224,8 @@ exports.updateUser = (req, res, next) => {
         //save parameter (id) in variable
         const id = Number(req.params.id);
 
+        const newUser = req.body;
+
         //check if parameter is a number
         if (isNaN(id)) {
             return next();
@@ -211,17 +234,15 @@ exports.updateUser = (req, res, next) => {
         //set user object with given request body
         let user = req.body;
 
-        console.log(user);
-
-        connection.query("SELECT COUNT(id) as count FROM user WHERE id = ?", id, (err, results, fields) => {
+        connection.query("SELECT * FROM user WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
-            //store query output either 0 or 1
-            const userFound = results[0].count;
+            //store old data
+            const oldUser = results[0];
 
             //if user exists
-            if (userFound) {
+            if (results[0]) {
                 connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ? AND id <> ?", [user.emailAdress, id], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
@@ -244,7 +265,7 @@ exports.updateUser = (req, res, next) => {
                             //return successful status + updated user
                             res.status(200).json({
                                 status: 200,
-                                result: user,
+                                result: { ...oldUser, ...newUser },
                             });
 
                             //end response process
