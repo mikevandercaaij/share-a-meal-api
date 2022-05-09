@@ -13,12 +13,12 @@ exports.validateUser = (req, res, next) => {
 
     //check if all values are of a certain type
     try {
-        // assert(typeof firstName === "string", "First Name must be a string.");
-        // assert(typeof lastName === "string", "Last Name must be a string.");
-        // assert(typeof street === "string", "Street must be a string.");
-        // assert(typeof city === "string", "City Name must be a string.");
-        // assert(typeof password === "string", "Password must be a string.");
-        // assert(typeof emailAdress === "string", "Email Address must be a string.");
+        assert(typeof firstName === "string", "First Name must be a string.");
+        assert(typeof lastName === "string", "Last Name must be a string.");
+        assert(typeof street === "string", "Street must be a string.");
+        assert(typeof city === "string", "City Name must be a string.");
+        assert(typeof password === "string", "Password must be a string.");
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
 
         //Comment out code below due to teacher's test tool
 
