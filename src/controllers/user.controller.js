@@ -45,7 +45,7 @@ exports.validateUser = (req, res, next) => {
     } catch (err) {
         //if not return error
         return next({
-            status: 403,
+            status: 400,
             message: err.message,
         });
     }
@@ -211,6 +211,8 @@ exports.updateUser = (req, res, next) => {
         //set user object with given request body
         let user = req.body;
 
+        console.log(user);
+
         connection.query("SELECT COUNT(id) as count FROM user WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
@@ -259,7 +261,7 @@ exports.updateUser = (req, res, next) => {
             } else {
                 //if the user isn't found return a fitting error response
                 return next({
-                    status: 401,
+                    status: 400,
                     message: `Can't update user with an id of ${id} because it doesn't exist`,
                 });
             }
