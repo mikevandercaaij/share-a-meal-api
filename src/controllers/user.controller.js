@@ -40,7 +40,7 @@ exports.validateUserCreate = (req, res, next) => {
         //         break;
         // }
         // assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
-
+        //
         // assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
 
         return next();
