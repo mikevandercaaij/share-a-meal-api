@@ -40,10 +40,10 @@ router
     .route("/api/user/:id")
 
     //UC-204 Get single user by ID
-    .get(userController.getUserByID)
+    .get(authController.validateToken, userController.getUserByID)
 
     //UC-205 Update a single user
-    .put(userController.validateUserUpdate, userController.updateUser)
+    .put(authController.validateToken, userController.validateUserUpdate, userController.updateUser)
 
     //UC-206 Delete a user
-    .delete(userController.deleteUser);
+    .delete(authController.validateToken, userController.deleteUser);

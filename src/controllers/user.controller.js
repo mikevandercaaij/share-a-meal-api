@@ -366,30 +366,37 @@ exports.deleteUser = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
-            //throw error if something went wrong
-            if (err) throw err;
+        if (req.userId === id) {
+            connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
+                //throw error if something went wrong
+                if (err) throw err;
 
-            //close connection
-            connection.release();
+                //close connection
+                connection.release();
 
-            //if a row has been deleted
-            if (results.affectedRows === 1) {
-                //send successful status
-                res.status(200).json({
-                    status: 200,
-                    message: "User has been deleted successfully.",
-                });
+                //if a row has been deleted
+                if (results.affectedRows === 1) {
+                    //send successful status
+                    res.status(200).json({
+                        status: 200,
+                        message: "User has been deleted successfully.",
+                    });
 
-                //end response process
-                res.end();
-            } else {
-                //if the user isn't found return a fitting error response
-                return next({
-                    status: 400,
-                    message: `User does not exist`,
-                });
-            }
-        });
+                    //end response process
+                    res.end();
+                } else {
+                    //if the user isn't found return a fitting error response
+                    return next({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            });
+        } else {
+            res.status(403).json({
+                code: 403,
+                message: "You can't delete an account that isn't yours",
+            });
+        }
     });
 };
