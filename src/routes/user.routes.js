@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const userController = require(path.join(__dirname, "../") + "controllers/user.controller");
+const authController = require(path.join(__dirname, "../") + "controllers/auth.controller");
 
 //add router to exports
 module.exports = router;
@@ -29,7 +30,7 @@ router
     .post(userController.validateUserCreate, userController.addUser)
 
     //UC-202 Get all users
-    .get(userController.getAllUsers);
+    .get(authController.validateToken, userController.getAllUsers);
 
 //UC-203 Request personal user profile
 router.get("/api/user/profile", userController.getUserProfile);
