@@ -146,12 +146,6 @@ exports.getAllUsers = (req, res, next) => {
 
         let { isActive, firstName, limit } = req.query;
 
-        if (isActive == "true") {
-            isActive = 1;
-        } else {
-            isActive = 0;
-        }
-
         let queryString = "SELECT * FROM user";
 
         if (isActive || firstName || limit) {
@@ -184,6 +178,14 @@ exports.getAllUsers = (req, res, next) => {
 
             //close connection
             connection.release();
+
+            results.forEach((item) => {
+                if (item.isActive === 1) {
+                    item.isActive = true;
+                } else {
+                    item.isActive = false;
+                }
+            });
 
             //send back all results
             res.status(200).json({
