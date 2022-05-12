@@ -3,6 +3,8 @@ const dbconnection = require("../../database/dbconnection");
 const MailChecker = require("mailchecker");
 const { passwordStrength } = require("check-password-strength");
 const { phone } = require("phone");
+const { query } = require("../../database/dbconnection");
+const { nextTick } = require("process");
 
 //validate user when it's being created
 exports.validateUserCreate = (req, res, next) => {
@@ -136,16 +138,49 @@ exports.addUser = (req, res, next) => {
 };
 
 //UC-202 Get all users
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = (req, res, next) => {
     //create connection to database
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
         if (err) throw err;
 
+        let { isActive, firstName, limit } = req.query;
+
+        if (isActive == "true") {
+            isActive = 1;
+        } else {
+            isActive = 0;
+        }
+
+        let queryString = "SELECT * FROM user";
+
+        if (isActive || firstName || limit) {
+            let count = 0;
+
+            if (isActive || firstName) {
+                queryString += " WHERE ";
+            }
+
+            if (isActive) {
+                queryString += `isActive = ${isActive}`;
+                count++;
+            }
+
+            if (firstName) {
+                if (count > 0) {
+                    queryString += " AND ";
+                }
+                queryString += `firstName = "${firstName}"`;
+            }
+
+            if (limit) {
+                queryString += ` LIMIT ${limit}`;
+            }
+        }
         //get all users
-        connection.query("SELECT * FROM user", (err, results, fields) => {
+        connection.query(queryString, (err, results, fields) => {
             //throw error if something went wrong
-            if (err) throw err;
+            if (err) next();
 
             //close connection
             connection.release();
