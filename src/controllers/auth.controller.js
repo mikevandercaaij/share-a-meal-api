@@ -85,7 +85,8 @@ module.exports = {
         if (!authHeader) {
             logger.warn("Authorization header missing!");
             res.status(401).json({
-                error: "Authorization header missing!",
+                code: 401,
+                message: "Authorization header missing!",
                 datetime: new Date().toISOString(),
             });
         } else {
@@ -94,9 +95,10 @@ module.exports = {
 
             jwt.verify(token, jwtSecretKey, (err, payload) => {
                 if (err) {
-                    logger.warn("Not authorized");
+                    logger.warn("Invalid token");
                     res.status(401).json({
-                        error: "Not authorized",
+                        code: 401,
+                        message: "Invalid token",
                         datetime: new Date().toISOString(),
                     });
                 }

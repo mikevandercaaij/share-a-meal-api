@@ -33,7 +33,7 @@ router
     .get(authController.validateToken, userController.getAllUsers);
 
 //UC-203 Request personal user profile
-router.get("/api/user/profile", userController.getUserProfile);
+router.get("/api/user/profile", authController.validateToken, userController.getUserProfile);
 
 //catch all request for "/api/user/:id"
 router

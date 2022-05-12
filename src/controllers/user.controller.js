@@ -144,6 +144,8 @@ exports.getAllUsers = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
+        console.log(req.userId);
+
         let { isActive, firstName, limit } = req.query;
 
         let queryString = "SELECT * FROM user";
@@ -201,14 +203,24 @@ exports.getAllUsers = (req, res, next) => {
 
 //UC-203 Request personal user profile
 exports.getUserProfile = (req, res) => {
-    //On successful get request, display json object showing functionality hasn't been added yet.
-    res.status(200).json({
-        status: 200,
-        message: "This functionality has not been added yet.",
-    });
+    const id = req.userId;
 
-    //end response process
-    res.end();
+    dbconnection.getConnection((err, connection) => {
+        if (err) throw err;
+        connection.query("SELECT * FROM user WHERE id = ?", id, (err, results, fields) => {
+            if (err) throw err;
+
+            connection.release();
+
+            res.status(200).json({
+                code: 200,
+                result: results[0],
+            });
+
+            //end response process
+            res.end();
+        });
+    });
 };
 
 //UC-204 Get single user by ID
