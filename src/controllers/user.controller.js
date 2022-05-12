@@ -260,6 +260,12 @@ exports.updateUser = (req, res, next) => {
 
                         const { firstName, lastName, emailAdress, password, street, city } = user;
 
+                        // console.log(Object.keys(user).join("= ?, "));
+
+                        // const updateArray = []
+
+                        // let updateQuery = "UPDATE user SET " + Object.keys(user).join("= ?, ") +  "WHERE ID = ?"
+
                         //update user
                         connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE ID = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
                             //throw error if something went wrong
