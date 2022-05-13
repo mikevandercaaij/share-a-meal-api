@@ -95,21 +95,22 @@ exports.updateMeal = (req, res, next) => {
             return next();
         }
 
+        const newMeal = req.body;
+
         connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
-            //store the meal in a variable
-            const cookId = results[0].cookId;
+            const oldMeal = results[0];
 
             //if meal exists
-            if (results[0]) {
+            if (results.length === 1) {
                 //put request body in a variable
                 const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
                 let { allergenes } = req.body;
 
-                //log ids
-                console.log(`req.userId: ${req.userId} - cookId: ${cookId}`);
+                //store the meal in a variable
+                const cookId = results[0].cookId;
 
                 if (cookId !== req.userId) {
                     res.status(403).json({
@@ -131,10 +132,15 @@ exports.updateMeal = (req, res, next) => {
                         //close connection
                         connection.release();
 
+                        const meal = {
+                            ...oldMeal,
+                            ...newMeal,
+                        };
+
                         //return successful status + updated meal
                         res.status(201).json({
                             status: 201,
-                            result: meal,
+                            result: formatMeal([meal]),
                         });
 
                         //end response process
@@ -170,7 +176,7 @@ exports.getAllMeals = (req, res) => {
             //send back all results
             res.status(200).json({
                 status: 200,
-                result: results,
+                result: formatMeal(results),
             });
 
             //end response process
@@ -203,7 +209,7 @@ exports.getMealByID = (req, res, next) => {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
-                    result: results[0],
+                    result: formatMeal(results),
                 });
 
                 //end response process
@@ -260,4 +266,32 @@ exports.deleteMeal = (req, res, next) => {
             }
         });
     });
+};
+
+const formatMeal = (results) => {
+    results.forEach((result) => {
+        let boolObj = {
+            isActive: result.isActive,
+            isVega: result.isVega,
+            isVegan: result.isVegan,
+            isToTakeHome: result.isToTakeHome,
+        };
+        let keys = Object.keys(boolObj);
+        keys.forEach((key) => {
+            if (boolObj[key] === 1) {
+                boolObj[key] = true;
+            } else {
+                boolObj[key] = false;
+            }
+        });
+        result.isActive = boolObj.isActive;
+        result.isVega = boolObj.isVega;
+        result.isVegan = boolObj.isVegan;
+        result.isToTakeHome = boolObj.isToTakeHome;
+    });
+
+    if (results.length === 1) {
+        return results[0];
+    }
+    return results;
 };

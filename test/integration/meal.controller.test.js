@@ -62,7 +62,6 @@ describe("UC-301 Create a meal - POST /api/meal", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
@@ -151,7 +150,6 @@ describe("UC-302 Update meal - PUT /api/meal/:id", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
@@ -196,48 +194,49 @@ describe("UC-302 Update meal - PUT /api/meal/:id", () => {
             .end((req, res) => {
                 res.should.be.an("object");
                 let { status, message } = res.body;
-                console.log(res.body);
+                status.should.equals(404);
+                message.should.be.a("string").that.equals("Meal does not exist");
                 done();
             });
     });
-    // it("TC-302-5 Meal has been updated successfully", (done) => {
-    //     chai.request(server)
-    //         .put("/api/meal/1")
-    //         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
-    //         .send({
-    //             name: "Spaghetti Bolognese",
-    //             description: "De pastaklassieker bij uitstek.",
-    //             isActive: true,
-    //             isVega: true,
-    //             isVegan: true,
-    //             isToTakeHome: true,
-    //             imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-    //             maxAmountOfParticipants: 6,
-    //             price: 6.75,
-    //         })
-    //         .end((req, res) => {
-    //             res.should.be.an("object");
-    //             let { status, result } = res.body;
-    //             status.should.equals(201);
-    //             result.should.be.an("object");
-    //             result.should.have.property("id");
-    //             result.should.have.property("isActive");
-    //             result.should.have.property("isVega");
-    //             result.should.have.property("isVegan");
-    //             result.should.have.property("isToTakeHome");
-    //             result.should.have.property("dateTime");
-    //             result.should.have.property("maxAmountOfParticipants");
-    //             result.should.have.property("price");
-    //             result.should.have.property("imageUrl");
-    //             result.should.have.property("cookId");
-    //             result.should.have.property("createDate");
-    //             result.should.have.property("updateDate");
-    //             result.should.have.property("name");
-    //             result.should.have.property("description");
-    //             result.should.have.property("allergenes");
-    //             done();
-    //         });
-    // });
+    it("TC-302-5 Meal has been updated successfully", (done) => {
+        chai.request(server)
+            .put("/api/meal/1")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+            .send({
+                name: "Spaghetti Bolognese",
+                description: "De pastaklassieker bij uitstek.",
+                isActive: true,
+                isVega: true,
+                isVegan: true,
+                isToTakeHome: true,
+                imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
+                maxAmountOfParticipants: 6,
+                price: 6.75,
+            })
+            .end((req, res) => {
+                res.should.be.an("object");
+                let { status, result } = res.body;
+                status.should.equals(201);
+                result.should.be.an("object");
+                result.should.have.property("id");
+                result.should.have.property("isActive");
+                result.should.have.property("isVega");
+                result.should.have.property("isVegan");
+                result.should.have.property("isToTakeHome");
+                result.should.have.property("dateTime");
+                result.should.have.property("maxAmountOfParticipants");
+                result.should.have.property("price");
+                result.should.have.property("imageUrl");
+                result.should.have.property("cookId");
+                result.should.have.property("createDate");
+                result.should.have.property("updateDate");
+                result.should.have.property("name");
+                result.should.have.property("description");
+                result.should.have.property("allergenes");
+                done();
+            });
+    });
 });
 
 // // UC-303 Get list of meals

@@ -9,8 +9,7 @@ module.exports = {
         dbconnection.getConnection((err, connection) => {
             if (err) {
                 res.status(500).json({
-                    error: err.toString(),
-                    datetime: new Date().toISOString(),
+                    message: err.toString(),
                 });
             }
             if (connection) {
@@ -19,8 +18,7 @@ module.exports = {
                     connection.release();
                     if (err) {
                         res.status(500).json({
-                            error: err.toString(),
-                            datetime: new Date().toISOString(),
+                            message: err.toString(),
                         });
                     }
                     if (rows) {
@@ -43,7 +41,6 @@ module.exports = {
                             res.status(404).json({
                                 status: 404,
                                 message: "User not found or password invalid",
-                                datetime: new Date().toISOString(),
                             });
                         }
                     }
@@ -79,7 +76,6 @@ module.exports = {
             res.status(401).json({
                 status: 401,
                 message: "Authorization header missing!",
-                datetime: new Date().toISOString(),
             });
         } else {
             // Strip the word 'Bearer ' from the headervalue
@@ -90,7 +86,6 @@ module.exports = {
                     res.status(401).json({
                         status: 401,
                         message: "Invalid token",
-                        datetime: new Date().toISOString(),
                     });
                 }
                 if (payload) {

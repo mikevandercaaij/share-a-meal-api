@@ -15,7 +15,7 @@ const DELETE_USER = "DELETE FROM user WHERE id = ?";
 
 // UC-101 Login
 describe("UC-101 Login - POST /api/user", () => {
-    it("TC-201-1 Required input is missing", (done) => {
+    it("TC-101-1 Required input is missing", (done) => {
         chai.request(server)
             .post("/api/auth/login")
             .send({
@@ -30,7 +30,7 @@ describe("UC-101 Login - POST /api/user", () => {
                 done();
             });
     });
-    it("TC-201-2 Invalid Email Address", (done) => {
+    it("TC-101-2 Invalid Email Address", (done) => {
         chai.request(server)
             .post("/api/auth/login")
             .send({
@@ -45,7 +45,7 @@ describe("UC-101 Login - POST /api/user", () => {
                 done();
             });
     });
-    it("TC-201-3 Invalid Password", (done) => {
+    it("TC-101-3 Invalid Password", (done) => {
         chai.request(server)
             .post("/api/auth/login")
             .send({
@@ -60,7 +60,7 @@ describe("UC-101 Login - POST /api/user", () => {
                 done();
             });
     });
-    it("TC-201-4 User doesn't exist", (done) => {
+    it("TC-101-4 User doesn't exist", (done) => {
         chai.request(server)
             .post("/api/auth/login")
             .send({
@@ -72,7 +72,6 @@ describe("UC-101 Login - POST /api/user", () => {
                 const { status, message } = res.body;
                 status.should.equals(404);
                 message.should.be.a("string").that.equals("User not found or password invalid");
-                res.body.should.have.property("datetime");
 
                 done();
             });
@@ -89,7 +88,7 @@ describe("UC-101 Login - POST /api/user", () => {
             });
         });
     });
-    it("TC-201-5 User succesfully logged in", (done) => {
+    it("TC-101-5 User succesfully logged in", (done) => {
         chai.request(server)
             .post("/api/auth/login")
             .send({

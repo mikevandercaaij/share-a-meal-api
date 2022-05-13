@@ -112,8 +112,9 @@ describe("UC-201 Register as new user - POST /api/user", () => {
             })
             .end((req, res) => {
                 res.should.be.an("object");
-                let { status } = res.body;
+                let { status, message } = res.body;
                 status.should.equals(409);
+                message.should.be.a("string").that.equals("User with the email test@server.nl already exists.");
                 done();
             });
     });
@@ -265,7 +266,6 @@ describe("UC-203 Get users profile - GET /api/user/profile", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
@@ -315,7 +315,6 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
@@ -447,7 +446,6 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
@@ -520,7 +518,6 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
                 let { status, message } = res.body;
                 status.should.equals(401);
                 message.should.be.a("string").that.equals("Invalid token");
-                res.body.should.have.property("datetime");
                 done();
             });
     });
