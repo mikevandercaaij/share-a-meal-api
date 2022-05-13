@@ -307,16 +307,50 @@ exports.updateUser = (req, res, next) => {
                             ...newUser,
                         };
 
-                        const { firstName, lastName, emailAdress, password, street, city } = user;
+                        const { firstName, lastName, emailAdress, password, phoneNumber, street, city } = user;
+                        let updateArray = [];
+                        let queryString = "UPDATE user SET";
 
-                        // console.log(Object.keys(user).join("= ?, "));
+                        if (firstName) {
+                            updateArray.push(firstName);
+                            queryString += " firstName = ?,";
+                        }
 
-                        // const updateArray = []
+                        if (lastName) {
+                            updateArray.push(lastName);
+                            queryString += " lastName = ?,";
+                        }
 
-                        // let updateQuery = "UPDATE user SET " + Object.keys(user).join("= ?, ") +  "WHERE ID = ?"
+                        if (emailAdress) {
+                            updateArray.push(emailAdress);
+                            queryString += " emailAdress = ?,";
+                        }
+
+                        if (password) {
+                            updateArray.push(password);
+                            queryString += " password = ?,";
+                        }
+
+                        if (phoneNumber) {
+                            updateArray.push(phoneNumber);
+                            queryString += " phoneNumber = ?,";
+                        }
+
+                        if (street) {
+                            updateArray.push(street);
+                            queryString += " street = ?,";
+                        }
+
+                        if (city) {
+                            updateArray.push(city);
+                            queryString += " city = ?,";
+                        }
+
+                        updateArray.push(id);
+                        queryString = queryString.slice(0, -1) + " WHERE id = ?";
 
                         //update user
-                        connection.query("UPDATE user SET firstName = ?, lastName = ?, emailAdress = ?, password = ?, street = ?, city = ? WHERE id = ?", [firstName, lastName, emailAdress, password, street, city, id], (err, results, fields) => {
+                        connection.query(queryString, updateArray, (err, results, fields) => {
                             //throw error if something went wrong
                             if (err) throw err;
 
@@ -366,37 +400,49 @@ exports.deleteUser = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        if (req.userId === id) {
-            connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
-                //throw error if something went wrong
-                if (err) throw err;
+        connection.query("SELECT COUNT(id) as count FROM user WHERE id = ?", id, (err, results, fields) => {
+            if (err) throw err;
 
-                //close connection
-                connection.release();
+            if (!results[0].count) {
+                //if the user isn't found return a fitting error response
+                return next({
+                    status: 400,
+                    message: `User does not exist`,
+                });
+            } else {
+                if (req.userId === id) {
+                    connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
 
-                //if a row has been deleted
-                if (results.affectedRows === 1) {
-                    //send successful status
-                    res.status(200).json({
-                        status: 200,
-                        message: "User has been deleted successfully.",
+                        //close connection
+                        connection.release();
+
+                        //if a row has been deleted
+                        if (results.affectedRows === 1) {
+                            //send successful status
+                            res.status(200).json({
+                                status: 200,
+                                message: "User has been deleted successfully.",
+                            });
+
+                            //end response process
+                            res.end();
+                        } else {
+                            //if no rows have been affected, return fitting error (very unlikely)
+                            return next({
+                                code: 409,
+                                message: "No user has been deleted",
+                            });
+                        }
                     });
-
-                    //end response process
-                    res.end();
                 } else {
-                    //if the user isn't found return a fitting error response
-                    return next({
-                        status: 400,
-                        message: `User does not exist`,
+                    res.status(403).json({
+                        code: 403,
+                        message: "You can't delete an account that isn't yours",
                     });
                 }
-            });
-        } else {
-            res.status(403).json({
-                code: 403,
-                message: "You can't delete an account that isn't yours",
-            });
-        }
+            }
+        });
     });
 };
