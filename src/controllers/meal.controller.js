@@ -218,7 +218,7 @@ exports.getMealByID = (req, res, next) => {
                 //if the meal isn't found return a fitting error response
                 return next({
                     status: 404,
-                    message: `Meal with an id of ${id} doesn't exist`,
+                    message: `Meal does not exist`,
                 });
             }
         });
@@ -240,29 +240,43 @@ exports.deleteMeal = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        connection.query("DELETE FROM meal WHERE id = ?", id, (err, results, fields) => {
+        connection.query("SELECT COUNT(id) as count FROM meal WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
-            //close connection
-            connection.release();
-
-            //if a row has been deleted
-            if (results.affectedRows === 1) {
-                //send successful status
-                res.status(201).json({
-                    status: 201,
-                    message: "Meal has been deleted successfully.",
-                });
-
-                //end response process
-                res.end();
-            } else {
+            if (!results[0].count) {
                 //if the meal isn't found return a fitting error response
                 return next({
                     status: 404,
-                    message: `Can't delete meal with an id of ${id} because it doesn't exist`,
+                    message: `Meal does not exist`,
                 });
+            } else {
+                if (id !== req.userId) {
+                    res.status(403).json({
+                        status: 403,
+                        message: "You are not the owner of this meal",
+                    });
+                } else {
+                    connection.query("DELETE FROM meal WHERE id = ?", id, (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
+
+                        //close connection
+                        connection.release();
+
+                        //if a row has been deleted
+                        if (results.affectedRows === 1) {
+                            //send successful status
+                            res.status(201).json({
+                                status: 200,
+                                message: "Meal has been deleted successfully.",
+                            });
+
+                            //end response process
+                            res.end();
+                        }
+                    });
+                }
             }
         });
     });
@@ -284,10 +298,17 @@ const formatMeal = (results) => {
                 boolObj[key] = false;
             }
         });
+
         result.isActive = boolObj.isActive;
         result.isVega = boolObj.isVega;
         result.isVegan = boolObj.isVegan;
         result.isToTakeHome = boolObj.isToTakeHome;
+
+        result.allergenes = result.allergenes.split(",");
+
+        if (result.allergenes.length === 0) {
+            result.allergenes = [];
+        }
     });
 
     if (results.length === 1) {

@@ -390,7 +390,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
                 done();
             });
     });
-    it("TC-205-2 Invalid postal code");
+    // it("TC-205-2 Invalid postal code");
     it("TC-205-3 Invalid phone number", (done) => {
         chai.request(server)
             .put("/api/user/1")
@@ -489,7 +489,6 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
     before((done) => {
         dbconnection.getConnection((err, connection) => {
             if (err) throw err;
-
             connection.query(CLEAR_DB + INSERT_USER + INSERT_SECOND_USER, (err, results, fields) => {
                 if (err) throw err;
                 connection.release();
@@ -525,7 +524,6 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
         chai.request(server)
             .delete("/api/user/2")
             .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
-
             .end((req, res) => {
                 res.body.should.be.an("object");
                 let { status, message } = res.body;
@@ -536,8 +534,8 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
     });
     it("TC-206-4 User has been deleted successfully", (done) => {
         chai.request(server)
-            .delete("/api/user/1")
-            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+            .delete("/api/user/2")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
             .end((req, res) => {
                 res.body.should.be.an("object");
                 let { status, message } = res.body;
