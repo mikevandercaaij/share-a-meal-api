@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const mealController = require("./../controllers/meal.controller");
+const authController = require("./../controllers/auth.controller");
 
 //add router to exports
 module.exports = router;
@@ -11,7 +12,7 @@ router
     .route("/api/meal")
 
     //UC-301 Create a meal
-    .post(mealController.validateMeal, mealController.addMeal)
+    .post(authController.validateToken, mealController.validateMeal, mealController.addMeal)
 
     //UC-303 Get list of all meals
     .get(mealController.getAllMeals);
@@ -21,10 +22,10 @@ router
     .route("/api/meal/:id")
 
     //UC-302 Update a meal
-    .put(mealController.validateMeal, mealController.updateMeal)
+    .put(authController.validateToken, mealController.validateMeal, mealController.updateMeal)
 
     //UC-304 Get details of a meal
     .get(mealController.getMealByID)
 
     //UC-305 Delete a meal
-    .delete(mealController.deleteMeal);
+    .delete(authController.validateToken, mealController.deleteMeal);

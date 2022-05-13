@@ -52,7 +52,7 @@ exports.addMeal = (req, res, next) => {
         }
 
         //insert new meal into meals
-        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price], (err, results, fields) => {
+        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, cookId , allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, req.userId, allergenes, maxAmountOfParticipants, price], (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -70,7 +70,7 @@ exports.addMeal = (req, res, next) => {
                 //return successful status + result
                 res.status(201).json({
                     status: 201,
-                    result: results,
+                    result: results[0],
                 });
 
                 //end response process
@@ -95,50 +95,57 @@ exports.updateMeal = (req, res, next) => {
             return next();
         }
 
-        //set meal object with given request body
-        let meal = req.body;
-
-        connection.query("SELECT COUNT(id) as count FROM meal WHERE id = ?", id, (err, results, fields) => {
+        connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
-            //store query output either 0 or 1
-            const mealFound = results[0].count;
+            //store the meal in a variable
+            const cookId = results[0].cookId;
 
             //if meal exists
-            if (mealFound) {
+            if (results[0]) {
                 //put request body in a variable
                 const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
                 let { allergenes } = req.body;
 
-                if (typeof allergenes === "undefined") {
-                    allergenes = "";
-                } else {
-                    allergenes = allergenes.join();
-                }
+                //log ids
+                console.log(`req.userId: ${req.userId} - cookId: ${cookId}`);
 
-                //update meal
-                connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
-                    //throw error if something went wrong
-                    if (err) throw err;
-
-                    //close connection
-                    connection.release();
-
-                    //return successful status + updated meal
-                    res.status(201).json({
-                        status: 201,
-                        result: meal,
+                if (cookId !== req.userId) {
+                    res.status(403).json({
+                        status: 403,
+                        message: "You are not the owner of this meal",
                     });
+                } else {
+                    if (typeof allergenes === "undefined") {
+                        allergenes = "";
+                    } else {
+                        allergenes = allergenes.join();
+                    }
 
-                    //end response process
-                    res.end();
-                });
+                    //update meal
+                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
+
+                        //close connection
+                        connection.release();
+
+                        //return successful status + updated meal
+                        res.status(201).json({
+                            status: 201,
+                            result: meal,
+                        });
+
+                        //end response process
+                        res.end();
+                    });
+                }
             } else {
                 //if the meal isn't found return a fitting error response
                 return next({
                     status: 404,
-                    message: `Can't update meal with an id of ${id} because it doesn't exist`,
+                    message: `Meal does not exist`,
                 });
             }
         });

@@ -4,6 +4,7 @@ const app = express();
 const userRoutes = require(__dirname + "/src/routes/user.routes");
 const mealRoutes = require(__dirname + "/src/routes/meal.routes");
 const authRoutes = require(__dirname + "/src/routes/auth.routes");
+const homeRoutes = require(__dirname + "/src/routes/home.routes");
 require("dotenv").config();
 
 //set port to either predefined server port or 3000 that can be used for local testing
@@ -20,6 +21,9 @@ app.use(userRoutes);
 
 //Meal routes
 app.use(mealRoutes);
+
+//Home routes
+app.use(homeRoutes);
 
 //when there is an invalid request
 app.all("*", (req, res) => {

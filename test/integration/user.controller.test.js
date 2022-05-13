@@ -2,11 +2,10 @@ process.env.DB_DATABASE = process.env.DB_DATABASE || "share-a-meal-testdb";
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const crypto = require("crypto");
 const server = require("./../../index");
 const dbconnection = require("./../../database/dbconnection");
 const jwt = require("jsonwebtoken");
-const { jwtSecretKey, logger } = require("./../../src/config/config");
+const { jwtSecretKey } = require("./../../src/config/config");
 
 chai.should();
 chai.use(chaiHttp);
@@ -17,7 +16,6 @@ const CLEAR_USERS_TABLE = "DELETE IGNORE FROM `user`;";
 const CLEAR_DB = CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE;
 const INSERT_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(1, "first", "last", "test@server.nl", "secret", "street", "city");';
 const INSERT_SECOND_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(2, "first2", "last2", "test2@server.nl", "secret", "street2", "city2");';
-const INSERT_MEALS = "INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `dateTime`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES" + "(1, 'Meal A', 'description', 'image url', 5, 6.50, 1)," + "(2, 'Meal B', 'description', 'image url', 5, 6.50, 1);";
 
 // UC-201 Register as new user
 describe("UC-201 Register as new user - POST /api/user", () => {
@@ -310,7 +308,7 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
     });
     it("TC-204-1 Invalid token", (done) => {
         chai.request(server)
-            .get("/api/user/profile")
+            .get("/api/user/1")
             .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, "test"))
             .end((req, res) => {
                 res.body.should.be.an("object");
@@ -442,7 +440,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
     });
     it("TC-204-5 Not logged in", (done) => {
         chai.request(server)
-            .get("/api/user/profile")
+            .get("/api/user/1")
             .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, "test"))
             .end((req, res) => {
                 res.body.should.be.an("object");
@@ -456,7 +454,7 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
     it("TC-205-6 User has been modified successfully", (done) => {
         chai.request(server)
             .put("/api/user/1")
-            .set("authorization", "Bearer " + jwt.sign({ id: 1 }, jwtSecretKey))
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
             .send({
                 firstName: "Klaas",
                 lastName: "Tilburg",
@@ -535,7 +533,7 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
                 res.body.should.be.an("object");
                 let { status, message } = res.body;
                 status.should.equals(403);
-                message.should.be.a("string").that.equals("You can't delete an account that isn't yours");
+                message.should.be.a("string").that.equals("You can't delete this account because it isn't yours");
                 done();
             });
     });

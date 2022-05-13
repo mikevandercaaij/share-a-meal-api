@@ -85,7 +85,7 @@ exports.addUser = (req, res, next) => {
         if (err) throw err;
 
         //put request body in a variable
-        const { firstName, lastName, emailAdress, password, street, city } = req.body;
+        const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = req.body;
 
         connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
             //throw error if something went wrong
@@ -100,8 +100,19 @@ exports.addUser = (req, res, next) => {
             }
 
             if (addUser) {
+                let insertArray = [firstName, lastName, emailAdress, password, street, city];
+
+                let queryString = "INSERT INTO user (firstName, lastName, emailAdress, password, street, city";
+
+                if (phoneNumber) {
+                    queryString += ", phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    insertArray.push(phoneNumber);
+                } else {
+                    queryString += ") VALUES (?, ?, ?, ?, ?, ?)";
+                }
+
                 //insert new user into users
-                connection.query("INSERT INTO user (firstName, lastName, emailAdress, password, street, city) VALUES (?, ?, ?, ?, ?, ?)", [firstName, lastName, emailAdress, password, street, city], (err, results, fields) => {
+                connection.query(queryString, insertArray, (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
@@ -245,6 +256,10 @@ exports.getUserByID = (req, res, next) => {
 
             //show data if user exists
             if (results.length > 0) {
+                if (id !== req.userId) {
+                    delete results[0].password;
+                }
+
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
@@ -296,6 +311,13 @@ exports.updateUser = (req, res, next) => {
                 connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ? AND id <> ?", [user.emailAdress, id], (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
+
+                    if (req.userId !== id) {
+                        res.status(403).json({
+                            status: 403,
+                            message: "You can't update this account because it isn't yours",
+                        });
+                    }
 
                     //store if email is valid or not, can either be 0 or 1
                     const unValidEmail = results[0].count;
@@ -440,7 +462,7 @@ exports.deleteUser = (req, res, next) => {
                 } else {
                     res.status(403).json({
                         status: 403,
-                        message: "You can't delete an account that isn't yours",
+                        message: "You can't delete this account because it isn't yours",
                     });
                 }
             }

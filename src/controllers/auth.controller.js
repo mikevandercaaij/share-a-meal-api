@@ -94,8 +94,6 @@ module.exports = {
                     });
                 }
                 if (payload) {
-                    // User heeft toegang. Voeg UserId uit payload toe aan
-                    // request, voor ieder volgend endpoint.
                     req.userId = payload.userId;
                     next();
                 }
