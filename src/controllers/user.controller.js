@@ -57,11 +57,15 @@ exports.validateUserUpdate = (req, res, next) => {
     const user = req.body;
 
     //localize all req body values
-    const { emailAdress } = user;
+    const { emailAdress, phoneNumber } = user;
 
     //check if all values are of a certain type
     try {
         assert(typeof emailAdress === "string", "Email Address must be a string.");
+
+        if (phoneNumber) {
+            assert(typeof phoneNumber === "string", "phoneNumber must be a string.");
+        }
 
         return next();
     } catch (err) {
@@ -142,8 +146,6 @@ exports.getAllUsers = (req, res, next) => {
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
         if (err) throw err;
-
-        console.log(req.userId);
 
         let { isActive, firstName, limit } = req.query;
 
@@ -255,7 +257,7 @@ exports.getUserByID = (req, res, next) => {
                 //if the user isn't found return a fitting error response
                 return next({
                     status: 404,
-                    message: `User with an id of ${id} doesn't exist`,
+                    message: `User does not exist`,
                 });
             }
         });
@@ -377,7 +379,7 @@ exports.updateUser = (req, res, next) => {
                 //if the user isn't found return a fitting error response
                 return next({
                     status: 400,
-                    message: `Can't update user with an id of ${id} because it doesn't exist`,
+                    message: "User does not exist",
                 });
             }
         });

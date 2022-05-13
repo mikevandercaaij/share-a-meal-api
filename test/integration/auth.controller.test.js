@@ -85,10 +85,9 @@ describe("UC-101 Login - POST /api/user", () => {
                 if (err) throw err;
                 connection.release();
                 succesfullAddId = results.insertId;
+                done();
             });
         });
-
-        done();
     });
     it("TC-201-5 User succesfully logged in", (done) => {
         chai.request(server)
@@ -100,7 +99,6 @@ describe("UC-101 Login - POST /api/user", () => {
             .end((req, res) => {
                 res.should.be.an("object");
                 const { status, result } = res.body;
-
                 status.should.equals(200);
                 result.should.be.an("object");
                 result.should.have.property("id");
@@ -119,8 +117,8 @@ describe("UC-101 Login - POST /api/user", () => {
             connection.query(DELETE_USER, succesfullAddId, (err, results, fields) => {
                 if (err) throw err;
                 connection.release();
+                done();
             });
         });
-        done();
     });
 });
