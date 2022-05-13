@@ -1,10 +1,9 @@
 const assert = require("assert");
-const dbconnection = require("../../database/dbconnection");
-const MailChecker = require("mailchecker");
-const { passwordStrength } = require("check-password-strength");
-const { phone } = require("phone");
-const { query } = require("../../database/dbconnection");
-const { nextTick } = require("process");
+const dbconnection = require("./../../database/dbconnection");
+// const MailChecker = require("mailchecker");
+// const { passwordStrength } = require("check-password-strength");
+// const { phone } = require("phone");
+const { query } = require("./../../database/dbconnection");
 
 //validate user when it's being created
 exports.validateUserCreate = (req, res, next) => {
@@ -213,7 +212,7 @@ exports.getUserProfile = (req, res) => {
             connection.release();
 
             res.status(200).json({
-                code: 200,
+                status: 200,
                 result: results[0],
             });
 
@@ -431,14 +430,14 @@ exports.deleteUser = (req, res, next) => {
                         } else {
                             //if no rows have been affected, return fitting error (very unlikely)
                             return next({
-                                code: 409,
+                                status: 409,
                                 message: "No user has been deleted",
                             });
                         }
                     });
                 } else {
                     res.status(403).json({
-                        code: 403,
+                        status: 403,
                         message: "You can't delete an account that isn't yours",
                     });
                 }

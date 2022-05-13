@@ -1,5 +1,5 @@
 const assert = require("assert");
-const dbconnection = require("../../database/dbconnection");
+const dbconnection = require("./../../database/dbconnection");
 
 //validate meal
 exports.validateMeal = (req, res, next) => {

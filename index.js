@@ -12,14 +12,14 @@ const port = process.env.PORT;
 //enable app to parse json
 app.use(express.json());
 
+//Auth routes
+app.use(authRoutes);
+
 //User routes
 app.use(userRoutes);
 
 //Meal routes
 app.use(mealRoutes);
-
-//Auth routes
-app.use(authRoutes);
 
 //when there is an invalid request
 app.all("*", (req, res) => {

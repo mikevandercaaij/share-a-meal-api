@@ -2,12 +2,11 @@ process.env.DB_DATABASE = process.env.DB_DATABASE || "share-a-meal-testdb";
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const path = require("path");
 const crypto = require("crypto");
-const server = require(path.join(__dirname, "../../") + "/index");
-const dbconnection = require("../../src/database/dbconnection");
+const server = require("./../../index");
+const dbconnection = require("./../../database/dbconnection");
 const jwt = require("jsonwebtoken");
-const { jwtSecretKey, logger } = require("../../src/config/config");
+const { jwtSecretKey, logger } = require("./../../src/config/config");
 
 chai.should();
 chai.use(chaiHttp);
@@ -117,6 +116,7 @@ describe("UC-201 Register as new user - POST /api/user", () => {
     it("TC-201-4 User already exists", (done) => {
         chai.request(server)
             .post("/api/user")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
             .send({
                 firstName: "Klaas",
                 lastName: "Tilburg",
@@ -162,11 +162,6 @@ describe("UC-201 Register as new user - POST /api/user", () => {
     });
 });
 
-// .set(
-//     'authorization',
-//     'Bearer ' + jwt.sign({ id: 1 }, jwtSecretKey)
-// )
-
 // UC-202 Overview of users
 // describe("UC-202 Overview of users - GET /api/user", () => {
 //     it("TC-202-1 Show zero users");
@@ -189,6 +184,8 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
     it("TC-204-2 User ID doesn't exists", (done) => {
         chai.request(server)
             .get("/api/user/0")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+
             .end((req, res) => {
                 let { status } = res.body;
                 status.should.equals(404);
@@ -198,6 +195,8 @@ describe("UC-204 Get user details - GET /api/user/:id", () => {
     it("TC-204-3 User ID exists", (done) => {
         chai.request(server)
             .get("/api/user/" + deletableUserId)
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+
             .end((req, res) => {
                 let { status } = res.body;
                 status.should.equals(200);
@@ -211,6 +210,8 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
     it("TC-205-1 Required field missing", (done) => {
         chai.request(server)
             .put("/api/user/1")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+
             .send({
                 firstName: "Marie",
                 lastName: "Tilburg",
@@ -254,6 +255,8 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
     it("TC-205-4 User doesn't exists", (done) => {
         chai.request(server)
             .put("/api/user/0")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+
             .send({
                 firstName: "Klaas",
                 lastName: "Tilburg",
@@ -275,6 +278,8 @@ describe("UC-205 Modify user - PUT /api/user/:id", () => {
     it("TC-205-6 User has been modified successfully", (done) => {
         chai.request(server)
             .put("/api/user/" + deletableUserId)
+            .set("authorization", "Bearer " + jwt.sign({ id: 1 }, jwtSecretKey))
+
             .send({
                 firstName: "Klaas",
                 lastName: "Tilburg",
@@ -299,6 +304,8 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
     it("TC-206-1 User doesn't exist", (done) => {
         chai.request(server)
             .delete("/api/user/0")
+            .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+
             .end((req, res) => {
                 let { status } = res.body;
                 status.should.equals(400);
@@ -310,6 +317,8 @@ describe("UC-206 Delete user - DELETE /api/user/:id", () => {
     it("TC-206-4 User has been deleted successfully", (done) => {
         chai.request(server)
             .delete("/api/user/" + deletableUserId)
+            .set("authorization", "Bearer " + jwt.sign({ userId: deletableUserId }, jwtSecretKey))
+
             .end((req, res) => {
                 let { status } = res.body;
 

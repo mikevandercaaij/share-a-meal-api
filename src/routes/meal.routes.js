@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
-const mealController = require(path.join(__dirname, "../") + "controllers/meal.controller");
+const mealController = require("./../controllers/meal.controller");
 
 //add router to exports
 module.exports = router;
