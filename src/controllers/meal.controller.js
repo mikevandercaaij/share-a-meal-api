@@ -67,14 +67,28 @@ exports.addMeal = (req, res, next) => {
                 //close connection
                 connection.release();
 
-                //return successful status + result
-                res.status(201).json({
-                    status: 201,
-                    result: results[0],
-                });
+                const cookId = results[0].cookId;
+                delete results[0].cookId;
 
-                //end response process
-                res.end();
+                const returnMeal = async () => {
+                    const cook = await addCook(cookId);
+                    // const participants = await addParticipants(cookId);
+                    const meal = {
+                        ...results[0],
+                        cook,
+                        // participants
+                    };
+
+                    //return successful status + result
+                    res.status(201).json({
+                        status: 201,
+                        result: meal,
+                    });
+
+                    //end response process
+                    res.end();
+                };
+                returnMeal();
             });
         });
     });
@@ -105,9 +119,7 @@ exports.updateMeal = (req, res, next) => {
 
             //if meal exists
             if (results.length === 1) {
-                //put request body in a variable
-                const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
-                let { allergenes } = req.body;
+                let { allergenes } = newMeal;
 
                 //store the meal in a variable
                 const cookId = results[0].cookId;
@@ -118,33 +130,46 @@ exports.updateMeal = (req, res, next) => {
                         message: "You are not the owner of this meal",
                     });
                 } else {
-                    if (typeof allergenes === "undefined") {
-                        allergenes = "";
-                    } else {
-                        allergenes = allergenes.join();
+                    if (!typeof allergenes === "undefined") {
+                        allergenes = allergenes.join(",");
                     }
+
+                    let meal = {
+                        ...oldMeal,
+                        ...newMeal,
+                    };
+
+                    const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = meal;
 
                     //update meal
                     connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
-                        //close connection
-                        connection.release();
+                        connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
+                            //close connection
+                            connection.release();
 
-                        const meal = {
-                            ...oldMeal,
-                            ...newMeal,
-                        };
+                            const returnMeal = async () => {
+                                const cook = await addCook(cookId);
+                                // const participants = await addParticipants(cookId);
+                                const meal = {
+                                    ...results[0],
+                                    cook,
+                                    // participants
+                                };
 
-                        //return successful status + updated meal
-                        res.status(201).json({
-                            status: 201,
-                            result: formatMeal([meal]),
+                                //return successful status + result
+                                res.status(201).json({
+                                    status: 201,
+                                    result: formatMeal([meal]),
+                                });
+
+                                //end response process
+                                res.end();
+                            };
+                            returnMeal();
                         });
-
-                        //end response process
-                        res.end();
                     });
                 }
             } else {
@@ -304,8 +329,6 @@ const formatMeal = (results) => {
         result.isVegan = boolObj.isVegan;
         result.isToTakeHome = boolObj.isToTakeHome;
 
-        result.allergenes = result.allergenes.split(",");
-
         if (result.allergenes.length === 0) {
             result.allergenes = [];
         }
@@ -316,3 +339,18 @@ const formatMeal = (results) => {
     }
     return results;
 };
+
+const addCook = async (cookId) => {
+    try {
+        const retrieveCook = await dbconnection.query(`SELECT * FROM user WHERE id = ${cookId}`);
+        return retrieveCook[0];
+    } catch (err) {
+        throw err;
+    }
+};
+
+// const addParticipants = async (cookId) => {
+// const retrieveCook = await dbconnection.query(`SELECT * FROM user where id IN ());
+
+//     // const retrieveCook = await dbconnection.query(`SELECT * FROM user where id IN ());
+// }

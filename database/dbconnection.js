@@ -1,4 +1,5 @@
 const mysql = require("mysql2");
+const util = require("util");
 require("dotenv").config();
 
 const pool = mysql.createPool({
@@ -12,5 +13,8 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
 });
+
+// Promisify for Node.js async/await.
+pool.query = util.promisify(pool.query);
 
 module.exports = pool;
