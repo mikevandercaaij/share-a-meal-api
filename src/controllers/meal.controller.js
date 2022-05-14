@@ -150,13 +150,16 @@ exports.updateMeal = (req, res, next) => {
                             //close connection
                             connection.release();
 
+                            const cookId = results[0].cookId;
+                            delete results[0].cookId;
+
                             const returnMeal = async () => {
                                 const cook = await addCook(cookId);
-                                // const participants = await addParticipants(cookId);
+                                const participants = await addParticipants(cookId);
                                 const meal = {
                                     ...results[0],
                                     cook,
-                                    // participants
+                                    // participants,
                                 };
 
                                 //return successful status + result
@@ -231,14 +234,28 @@ exports.getMealByID = (req, res, next) => {
 
             //show data if meal exists
             if (results.length > 0) {
-                //return successful status + result
-                res.status(200).json({
-                    status: 200,
-                    result: formatMeal(results),
-                });
+                const cookId = results[0].cookId;
+                delete results[0].cookId;
 
-                //end response process
-                res.end();
+                const returnMeal = async () => {
+                    const cook = await addCook(cookId);
+                    const participants = await addParticipants(cookId);
+                    const meal = {
+                        ...results[0],
+                        cook,
+                        participants,
+                    };
+
+                    //return successful status + result
+                    res.status(201).json({
+                        status: 201,
+                        result: formatMeal([meal]),
+                    });
+
+                    //end response process
+                    res.end();
+                };
+                returnMeal();
             } else {
                 //if the meal isn't found return a fitting error response
                 return next({
@@ -349,8 +366,19 @@ const addCook = async (cookId) => {
     }
 };
 
-// const addParticipants = async (cookId) => {
-// const retrieveCook = await dbconnection.query(`SELECT * FROM user where id IN ());
+const addParticipants = async (cookId) => {
+    try {
+        const retrievedParticipants = await dbconnection.query(`SELECT DISTINCT userId FROM \`meal_participants_user\` WHERE mealId = ${cookId}`);
 
-//     // const retrieveCook = await dbconnection.query(`SELECT * FROM user where id IN ());
-// }
+        let participants = [];
+
+        for (const participant of retrievedParticipants) {
+            let participantDetails = await dbconnection.query(`SELECT * FROM user WHERE id = ${participant.userId}`);
+            participants.push(participantDetails[0]);
+        }
+
+        return participants;
+    } catch (err) {
+        throw err;
+    }
+};
