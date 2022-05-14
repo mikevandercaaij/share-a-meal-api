@@ -124,16 +124,10 @@ exports.addUser = (req, res, next) => {
                         //close connection
                         connection.release();
 
-                        if (results[0].isActive === 1) {
-                            results[0].isActive = true;
-                        } else {
-                            results[0].isActive = false;
-                        }
-
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
-                            result: results[0],
+                            result: exports.formatUser(results),
                         });
 
                         //end response process
@@ -204,7 +198,7 @@ exports.getAllUsers = (req, res, next) => {
             //send back all results
             res.status(200).json({
                 status: 200,
-                result: results,
+                result: exports.formatUser(results),
             });
 
             //end response process
@@ -226,7 +220,7 @@ exports.getUserProfile = (req, res) => {
 
             res.status(200).json({
                 status: 200,
-                result: results[0],
+                result: exports.formatUser(results),
             });
 
             //end response process
@@ -263,7 +257,7 @@ exports.getUserByID = (req, res, next) => {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
-                    result: results[0],
+                    result: exports.formatUser(results),
                 });
 
                 //end response process
@@ -383,7 +377,7 @@ exports.updateUser = (req, res, next) => {
                             //return successful status + updated user
                             res.status(200).json({
                                 status: 200,
-                                result: user,
+                                result: exports.formatUser([user]),
                             });
 
                             //end response process
@@ -468,4 +462,26 @@ exports.deleteUser = (req, res, next) => {
             }
         });
     });
+};
+exports.formatUser = (results) => {
+    results.forEach((result) => {
+        if (result.isActive === 1) {
+            result.isActive = true;
+        } else {
+            result.isActive = false;
+        }
+
+        if (results.roles === "") {
+            result.roles = [];
+        }
+
+        if (typeof result.roles === "string") {
+            result.roles = result.roles.split(",");
+        }
+    });
+
+    if (results.length === 1) {
+        return results[0];
+    }
+    return results;
 };

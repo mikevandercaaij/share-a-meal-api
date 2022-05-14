@@ -1,5 +1,6 @@
 const assert = require("assert");
 const dbconnection = require("./../../database/dbconnection");
+const { formatUser } = require("./user.controller");
 
 //validate meal
 exports.validateMeal = (req, res, next) => {
@@ -70,25 +71,24 @@ exports.addMeal = (req, res, next) => {
                 const cookId = results[0].cookId;
                 delete results[0].cookId;
 
-                const returnMeal = async () => {
-                    const cook = await addCook(cookId);
-                    // const participants = await addParticipants(cookId);
+                (async () => {
+                    const cook = await formatUser(await [addCook(cookId)]);
+                    const participants = await formatUser(await addParticipants(cookId));
                     const meal = {
                         ...results[0],
                         cook,
-                        // participants
+                        participants,
                     };
 
                     //return successful status + result
                     res.status(201).json({
                         status: 201,
-                        result: meal,
+                        result: formatMeal([meal]),
                     });
 
                     //end response process
                     res.end();
-                };
-                returnMeal();
+                })();
             });
         });
     });
@@ -119,8 +119,6 @@ exports.updateMeal = (req, res, next) => {
 
             //if meal exists
             if (results.length === 1) {
-                let { allergenes } = newMeal;
-
                 //store the meal in a variable
                 const cookId = results[0].cookId;
 
@@ -130,7 +128,9 @@ exports.updateMeal = (req, res, next) => {
                         message: "You are not the owner of this meal",
                     });
                 } else {
-                    if (!typeof allergenes === "undefined") {
+                    let { allergenes } = newMeal;
+
+                    if (typeof allergenes === "object") {
                         allergenes = allergenes.join(",");
                     }
 
@@ -153,13 +153,13 @@ exports.updateMeal = (req, res, next) => {
                             const cookId = results[0].cookId;
                             delete results[0].cookId;
 
-                            const returnMeal = async () => {
-                                const cook = await addCook(cookId);
-                                const participants = await addParticipants(cookId);
-                                const meal = {
+                            (async () => {
+                                const cook = await formatUser([await addCook(cookId)]);
+                                const participants = await formatUser(await addParticipants(cookId));
+                                let meal = {
                                     ...results[0],
                                     cook,
-                                    // participants,
+                                    participants,
                                 };
 
                                 //return successful status + result
@@ -170,8 +170,7 @@ exports.updateMeal = (req, res, next) => {
 
                                 //end response process
                                 res.end();
-                            };
-                            returnMeal();
+                            })();
                         });
                     });
                 }
@@ -201,14 +200,32 @@ exports.getAllMeals = (req, res) => {
             //close connection
             connection.release();
 
-            //send back all results
-            res.status(200).json({
-                status: 200,
-                result: formatMeal(results),
-            });
+            let allMeals = [];
 
-            //end response process
-            res.end();
+            (async () => {
+                for (const meal of results) {
+                    const cookId = meal.cookId;
+                    delete meal.cookId;
+
+                    const cook = await formatUser([await addCook(cookId)]);
+                    const participants = await formatUser(await addParticipants(cookId));
+                    const tempMeal = {
+                        ...meal,
+                        cook,
+                        participants,
+                    };
+
+                    allMeals.push(formatMeal([tempMeal]));
+                }
+
+                //return successful status + result
+                res.status(200).json({
+                    status: 200,
+                    result: allMeals,
+                });
+                //end response process
+                res.end();
+            })();
         });
     });
 };
@@ -237,9 +254,9 @@ exports.getMealByID = (req, res, next) => {
                 const cookId = results[0].cookId;
                 delete results[0].cookId;
 
-                const returnMeal = async () => {
-                    const cook = await addCook(cookId);
-                    const participants = await addParticipants(cookId);
+                (async () => {
+                    const cook = await formatUser([await addCook(cookId)]);
+                    const participants = await formatUser(await addParticipants(cookId));
                     const meal = {
                         ...results[0],
                         cook,
@@ -247,15 +264,14 @@ exports.getMealByID = (req, res, next) => {
                     };
 
                     //return successful status + result
-                    res.status(201).json({
-                        status: 201,
+                    res.status(200).json({
+                        status: 200,
                         result: formatMeal([meal]),
                     });
 
                     //end response process
                     res.end();
-                };
-                returnMeal();
+                })();
             } else {
                 //if the meal isn't found return a fitting error response
                 return next({
@@ -346,8 +362,12 @@ const formatMeal = (results) => {
         result.isVegan = boolObj.isVegan;
         result.isToTakeHome = boolObj.isToTakeHome;
 
-        if (result.allergenes.length === 0) {
+        if (result.allergenes === "") {
             result.allergenes = [];
+        }
+
+        if (typeof result.allergenes === "string") {
+            result.allergenes = result.allergenes.split(",");
         }
     });
 
