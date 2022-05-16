@@ -65,30 +65,59 @@ exports.addMeal = (req, res, next) => {
                 //throw error if something went wrong
                 if (err) throw err;
 
-                //close connection
-                connection.release();
-
                 const cookId = results[0].cookId;
                 delete results[0].cookId;
 
-                (async () => {
-                    const cook = await formatUser(await [addCook(cookId)]);
-                    const participants = await formatUser(await addParticipants(cookId));
-                    const meal = {
-                        ...results[0],
-                        cook,
-                        participants,
+                let meal = formatMeal(results);
+
+                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
+
+                    meal = {
+                        ...meal,
+                        cook: formatUser(results),
+                    };
+                });
+
+                dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
+
+                    let participantsAmount = results.length;
+
+                    let participants = [];
+
+                    const callback = () => {
+                        if (participantsAmount === participants.length) {
+                            connection.release();
+
+                            meal = {
+                                ...meal,
+                                participants,
+                            };
+
+                            //return successful status + result
+                            res.status(201).json({
+                                status: 201,
+                                result: meal,
+                            });
+
+                            res.end();
+                        }
                     };
 
-                    //return successful status + result
-                    res.status(201).json({
-                        status: 201,
-                        result: formatMeal([meal]),
-                    });
-
-                    //end response process
-                    res.end();
-                })();
+                    if (participantsAmount > 0) {
+                        results.forEach((participant) => {
+                            dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                participants.push(formatUser(results));
+                                callback();
+                            });
+                        });
+                    } else {
+                        callback();
+                    }
+                });
             });
         });
     });
@@ -153,24 +182,56 @@ exports.updateMeal = (req, res, next) => {
                             const cookId = results[0].cookId;
                             delete results[0].cookId;
 
-                            (async () => {
-                                const cook = await formatUser([await addCook(cookId)]);
-                                const participants = await formatUser(await addParticipants(cookId));
-                                let meal = {
-                                    ...results[0],
-                                    cook,
-                                    participants,
+                            let meal = formatMeal(results);
+
+                            dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                                //throw error if something went wrong
+                                if (err) throw err;
+
+                                meal = {
+                                    ...meal,
+                                    cook: formatUser(results),
+                                };
+                            });
+
+                            dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
+                                //throw error if something went wrong
+                                if (err) throw err;
+
+                                let participantsAmount = results.length;
+
+                                let participants = [];
+
+                                const callback = () => {
+                                    if (participantsAmount === participants.length) {
+                                        connection.release();
+
+                                        meal = {
+                                            ...meal,
+                                            participants,
+                                        };
+
+                                        //return successful status + result
+                                        res.status(201).json({
+                                            status: 201,
+                                            result: meal,
+                                        });
+
+                                        res.end();
+                                    }
                                 };
 
-                                //return successful status + result
-                                res.status(201).json({
-                                    status: 201,
-                                    result: formatMeal([meal]),
-                                });
-
-                                //end response process
-                                res.end();
-                            })();
+                                if (participantsAmount > 0) {
+                                    results.forEach((participant) => {
+                                        dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                            participants.push(formatUser(results));
+                                            callback();
+                                        });
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            });
                         });
                     });
                 }
@@ -197,35 +258,68 @@ exports.getAllMeals = (req, res) => {
             //throw error if something went wrong
             if (err) throw err;
 
-            //close connection
-            connection.release();
-
+            const amountOfMeals = results.length;
             let allMeals = [];
 
-            (async () => {
-                for (const meal of results) {
-                    const cookId = meal.cookId;
-                    delete meal.cookId;
+            results.forEach((currentMeal) => {
+                const cookId = currentMeal.cookId;
+                delete currentMeal.cookId;
 
-                    const cook = await formatUser([await addCook(cookId)]);
-                    const participants = await formatUser(await addParticipants(cookId));
-                    const tempMeal = {
+                let meal = formatMeal([currentMeal]);
+
+                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
+
+                    meal = {
                         ...meal,
-                        cook,
-                        participants,
+                        cook: formatUser(results),
                     };
 
-                    allMeals.push(formatMeal([tempMeal]));
-                }
+                    dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", currentMeal.id, (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
 
-                //return successful status + result
-                res.status(200).json({
-                    status: 200,
-                    result: allMeals,
+                        let participantsAmount = results.length;
+
+                        let participants = [];
+
+                        const callback = () => {
+                            if (participantsAmount === participants.length) {
+                                meal = {
+                                    ...meal,
+                                    participants,
+                                };
+                                allMeals.push(meal);
+
+                                if (amountOfMeals === allMeals.length) {
+                                    connection.close();
+                                    //return successful status + result
+                                    res.status(200).json({
+                                        status: 200,
+                                        result: allMeals.sort(function (a, b) {
+                                            return a.id - b.id;
+                                        }),
+                                    });
+                                    //end response process
+                                    res.end();
+                                }
+                            }
+                        };
+
+                        if (participantsAmount > 0) {
+                            results.forEach((participant) => {
+                                dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                    participants.push(formatUser(results));
+                                    callback();
+                                });
+                            });
+                        } else {
+                            callback();
+                        }
+                    });
                 });
-                //end response process
-                res.end();
-            })();
+            });
         });
     });
 };
@@ -254,24 +348,56 @@ exports.getMealByID = (req, res, next) => {
                 const cookId = results[0].cookId;
                 delete results[0].cookId;
 
-                (async () => {
-                    const cook = await formatUser([await addCook(cookId)]);
-                    const participants = await formatUser(await addParticipants(cookId));
-                    const meal = {
-                        ...results[0],
-                        cook,
-                        participants,
+                let meal = formatMeal(results);
+
+                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
+
+                    meal = {
+                        ...meal,
+                        cook: formatUser(results),
+                    };
+                });
+
+                dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
+                    //throw error if something went wrong
+                    if (err) throw err;
+
+                    let participantsAmount = results.length;
+
+                    let participants = [];
+
+                    const callback = () => {
+                        if (participantsAmount === participants.length) {
+                            connection.release();
+
+                            meal = {
+                                ...meal,
+                                participants,
+                            };
+
+                            //return successful status + result
+                            res.status(200).json({
+                                status: 200,
+                                result: meal,
+                            });
+
+                            res.end();
+                        }
                     };
 
-                    //return successful status + result
-                    res.status(200).json({
-                        status: 200,
-                        result: formatMeal([meal]),
-                    });
-
-                    //end response process
-                    res.end();
-                })();
+                    if (participantsAmount > 0) {
+                        results.forEach((participant) => {
+                            dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                participants.push(formatUser(results));
+                                callback();
+                            });
+                        });
+                    } else {
+                        callback();
+                    }
+                });
             } else {
                 //if the meal isn't found return a fitting error response
                 return next({
@@ -375,30 +501,4 @@ const formatMeal = (results) => {
         return results[0];
     }
     return results;
-};
-
-const addCook = async (cookId) => {
-    try {
-        const retrieveCook = await dbconnection.query(`SELECT * FROM user WHERE id = ${cookId}`);
-        return retrieveCook[0];
-    } catch (err) {
-        throw err;
-    }
-};
-
-const addParticipants = async (cookId) => {
-    try {
-        const retrievedParticipants = await dbconnection.query(`SELECT DISTINCT userId FROM \`meal_participants_user\` WHERE mealId = ${cookId}`);
-
-        let participants = [];
-
-        for (const participant of retrievedParticipants) {
-            let participantDetails = await dbconnection.query(`SELECT * FROM user WHERE id = ${participant.userId}`);
-            participants.push(participantDetails[0]);
-        }
-
-        return participants;
-    } catch (err) {
-        throw err;
-    }
 };
