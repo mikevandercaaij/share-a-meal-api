@@ -1,4 +1,4 @@
-process.env.DB_DATABASE = process.env.DB_DATABASE || "share-a-meal-testdb";
+process.env.DB_DATABASE = "share-a-meal-testdb";
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -9,115 +9,111 @@ const dbconnection = require("./../../database/dbconnection");
 chai.should();
 chai.use(chaiHttp);
 
-let succesfullAddId;
-const INSERT_USER = "INSERT INTO `user` (`firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '("first", "last", "name@server.nl", "secret", "street", "city");';
-const DELETE_USER = "DELETE FROM user WHERE id = ?";
+const CLEAR_MEAL_TABLE = "DELETE IGNORE FROM `meal`;";
+const CLEAR_PARTICIPANTS_TABLE = "DELETE IGNORE FROM `meal_participants_user`;";
+const CLEAR_USERS_TABLE = "DELETE IGNORE FROM `user`;";
+const CLEAR_DB = CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE;
 
-// UC-101 Login
-describe("UC-101 Login - POST /api/user", () => {
-    it("TC-101-1 Required input is missing", (done) => {
-        chai.request(server)
-            .post("/api/auth/login")
-            .send({
-                // emailAdress missing
-                password: "secret",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                const { status, message } = res.body;
-                status.should.equals(400);
-                message.should.be.a("string").that.equals("Email must be a string");
-                done();
-            });
-    });
-    it("TC-101-2 Invalid Email Address", (done) => {
-        chai.request(server)
-            .post("/api/auth/login")
-            .send({
-                // TODO: rewrite when regex is added
-                password: "secret",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                const { status, message } = res.body;
-                status.should.equals(400);
-                message.should.be.a("string").that.equals("Email must be a string");
-                done();
-            });
-    });
-    it("TC-101-3 Invalid Password", (done) => {
-        chai.request(server)
-            .post("/api/auth/login")
-            .send({
-                emailAdress: "m.vandullemen@server.nl",
-                // TODO: rewrite when regex is added
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                const { status, message } = res.body;
-                status.should.equals(400);
-                message.should.be.a("string").that.equals("Password must be a string");
-                done();
-            });
-    });
-    it("TC-101-4 User doesn't exist", (done) => {
-        chai.request(server)
-            .post("/api/auth/login")
-            .send({
-                emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
-                password: "secret",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                const { status, message } = res.body;
-                status.should.equals(404);
-                message.should.be.a("string").that.equals("User not found or password invalid");
+const INSERT_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(1, "first", "last", "test@server.nl", "secret", "street", "city");';
 
-                done();
-            });
-    });
-    before((done) => {
+// UC-100 Authentication tests
+describe("UC-100 Authentication tests - POST /api/user", () => {
+    beforeEach((done) => {
         dbconnection.getConnection((err, connection) => {
             if (err) throw err;
 
-            connection.query(INSERT_USER, (err, results, fields) => {
+            connection.query(CLEAR_DB + INSERT_USER, (err, results, fields) => {
                 if (err) throw err;
                 connection.release();
-                succesfullAddId = results.insertId;
                 done();
             });
         });
     });
-    it("TC-101-5 User succesfully logged in", (done) => {
-        chai.request(server)
-            .post("/api/auth/login")
-            .send({
-                emailAdress: "name@server.nl",
-                password: "secret",
-            })
-            .end((req, res) => {
-                res.should.be.an("object");
-                const { status, result } = res.body;
-                status.should.equals(200);
-                result.should.be.an("object");
-                result.should.have.property("id");
-                result.should.have.property("emailAdress");
-                result.should.have.property("firstName");
-                result.should.have.property("lastName");
-                result.should.have.property("token");
 
-                done();
-            });
-    });
-    after((done) => {
-        dbconnection.getConnection((err, connection) => {
-            if (err) throw err;
+    // UC-101 Login
+    describe("UC-101 Login - POST /api/user", () => {
+        it("TC-101-1 Required input is missing", (done) => {
+            chai.request(server)
+                .post("/api/auth/login")
+                .send({
+                    // emailAdress missing
+                    password: "secret",
+                })
+                .end((req, res) => {
+                    res.should.be.an("object");
+                    const { status, message } = res.body;
+                    status.should.equals(400);
+                    message.should.be.a("string").that.equals("Email must be a string");
+                    done();
+                });
+        });
+        it("TC-101-2 Invalid Email Address", (done) => {
+            chai.request(server)
+                .post("/api/auth/login")
+                .send({
+                    // TODO: rewrite when regex is added
+                    password: "secret",
+                })
+                .end((req, res) => {
+                    res.should.be.an("object");
+                    const { status, message } = res.body;
+                    status.should.equals(400);
+                    message.should.be.a("string").that.equals("Email must be a string");
+                    done();
+                });
+        });
+        it("TC-101-3 Invalid Password", (done) => {
+            chai.request(server)
+                .post("/api/auth/login")
+                .send({
+                    emailAdress: "m.vandullemen@server.nl",
+                    // TODO: rewrite when regex is added
+                })
+                .end((req, res) => {
+                    res.should.be.an("object");
+                    const { status, message } = res.body;
+                    status.should.equals(400);
+                    message.should.be.a("string").that.equals("Password must be a string");
+                    done();
+                });
+        });
+        it("TC-101-4 User doesn't exist", (done) => {
+            chai.request(server)
+                .post("/api/auth/login")
+                .send({
+                    emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
+                    password: "secret",
+                })
+                .end((req, res) => {
+                    res.should.be.an("object");
+                    const { status, message } = res.body;
+                    status.should.equals(404);
+                    message.should.be.a("string").that.equals("User not found or password invalid");
 
-            connection.query(DELETE_USER, succesfullAddId, (err, results, fields) => {
-                if (err) throw err;
-                connection.release();
-                done();
-            });
+                    done();
+                });
+        });
+
+        it("TC-101-5 User succesfully logged in", (done) => {
+            chai.request(server)
+                .post("/api/auth/login")
+                .send({
+                    emailAdress: "test@server.nl",
+                    password: "secret",
+                })
+                .end((req, res) => {
+                    res.should.be.an("object");
+                    const { status, result } = res.body;
+                    status.should.equals(200);
+                    result.should.be.an("object");
+                    result.should.have.property("id");
+                    result.should.have.property("emailAdress");
+                    result.should.have.property("firstName");
+                    result.should.have.property("lastName");
+                    result.should.have.property("token");
+
+                    done();
+                });
         });
     });
 });
