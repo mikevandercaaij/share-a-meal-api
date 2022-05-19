@@ -16,10 +16,11 @@ exports.validateUserCreate = (req, res, next) => {
     try {
         assert(typeof firstName === "string", "First Name must be a string.");
         assert(typeof lastName === "string", "Last Name must be a string.");
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
+        assert(typeof password === "string", "Password must be a string.");
+        assert(typeof phoneNumber === "string", "PhoneNumber must be a string.");
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
-        assert(typeof password === "string", "Password must be a string.");
-        assert(typeof emailAdress === "string", "Email Address must be a string.");
 
         //check if email is valid
         // assert(MailChecker.isValid(emailAdress), "Email is not valid.");

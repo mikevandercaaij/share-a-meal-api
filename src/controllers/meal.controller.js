@@ -7,22 +7,45 @@ exports.validateMeal = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
-    let { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = meal;
+    let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
 
     //check if all values are of a certain type
-    try {
-        assert(typeof isActive === "boolean" || typeof isActive === "number", "IsActive must be a boolean or number.");
-        assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
-        assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
-        assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsToTakeHome must be a boolean or number.");
-        assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
-        assert(typeof price === "number", "Price must be a number.");
-        assert(typeof imageUrl === "string", "ImageUrl must be a string.");
-        assert(typeof name === "string", "Name must be a string.");
-        assert(typeof description === "string", "Description must be a string.");
 
-        if (typeof meal.allergenes !== "undefined") {
-            assert(typeof meal.allergenes === "object", "Allergenes must be an object.");
+    try {
+        assert(typeof name === "string", "Name must be a string.");
+
+        assert(typeof price === "number", "Price must be a number.");
+
+        assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+
+        assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
+
+        if (isActive) {
+            assert(typeof isActive === "boolean" || typeof isActive === "number", "IsActive must be a boolean or number.");
+        }
+
+        if (isVega) {
+            assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
+        }
+
+        if (isVegan) {
+            assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
+        }
+
+        if (isToTakeHome) {
+            assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsVegan must be a boolean or number.");
+        }
+
+        if (imageUrl) {
+            assert(typeof imageUrl === "string", "ImageUrl must be a string");
+        }
+
+        if (description) {
+            assert(typeof description === "string", "Description must be a string");
+        }
+
+        if (allergenes) {
+            assert(typeof meal.allergenes === "object", "Allergenes must be an object");
         }
 
         return next();
@@ -42,8 +65,7 @@ exports.addMeal = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        //put request body in a variable
-        const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = req.body;
+        //alter allergenes syntax if it is in the request body
         let { allergenes } = req.body;
 
         if (typeof allergenes === "undefined") {
@@ -52,71 +74,80 @@ exports.addMeal = (req, res, next) => {
             allergenes = allergenes.join();
         }
 
+        //Create insertQuery
+        const bodyValues = Object.keys(req.body);
+        const insertValues = Object.values(req.body);
+        insertValues.push(req.userId);
+        const insertQuery = "INSERT INTO meal(" + bodyValues.join(",") + ",cookId) VALUES (" + "?, ".repeat(insertValues.length - 1) + "?);";
+
         //insert new meal into meals
-        connection.query("INSERT INTO meal (name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, cookId , allergenes, maxAmountOfParticipants, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, req.userId, allergenes, maxAmountOfParticipants, price], (err, results, fields) => {
+        connection.query(insertQuery, insertValues, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
             //get id from meal thats just been inserted
             const newestMealId = results.insertId;
 
-            //get meal
-            connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
-                //throw error if something went wrong
-                if (err) throw err;
-
-                const cookId = results[0].cookId;
-                delete results[0].cookId;
-
-                let meal = formatMeal(results);
-
-                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+            //add cook as a participant
+            connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
+                //get meal
+                connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
-                    meal = {
-                        ...meal,
-                        cook: formatUser(results),
-                    };
-                });
+                    const cookId = results[0].cookId;
+                    delete results[0].cookId;
 
-                dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
-                    //throw error if something went wrong
-                    if (err) throw err;
+                    let meal = formatMeal(results);
 
-                    let participantsAmount = results.length;
+                    dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
 
-                    let participants = [];
+                        meal = {
+                            ...meal,
+                            cook: formatUser(results),
+                        };
+                    });
 
-                    const callback = () => {
-                        if (participantsAmount === participants.length) {
-                            connection.release();
+                    dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
+                        //throw error if something went wrong
+                        if (err) throw err;
 
-                            meal = {
-                                ...meal,
-                                participants,
-                            };
+                        let participantsAmount = results.length;
 
-                            //return successful status + result
-                            res.status(201).json({
-                                status: 201,
-                                result: meal,
+                        let participants = [];
+
+                        const callback = () => {
+                            if (participantsAmount === participants.length) {
+                                connection.release();
+
+                                meal = {
+                                    ...meal,
+                                    participants,
+                                };
+
+                                //return successful status + result
+                                res.status(201).json({
+                                    status: 201,
+                                    result: meal,
+                                });
+
+                                res.end();
+                            }
+                        };
+
+                        if (participantsAmount > 0) {
+                            results.forEach((participant) => {
+                                dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                    participants.push(formatUser(results));
+                                    callback();
+                                });
                             });
-
-                            res.end();
+                        } else {
+                            callback();
                         }
-                    };
-
-                    if (participantsAmount > 0) {
-                        results.forEach((participant) => {
-                            dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                participants.push(formatUser(results));
-                                callback();
-                            });
-                        });
-                    } else {
-                        callback();
-                    }
+                    });
                 });
             });
         });

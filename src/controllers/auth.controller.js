@@ -49,9 +49,6 @@ module.exports = {
         });
     },
 
-    //
-    //
-    //
     validateLogin(req, res, next) {
         // Verify that we receive the expected input
         try {
@@ -66,9 +63,6 @@ module.exports = {
         }
     },
 
-    //
-    //
-    //
     validateToken(req, res, next) {
         // The headers should contain the authorization-field with value 'Bearer [token]'
         const authHeader = req.headers.authorization;
