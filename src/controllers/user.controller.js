@@ -7,13 +7,15 @@ const { query } = require("./../../database/dbconnection");
 
 //validate user when it's being created
 exports.validateUserCreate = (req, res, next) => {
-    const user = req.body;
-
     //localize all req body values
-    const { firstName, lastName, emailAdress, password, street, city } = user;
+    const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = req.body;
 
     //check if all values are of a certain type
     try {
+        const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const passwordRegex = /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/;
+        const phoneNumberRegex = /([\d] *){10}/;
+
         assert(typeof firstName === "string", "First Name must be a string.");
         assert(typeof lastName === "string", "Last Name must be a string.");
         assert(typeof emailAdress === "string", "Email Address must be a string.");
@@ -22,24 +24,10 @@ exports.validateUserCreate = (req, res, next) => {
         assert(typeof street === "string", "Street must be a string.");
         assert(typeof city === "string", "City Name must be a string.");
 
-        //check if email is valid
-        // assert(MailChecker.isValid(emailAdress), "Email is not valid.");
-
-        // assert(typeof isActive === "boolean" || typeof isActive === "number", "isActive must be a boolean or number.");
-        // assert(typeof phoneNumber === "string", "Phone Number must be a string.");
-
-        // let goodPassword = false;
-        // switch (passwordStrength(password).value) {
-        //     case "Medium":
-        //         goodPassword = true;
-        //         break;
-        //     case "Strong":
-        //         goodPassword = true;
-        //         break;
-        // }
-        // assert(goodPassword, "Password's strength is weak. Please fill in a stronger one!");
-        //
-        // assert(phone(phoneNumber, { validateMobilePrefix: false }).isValid, "Phone number is invalid.");
+        //validate email, password, phonenumber
+        assert(emailAdress.match(emailRegex), "Email is not valid.");
+        assert(password.match(passwordRegex), "Password must contain 1 capital letter 1 special letter and at least 8 characters.");
+        assert(phoneNumber.match(phoneNumberRegex), "PhoneNumber is not valid.");
 
         return next();
     } catch (err) {
@@ -53,17 +41,40 @@ exports.validateUserCreate = (req, res, next) => {
 
 //validate user when it's being created
 exports.validateUserUpdate = (req, res, next) => {
-    const user = req.body;
-
     //localize all req body values
-    const { emailAdress, phoneNumber } = user;
+    const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = req.body;
 
     //check if all values are of a certain type
     try {
-        assert(typeof emailAdress === "string", "Email Address must be a string.");
+        if (firstName) {
+            assert(typeof firstName === "string", "First Name must be a string.");
+        }
+
+        if (lastName) {
+            assert(typeof lastName === "string", "Last Name must be a string.");
+        }
+
+        if (emailAdress) {
+            assert(typeof emailAdress === "string", "Email Address must be a string.");
+            assert(emailAdress.match("dasds"), "Email is not valid.");
+        }
+
+        if (password) {
+            assert(typeof password === "string", "Password must be a string.");
+            assert(password.match(), "Password must contain 1 capital letter 1 special letter and at least 8 characters.");
+        }
 
         if (phoneNumber) {
             assert(typeof phoneNumber === "string", "phoneNumber must be a string.");
+            assert(phoneNumber.match(), "PhoneNumber is not valid.");
+        }
+
+        if (street) {
+            assert(typeof street === "string", "Street must be a string.");
+        }
+
+        if (city) {
+            assert(typeof city === "string", "City Name must be a string.");
         }
 
         return next();
@@ -99,16 +110,8 @@ exports.addUser = (req, res, next) => {
             }
 
             if (addUser) {
-                let insertArray = [firstName, lastName, emailAdress, password, street, city];
-
-                let queryString = "INSERT INTO user (firstName, lastName, emailAdress, password, street, city";
-
-                if (phoneNumber) {
-                    queryString += ", phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    insertArray.push(phoneNumber);
-                } else {
-                    queryString += ") VALUES (?, ?, ?, ?, ?, ?)";
-                }
+                let queryString = "INSERT INTO user (firstName, lastName, emailAdress, password, street, city, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                let insertArray = [firstName, lastName, emailAdress, password, street, city, phoneNumber];
 
                 //insert new user into users
                 connection.query(queryString, insertArray, (err, results, fields) => {

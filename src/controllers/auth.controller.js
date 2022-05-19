@@ -52,8 +52,14 @@ module.exports = {
     validateLogin(req, res, next) {
         // Verify that we receive the expected input
         try {
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            const passwordRegex = /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/;
+
             assert(typeof req.body.emailAdress === "string", "Email must be a string");
             assert(typeof req.body.password === "string", "Password must be a string");
+
+            assert(emailAdress.match(emailRegex), "Email is not valid.");
+            assert(password.match(passwordRegex), "Password must contain 1 capital letter 1 special letter and at least 8 characters.");
             next();
         } catch (ex) {
             res.status(400).json({

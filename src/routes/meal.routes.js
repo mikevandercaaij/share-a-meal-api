@@ -12,7 +12,7 @@ router
     .route("/api/meal")
 
     //UC-301 Create a meal
-    .post(authController.validateToken, mealController.validateMeal, mealController.addMeal)
+    .post(authController.validateToken, mealController.validateMealCreate, mealController.addMeal)
 
     //UC-303 Get list of all meals
     .get(mealController.getAllMeals);
@@ -22,7 +22,7 @@ router
     .route("/api/meal/:id")
 
     //UC-302 Update a meal
-    .put(authController.validateToken, mealController.validateMeal, mealController.updateMeal)
+    .put(authController.validateToken, mealController.validateMealUpdate, mealController.updateMeal)
 
     //UC-304 Get details of a meal
     .get(mealController.getMealByID)

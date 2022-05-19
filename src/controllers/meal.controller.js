@@ -2,8 +2,8 @@ const assert = require("assert");
 const dbconnection = require("./../../database/dbconnection");
 const { formatUser } = require("./user.controller");
 
-//validate meal
-exports.validateMeal = (req, res, next) => {
+//validate meal create
+exports.validateMealCreate = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
@@ -12,13 +12,86 @@ exports.validateMeal = (req, res, next) => {
     //check if all values are of a certain type
 
     try {
-        assert(typeof name === "string", "Name must be a string.");
+        if (meal || price || maxAmountOfParticipants) {
+            if (name) {
+                assert(typeof name === "string", "Name must be a string.");
+            }
 
-        assert(typeof price === "number", "Price must be a number.");
+            if (price) {
+                assert(typeof price === "number", "Price must be a number.");
+            }
 
-        assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+            if (maxAmountOfParticipants) {
+                assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+                assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
+            }
+        } else {
+            return next({
+                status: 400,
+                message: "Request body must include name or price or maxAmountOfParticipants.",
+            });
+        }
 
-        assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
+        if (isActive) {
+            assert(typeof isActive === "boolean" || typeof isActive === "number", "IsActive must be a boolean or number.");
+        }
+
+        if (isVega) {
+            assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
+        }
+
+        if (isVegan) {
+            assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
+        }
+
+        if (isToTakeHome) {
+            assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsVegan must be a boolean or number.");
+        }
+
+        if (imageUrl) {
+            assert(typeof imageUrl === "string", "ImageUrl must be a string");
+        }
+
+        if (description) {
+            assert(typeof description === "string", "Description must be a string");
+        }
+
+        if (allergenes) {
+            assert(typeof meal.allergenes === "object", "Allergenes must be an object");
+        }
+
+        return next();
+    } catch (err) {
+        //if not return error
+        return next({
+            status: 400,
+            result: err.message,
+        });
+    }
+};
+
+//validate meal update
+exports.validateMealUpdate = (req, res, next) => {
+    const meal = req.body;
+
+    //localize all req body values
+    let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
+
+    //check if all values are of a certain type
+
+    try {
+        if (name) {
+            assert(typeof name === "string", "Name must be a string.");
+        }
+
+        if (price) {
+            assert(typeof price === "number", "Price must be a number.");
+        }
+
+        if (maxAmountOfParticipants) {
+            assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+            assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
+        }
 
         if (isActive) {
             assert(typeof isActive === "boolean" || typeof isActive === "number", "IsActive must be a boolean or number.");
@@ -66,11 +139,7 @@ exports.addMeal = (req, res, next) => {
         if (err) throw err;
 
         //alter allergenes syntax if it is in the request body
-        let { allergenes } = req.body;
-
-        if (typeof allergenes === "undefined") {
-            allergenes = "";
-        } else {
+        if (req.body.allergenes) {
             allergenes = allergenes.join();
         }
 
