@@ -7,12 +7,52 @@ exports.validateMealCreate = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
+    let { description, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
+
+    //check if all values are of a certain type
+
+    try {
+        assert(typeof name === "string", "Name must be a string.");
+
+        assert(typeof price === "number", "Price must be a number.");
+
+        assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+
+        assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
+
+        assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
+
+        assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
+
+        assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsVegan must be a boolean or number.");
+
+        assert(typeof imageUrl === "string", "ImageUrl must be a string");
+
+        assert(typeof description === "string", "Description must be a string");
+
+        assert(Array.isArray(allergenes), "Allergenes must be an object");
+
+        return next();
+    } catch (err) {
+        //if not return error
+        return next({
+            status: 400,
+            result: err.message,
+        });
+    }
+};
+
+//validate meal update
+exports.validateMealUpdate = (req, res, next) => {
+    const meal = req.body;
+
+    //localize all req body values
     let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
 
     //check if all values are of a certain type
 
     try {
-        if (meal || price || maxAmountOfParticipants) {
+        if (name || price || maxAmountOfParticipants) {
             if (name) {
                 assert(typeof name === "string", "Name must be a string.");
             }
@@ -28,7 +68,7 @@ exports.validateMealCreate = (req, res, next) => {
         } else {
             return next({
                 status: 400,
-                message: "Request body must include name or price or maxAmountOfParticipants.",
+                message: "Request body must include name, price or maxAmountOfParticipants.",
             });
         }
 
@@ -57,68 +97,7 @@ exports.validateMealCreate = (req, res, next) => {
         }
 
         if (allergenes) {
-            assert(typeof meal.allergenes === "object", "Allergenes must be an object");
-        }
-
-        return next();
-    } catch (err) {
-        //if not return error
-        return next({
-            status: 400,
-            result: err.message,
-        });
-    }
-};
-
-//validate meal update
-exports.validateMealUpdate = (req, res, next) => {
-    const meal = req.body;
-
-    //localize all req body values
-    let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
-
-    //check if all values are of a certain type
-
-    try {
-        if (name) {
-            assert(typeof name === "string", "Name must be a string.");
-        }
-
-        if (price) {
-            assert(typeof price === "number", "Price must be a number.");
-        }
-
-        if (maxAmountOfParticipants) {
-            assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
-            assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
-        }
-
-        if (isActive) {
-            assert(typeof isActive === "boolean" || typeof isActive === "number", "IsActive must be a boolean or number.");
-        }
-
-        if (isVega) {
-            assert(typeof isVega === "boolean" || typeof isVega === "number", "IsVega must be a boolean or number.");
-        }
-
-        if (isVegan) {
-            assert(typeof isVegan === "boolean" || typeof isVegan === "number", "IsVegan must be a boolean or number.");
-        }
-
-        if (isToTakeHome) {
-            assert(typeof isToTakeHome === "boolean" || typeof isToTakeHome === "number", "IsVegan must be a boolean or number.");
-        }
-
-        if (imageUrl) {
-            assert(typeof imageUrl === "string", "ImageUrl must be a string");
-        }
-
-        if (description) {
-            assert(typeof description === "string", "Description must be a string");
-        }
-
-        if (allergenes) {
-            assert(typeof meal.allergenes === "object", "Allergenes must be an object");
+            assert(Array.isArray(allergenes), "Allergenes must be an object");
         }
 
         return next();
@@ -139,9 +118,7 @@ exports.addMeal = (req, res, next) => {
         if (err) throw err;
 
         //alter allergenes syntax if it is in the request body
-        if (req.body.allergenes) {
-            allergenes = allergenes.join();
-        }
+        req.body.allergenes = req.body.allergenes.join(",");
 
         //Create insertQuery
         const bodyValues = Object.keys(req.body);
@@ -391,9 +368,8 @@ exports.getAllMeals = (req, res) => {
                                     participants,
                                 };
                                 allMeals.push(meal);
-
+                                connection.release();
                                 if (amountOfMeals === allMeals.length) {
-                                    connection.close();
                                     //return successful status + result
                                     res.status(200).json({
                                         status: 200,

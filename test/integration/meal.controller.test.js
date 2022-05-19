@@ -1,3 +1,5 @@
+process.env.DB_DATABASE = "share-a-meal-testdb";
+
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const server = require("./../../index");
@@ -74,13 +76,13 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                 .send({
                     name: "Spaghetti Bolognese",
                     description: "De pastaklassieker bij uitstek.",
-                    isActive: true,
                     isVega: true,
                     isVegan: true,
                     isToTakeHome: true,
                     imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
                     maxAmountOfParticipants: 6,
                     price: 6.75,
+                    allergenes: ["gluten", "noten"],
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
@@ -132,14 +134,14 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     isVegan: true,
                     isToTakeHome: true,
                     imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
-                    maxAmountOfParticipants: 6,
-                    price: 6.75,
+                    //missing maxAmountOfParticipants
+                    //missing price
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
-                    let { status, result } = res.body;
+                    let { status, message } = res.body;
                     status.should.equals(400);
-                    result.should.be.a("string").that.equals("Name must be a string.");
+                    message.should.be.a("string").that.equals("Request body must include name, price or maxAmountOfParticipants.");
                     done();
                 });
         });

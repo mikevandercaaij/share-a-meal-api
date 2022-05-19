@@ -51,7 +51,7 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
             chai.request(server)
                 .post("/api/auth/login")
                 .send({
-                    email: "invalidEmail",
+                    emailAdress: "invalidEmail",
                     password: "V3ryS3cr3t",
                 })
                 .end((req, res) => {
@@ -82,7 +82,7 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
                 .post("/api/auth/login")
                 .send({
                     emailAdress: `${crypto.randomBytes(25).toString("hex")}@gmail.com`,
-                    password: "secret",
+                    password: "V3ryS3cr3t",
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
@@ -111,7 +111,6 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
                     result.should.have.property("firstName");
                     result.should.have.property("lastName");
                     result.should.have.property("token");
-
                     done();
                 });
         });

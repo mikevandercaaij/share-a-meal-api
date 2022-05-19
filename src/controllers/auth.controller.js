@@ -58,8 +58,8 @@ module.exports = {
             assert(typeof req.body.emailAdress === "string", "Email must be a string");
             assert(typeof req.body.password === "string", "Password must be a string");
 
-            assert(emailAdress.match(emailRegex), "Email is not valid.");
-            assert(password.match(passwordRegex), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
+            assert(req.body.emailAdress.match(emailRegex), "Email is not valid.");
+            assert(req.body.password.match(passwordRegex), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
             next();
         } catch (ex) {
             res.status(400).json({

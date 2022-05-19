@@ -44,6 +44,10 @@ exports.validateUserUpdate = (req, res, next) => {
     //localize all req body values
     const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = req.body;
 
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/;
+    const phoneNumberRegex = /([\d] *){10}/;
+
     //check if all values are of a certain type
     try {
         if (firstName) {
@@ -54,19 +58,17 @@ exports.validateUserUpdate = (req, res, next) => {
             assert(typeof lastName === "string", "Last Name must be a string.");
         }
 
-        if (emailAdress) {
-            assert(typeof emailAdress === "string", "Email Address must be a string.");
-            assert(emailAdress.match("dasds"), "Email is not valid.");
-        }
+        assert(typeof emailAdress === "string", "Email Address must be a string.");
+        assert(emailAdress.match(emailRegex), "Email is not valid.");
 
         if (password) {
             assert(typeof password === "string", "Password must be a string.");
-            assert(password.match(), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
+            assert(password.match(passwordRegex), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
         }
 
         if (phoneNumber) {
             assert(typeof phoneNumber === "string", "phoneNumber must be a string.");
-            assert(phoneNumber.match(), "PhoneNumber is not valid.");
+            assert(phoneNumber.match(phoneNumberRegex), "PhoneNumber is not valid.");
         }
 
         if (street) {
