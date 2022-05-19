@@ -26,7 +26,7 @@ exports.validateUserCreate = (req, res, next) => {
 
         //validate email, password, phonenumber
         assert(emailAdress.match(emailRegex), "Email is not valid.");
-        assert(password.match(passwordRegex), "Password must contain 1 capital letter 1 special letter and at least 8 characters.");
+        assert(password.match(passwordRegex), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
         assert(phoneNumber.match(phoneNumberRegex), "PhoneNumber is not valid.");
 
         return next();
@@ -61,7 +61,7 @@ exports.validateUserUpdate = (req, res, next) => {
 
         if (password) {
             assert(typeof password === "string", "Password must be a string.");
-            assert(password.match(), "Password must contain 1 capital letter 1 special letter and at least 8 characters.");
+            assert(password.match(), "Password must contain 1 capital, 1 special letter and at least 8 characters.");
         }
 
         if (phoneNumber) {

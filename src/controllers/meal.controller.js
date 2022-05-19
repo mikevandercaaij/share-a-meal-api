@@ -524,7 +524,7 @@ exports.deleteMeal = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        connection.query("SELECT COUNT(id) as count FROM meal WHERE id = ?", id, (err, results, fields) => {
+        connection.query("SELECT COUNT(id) as count, cookId FROM meal WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -535,7 +535,7 @@ exports.deleteMeal = (req, res, next) => {
                     message: `Meal does not exist`,
                 });
             } else {
-                if (id !== req.userId) {
+                if (results[0].cookId !== req.userId) {
                     res.status(403).json({
                         status: 403,
                         message: "You are not the owner of this meal",

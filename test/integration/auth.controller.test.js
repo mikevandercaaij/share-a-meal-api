@@ -14,7 +14,7 @@ const CLEAR_PARTICIPANTS_TABLE = "DELETE IGNORE FROM `meal_participants_user`;";
 const CLEAR_USERS_TABLE = "DELETE IGNORE FROM `user`;";
 const CLEAR_DB = CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE;
 
-const INSERT_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(1, "first", "last", "test@server.nl", "secret", "street", "city");';
+const INSERT_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(1, "first", "last", "test@server.nl", "V3ryS3cr3t", "street", "city");';
 
 // UC-100 Authentication tests
 describe("UC-100 Authentication tests - POST /api/user", () => {
@@ -37,7 +37,7 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
                 .post("/api/auth/login")
                 .send({
                     // emailAdress missing
-                    password: "secret",
+                    password: "V3ryS3cr3t",
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
@@ -51,14 +51,14 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
             chai.request(server)
                 .post("/api/auth/login")
                 .send({
-                    // TODO: rewrite when regex is added
-                    password: "secret",
+                    email: "invalidEmail",
+                    password: "V3ryS3cr3t",
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
                     const { status, message } = res.body;
                     status.should.equals(400);
-                    message.should.be.a("string").that.equals("Email must be a string");
+                    message.should.be.a("string").that.equals("Email is not valid.");
                     done();
                 });
         });
@@ -67,13 +67,13 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
                 .post("/api/auth/login")
                 .send({
                     emailAdress: "m.vandullemen@server.nl",
-                    // TODO: rewrite when regex is added
+                    password: "secret",
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
                     const { status, message } = res.body;
                     status.should.equals(400);
-                    message.should.be.a("string").that.equals("Password must be a string");
+                    message.should.be.a("string").that.equals("Password must contain 1 capital, 1 special letter and at least 8 characters.");
                     done();
                 });
         });
@@ -99,7 +99,7 @@ describe("UC-100 Authentication tests - POST /api/user", () => {
                 .post("/api/auth/login")
                 .send({
                     emailAdress: "test@server.nl",
-                    password: "secret",
+                    password: "V3ryS3cr3t",
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
