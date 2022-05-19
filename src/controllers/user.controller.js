@@ -469,7 +469,7 @@ exports.formatUser = (results) => {
             result.isActive = false;
         }
 
-        if (results.roles === "") {
+        if (result.roles === "") {
             result.roles = [];
         }
 

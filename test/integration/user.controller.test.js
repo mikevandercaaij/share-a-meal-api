@@ -547,8 +547,8 @@ describe("UC-200 User tests - POST /api/user", () => {
         });
         it("TC-206-3 Actor is not the owner", (done) => {
             chai.request(server)
-                .delete("/api/user/2")
-                .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+                .delete("/api/user/1")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
                 .end((req, res) => {
                     res.body.should.be.an("object");
                     let { status, message } = res.body;
@@ -559,8 +559,8 @@ describe("UC-200 User tests - POST /api/user", () => {
         });
         it("TC-206-4 User has been deleted successfully", (done) => {
             chai.request(server)
-                .delete("/api/user/2")
-                .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+                .delete("/api/user/1")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
                 .end((req, res) => {
                     res.body.should.be.an("object");
                     let { status, message } = res.body;
