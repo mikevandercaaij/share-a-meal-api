@@ -76,7 +76,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 ### Get all users
 
 ```http
-  GET /api/user/
+  **GET /api/user/**
 ```
 
 #### Header
@@ -111,13 +111,11 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "emailAdress": "j.doe@server.com",
             "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
             "phoneNumber": "0612425475",
-            "roles": [
-                "editor",
-                "guest"
-            ],
+            "roles": ["editor", "guest"],
             "street": "Lovendijkselaan 21",
             "city": "Breda"
         }
+    ]
 }
 ```
 
