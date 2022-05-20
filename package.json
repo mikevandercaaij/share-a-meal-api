@@ -10,14 +10,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1.git"
+        "url": "git+https://github.com/mikevandercaaij/share-a-meal-api"
     },
     "author": "Mike van der Caaij",
     "license": "ISC",
     "bugs": {
-        "url": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1/issues"
+        "url": "https://github.com/mikevandercaaij/share-a-meal-api/issues"
     },
-    "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme",
+    "homepage": "https://github.com/mikevandercaaij/share-a-meal-api/#readme",
     "dependencies": {
         "bcrypt": "^5.0.1",
         "dotenv": "^16.0.0",
