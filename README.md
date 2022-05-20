@@ -49,7 +49,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Login
 
-```http
+```
   POST /api/auth/login
 ```
 
@@ -75,8 +75,8 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Get all users
 
-```http
-  **GET /api/user/**
+```
+  GET /api/user/
 ```
 
 #### Header
@@ -121,7 +121,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Get users using parameters
 
-```http
+```
   GET /api/user?firstName=Klaas&isActive=true
 ```
 
@@ -161,12 +161,13 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "street": "Hopstraat",
             "city": "Amsterdam"
         }
+    ]
 }
 ```
 
 ### Get user by id
 
-```http
+```
   GET /api/user/:id
 ```
 
@@ -200,12 +201,13 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "street": "Hopstraat",
             "city": "Amsterdam"
         }
+    ]
 }
 ```
 
 ### Get user profile (User that's currently logged in)
 
-```http
+```
   GET /api/user/profile
 ```
 
@@ -233,12 +235,13 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "street": "Hopstraat",
             "city": "Amsterdam"
         }
+    ]
 }
 ```
 
 ### Create user
 
-```http
+```
   POST /api/user/
 ```
 
@@ -282,7 +285,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Update user
 
-```http
+```
   PUT /api/user/:id
 ```
 
@@ -328,12 +331,13 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "street": "Hopstraat",
             "city": "Amsterdam"
         }
+    ]
 }
 ```
 
 ### Delete user
 
-```http
+```
   DELETE /api/user/:id
 ```
 
@@ -360,7 +364,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Get all meals
 
-```http
+```
   GET /api/meal/
 ```
 
@@ -484,7 +488,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Get meal by id
 
-```http
+```
   GET /api/meal/:id
 ```
 
@@ -546,7 +550,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Create meal
 
-```http
+```
   POST /api/meal/
 ```
 
@@ -623,7 +627,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Update meal
 
-```http
+```
   PUT /api/meal/
 ```
 
@@ -706,7 +710,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Delete meal
 
-```http
+```
   DELETE /api/meal/:id
 ```
 
@@ -733,7 +737,7 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 
 ### Meal participation
 
-```http
+```
   GET /api/meal/:id/participate
 ```
 
