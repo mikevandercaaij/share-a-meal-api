@@ -7,7 +7,7 @@ exports.validateMealCreate = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
-    let { description, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
+    let { description, isVega, isVegan, isToTakeHome, imageUrl, dateTime, name, maxAmountOfParticipants, price, allergenes } = meal;
 
     //check if all values are of a certain type
 
@@ -28,6 +28,8 @@ exports.validateMealCreate = (req, res, next) => {
 
         assert(typeof imageUrl === "string", "ImageUrl must be a string");
 
+        assert(typeof dateTime === "string", "DateTime must be a string");
+
         assert(typeof description === "string", "Description must be a string");
 
         assert(Array.isArray(allergenes), "Allergenes must be an object");
@@ -47,7 +49,7 @@ exports.validateMealUpdate = (req, res, next) => {
     const meal = req.body;
 
     //localize all req body values
-    let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, maxAmountOfParticipants, price, allergenes } = meal;
+    let { description, isActive, isVega, isVegan, isToTakeHome, imageUrl, name, dateTime, maxAmountOfParticipants, price, allergenes } = meal;
 
     //check if all values are of a certain type
 
@@ -70,6 +72,10 @@ exports.validateMealUpdate = (req, res, next) => {
                 status: 400,
                 message: "Request body must include name, price or maxAmountOfParticipants.",
             });
+        }
+
+        if (dateTime) {
+            assert(typeof dateTime === "string", "DateTime must be a string");
         }
 
         if (isActive) {
@@ -225,8 +231,6 @@ exports.updateMeal = (req, res, next) => {
 
             const oldMeal = results[0];
 
-            console.log(results.length);
-
             //if meal exists
             if (results.length === 1) {
                 //store the meal in a variable
@@ -249,10 +253,10 @@ exports.updateMeal = (req, res, next) => {
                         ...newMeal,
                     };
 
-                    const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price } = meal;
+                    const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price, dateTime } = meal;
 
                     //update meal
-                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, dateTime, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
@@ -573,7 +577,63 @@ exports.participateMeal = (req, res, next) => {
             const currentParticipants = results[0].currentParticipants;
 
             if (results[0].id !== null) {
-                console.log("i");
+                connection.query("SELECT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
+                    if (err) throw err;
+
+                    let participantIsCook = false;
+                    let participantIsSignedUp = false;
+
+                    if (req.userId === cookId) {
+                        participantIsCook = true;
+                    }
+
+                    let count = 1;
+
+                    results.forEach((participant) => {
+                        if (participant.userId === req.userId && req.userId !== cookId) {
+                            participantIsSignedUp = true;
+                        }
+
+                        count++;
+                        if (results.length === count) {
+                            if (participantIsCook) {
+                                return next({
+                                    status: 400,
+                                    message: "The cook must be a participant at all times.",
+                                });
+                            }
+
+                            if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
+                                return next({
+                                    status: 404,
+                                    message: "Max amount of participants has already been reached.",
+                                });
+                            }
+
+                            if (!participantIsSignedUp) {
+                                connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
+                                    if (err) throw err;
+                                    connection.release();
+
+                                    res.status(200).json({
+                                        currentlyParticipating: true,
+                                        currentAmountOfParticipants: currentParticipants + 1,
+                                    });
+                                });
+                            } else {
+                                connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
+                                    if (err) throw err;
+                                    connection.release();
+
+                                    res.status(200).json({
+                                        currentlyParticipating: false,
+                                        currentAmountOfParticipants: currentParticipants - 1,
+                                    });
+                                });
+                            }
+                        }
+                    });
+                });
             } else {
                 return next({
                     status: 404,

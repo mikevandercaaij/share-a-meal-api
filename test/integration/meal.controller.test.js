@@ -15,7 +15,7 @@ const CLEAR_PARTICIPANTS_TABLE = "DELETE IGNORE FROM `meal_participants_user`;";
 const CLEAR_USERS_TABLE = "DELETE IGNORE FROM `user`;";
 const CLEAR_DB = CLEAR_MEAL_TABLE + CLEAR_PARTICIPANTS_TABLE + CLEAR_USERS_TABLE;
 
-const INSERT_MEALS = "INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES" + "(1, 'Meal A', 'description', 'image url', 5, 6.50, 1)," + "(2, 'Meal B', 'description', 'image url', 5, 6.50, 1);";
+const INSERT_MEALS = "INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES" + "(1, 'Meal A', 'description', 'image url', 5, 6.50, 1)," + "(2, 'Meal B', 'description', 'image url', 5, 6.50, 2);";
 const INSERT_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(1, "first", "last", "test@server.nl", "secret", "street", "city");';
 const INSERT_SECOND_USER = "INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES" + '(2, "first2", "last2", "test2@server.nl", "secret", "street2", "city2");';
 
@@ -79,6 +79,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     isVega: true,
                     isVegan: true,
                     isToTakeHome: true,
+                    dateTime: "2022-05-20T08:30:53.232Z",
                     imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
                     maxAmountOfParticipants: 6,
                     price: 6.75,
@@ -405,5 +406,88 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     done();
                 });
         });
+    });
+
+    // UC-401 Sign up for meal
+    describe("UC-401 Sign up for meal - GET /api/meal/:id/participate", () => {
+        it("TC-401-1 Not logged in", (done) => {
+            chai.request(server)
+                .get("/api/meal/1/participate")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, "test"))
+                .end((req, res) => {
+                    res.body.should.be.an("object");
+                    let { status, message } = res.body;
+                    status.should.equals(401);
+                    message.should.be.a("string").that.equals("Invalid token");
+                    done();
+                });
+        });
+        it("TC-401-2 Meal does not exist", (done) => {
+            chai.request(server)
+                .get("/api/meal/3/participate")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+                .end((req, res) => {
+                    res.body.should.be.an("object");
+                    let { status, message } = res.body;
+                    status.should.equals(404);
+                    message.should.be.a("string").that.equals("Meal does not exist.");
+                    done();
+                });
+        });
+        it("TC-401-3 Successfully signed up", (done) => {
+            chai.request(server)
+                .get("/api/meal/2/participate")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+                .end((req, res) => {
+                    // res.should.be.an("object");
+                    // let { status, message } = res.body;
+                    // status.should.equals(404);
+                    // message.should.be.a("string").that.equals("Meal does not exist");
+
+                    console.log(res.body);
+                    done();
+                });
+        });
+    });
+    // UC-402 Sign out for meal
+    describe("UC-402 Sign out for meal - GET /api/meal/:id/participate", () => {
+        it("TC-401-1 Not logged in", (done) => {
+            chai.request(server)
+                .get("/api/meal/1/participate")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, "test"))
+                .end((req, res) => {
+                    res.body.should.be.an("object");
+                    let { status, message } = res.body;
+                    status.should.equals(401);
+                    message.should.be.a("string").that.equals("Invalid token");
+                    done();
+                });
+        });
+        it("TC-402-2 Meal does not exist", (done) => {
+            chai.request(server)
+                .get("/api/meal/3/participate")
+                .set("authorization", "Bearer " + jwt.sign({ userId: 2 }, jwtSecretKey))
+                .end((req, res) => {
+                    res.body.should.be.an("object");
+                    let { status, message } = res.body;
+                    status.should.equals(404);
+                    message.should.be.a("string").that.equals("Meal does not exist.");
+                    done();
+                });
+        });
+        // it("TC-402-3 Successfully signed out", (done) => {
+        //     chai.request(server)
+        //         .get("/api/meal/2/participate")
+        //         .set("authorization", "Bearer " + jwt.sign({ userId: 1 }, jwtSecretKey))
+        //         .end((req, res) => {
+        //             // res.should.be.an("object");
+        //             // let { status, message } = res.body;
+        //             // status.should.equals(404);
+        //             // message.should.be.a("string").that.equals("Meal does not exist");
+
+        //             console.log(res.body);
+        //             done();
+        //         });
+        // });
     });
 });

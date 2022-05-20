@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const dbconnection = require("./../../database/dbconnection");
 // const validateEmail = require('../util/emailvalidator')
 const jwtSecretKey = require("./../config/config").jwtSecretKey;
+const { comparePassword } = require("./user.controller");
 
 module.exports = {
     login(req, res, next) {
@@ -23,7 +24,7 @@ module.exports = {
                     }
                     if (rows) {
                         // 2. Er was een resultaat, check het password.
-                        if (rows && rows.length === 1 && rows[0].password == req.body.password) {
+                        if (rows && rows.length === 1 && comparePassword(req.body.password, rows[0].password)) {
                             // Extract the password from the userdata - we do not send that in the response.
                             const { password, ...userinfo } = rows[0];
                             // Create an object containing the data we want in the payload.

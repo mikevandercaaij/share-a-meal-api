@@ -19,6 +19,7 @@
     },
     "homepage": "https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1#readme",
     "dependencies": {
+        "bcrypt": "^5.0.1",
         "dotenv": "^16.0.0",
         "express": "^4.17.3",
         "jsonwebtoken": "^8.5.1",

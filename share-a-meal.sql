@@ -24,11 +24,11 @@ DROP TABLE IF EXISTS `meal`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `meal` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `isActive` tinyint NOT NULL DEFAULT '0',
+  `isActive` tinyint NOT NULL DEFAULT '1',
   `isVega` tinyint NOT NULL DEFAULT '0',
   `isVegan` tinyint NOT NULL DEFAULT '0',
   `isToTakeHome` tinyint NOT NULL DEFAULT '1',
-  `dateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateTime` datetime NOT NULL,
   `maxAmountOfParticipants` int NOT NULL DEFAULT '6',
   `price` decimal(5,2) NOT NULL,
   `imageUrl` varchar(255) NOT NULL,

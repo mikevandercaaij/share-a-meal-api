@@ -1,8 +1,6 @@
 const assert = require("assert");
 const dbconnection = require("./../../database/dbconnection");
-// const MailChecker = require("mailchecker");
-// const { passwordStrength } = require("check-password-strength");
-// const { phone } = require("phone");
+const bcrypt = require("bcrypt");
 const { query } = require("./../../database/dbconnection");
 
 //validate user when it's being created
@@ -113,7 +111,7 @@ exports.addUser = (req, res, next) => {
 
             if (addUser) {
                 let queryString = "INSERT INTO user (firstName, lastName, emailAdress, password, street, city, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                let insertArray = [firstName, lastName, emailAdress, password, street, city, phoneNumber];
+                let insertArray = [firstName, lastName, emailAdress, exports.encryptPassword(password), street, city, phoneNumber];
 
                 //insert new user into users
                 connection.query(queryString, insertArray, (err, results, fields) => {
@@ -348,7 +346,7 @@ exports.updateUser = (req, res, next) => {
                         }
 
                         if (password) {
-                            updateArray.push(password);
+                            updateArray.push(exports.encryptPassword(password));
                             queryString += " password = ?,";
                         }
 
@@ -488,4 +486,14 @@ exports.formatUser = (results) => {
         return results[0];
     }
     return results;
+};
+
+exports.encryptPassword = (password) => {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    return hashedPassword;
+};
+
+exports.comparePassword = (currentPassword, databasePassword) => {
+    return bcrypt.compareSync(currentPassword, databasePassword);
 };
