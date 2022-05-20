@@ -154,14 +154,14 @@ exports.getAllUsers = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        let { isActive, firstName, limit } = req.query;
+        let { isActive, firstName, limit, lastName } = req.query;
 
         let queryString = "SELECT * FROM user";
 
-        if (isActive || firstName || limit) {
+        if (isActive || firstName || limit || lastName) {
             let count = 0;
 
-            if (isActive || firstName) {
+            if (isActive || firstName || lastName) {
                 queryString += " WHERE ";
             }
 
@@ -174,7 +174,16 @@ exports.getAllUsers = (req, res, next) => {
                 if (count > 0) {
                     queryString += " AND ";
                 }
+                count++;
                 queryString += `firstName = "${firstName}"`;
+            }
+
+            if (lastName) {
+                if (count > 0) {
+                    queryString += " AND ";
+                }
+                count++;
+                queryString += `lastName = "${lastName}"`;
             }
 
             if (limit) {
