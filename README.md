@@ -1,92 +1,794 @@
-# programmeren-4-lesson-1
+# share-a-meal-api
 
-
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://github.com/mikevandercaaij/share-a-meal-api.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.com/mvandercaaij1/programmeren-4-lesson-1/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Welcome to the official Share a Meal API. While using this API you'll be able to create an application where it's possible to create users and meals, but also sign up for dinner occasions. No one wants to throw out food right? So why not share it with others?
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+In order for the application to work you'll need to create a MYSQL database. This can either be done locally or online. The script (_share-a-meal.sql_) that is needed to fill your database with the fitting tables is given in the project. Follow the following steps to download/start the project.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Clone the project
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```bash
+  git clone https://github.com/mikevandercaaij/share-a-meal-api.git
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Go to the project directory
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```bash
+  cd share-a-meal-api
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Install dependencies
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run start
+```
+
+## Environment Variables
+
+To run this project, you will need to create an .env file and add the following environment variables to it.
+
+`PORT`
+`JWT_SECRET`
+`LOGLEVEL`
+`DB_HOST`
+`DB_PORT`
+`DB_USER`
+`DB_PASSWORD`
+`DB_DATABASE`
+
+## API Reference
+
+For a lot of request you'll need to be logged in first. After logging in you're able to use the given `token` in order to do such requests.
+
+### Login
+
+```http
+  POST /api/auth/login
+```
+
+#### Request body
+
+| Parameter     | Type     | Description  |
+| :------------ | :------- | :----------: |
+| `emailAdress` | `string` | **Required** |
+| `password`    | `string` | **Required** |
+
+#### Response
+
+```json
+    "status": 200,
+    "result": {
+        "id": 41,
+        "emailAdress": "test@student.com",
+        "firstName": "Mike",
+        "lastName": "van den Caaij",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQxLCJpYXQiOjE2NTMwNjAwNzgsImV4cCI6MTY1NDA5Njg3OH0.hs4TpYhyJB2mx9qAx6LZwCN_cdCHSheQqvGYyIVfAN4"
+    }
+```
+
+### Get all users
+
+```http
+  GET /api/user/
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        },
+        {
+            "id": 2,
+            "firstName": "John",
+            "lastName": "Doe",
+            "isActive": true,
+            "emailAdress": "j.doe@server.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0612425475",
+            "roles": [
+                "editor",
+                "guest"
+            ],
+            "street": "Lovendijkselaan 21",
+            "city": "Breda"
+        }
+}
+```
+
+### Get users using parameters
+
+```http
+  GET /api/user?firstName=Klaas&isActive=true
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters (maximum of 2 parameters tolerated)
+
+| Parameter     | Type     | Description  |
+| :------------ | :------- | :----------: |
+| `firstName`   | `string` | **Optional** |
+| `lastName`    | `string` | **Optional** |
+| `emailAdress` | `string` | **Optional** |
+| `password`    | `string` | **Optional** |
+| `phoneNumber` | `string` | **Optional** |
+| `street`      | `string` | **Optional** |
+| `city`        | `string` | **Optional** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 3,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        }
+}
+```
+
+### Get user by id
+
+```http
+  GET /api/user/:id
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        }
+}
+```
+
+### Get user profile (User that's currently logged in)
+
+```http
+  GET /api/user/profile
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        }
+}
+```
+
+### Create user
+
+```http
+  POST /api/user/
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### Request body
+
+| Parameter     | Type     | Description  |
+| :------------ | :------- | :----------: |
+| `firstName`   | `string` | **Required** |
+| `lastName`    | `string` | **Required** |
+| `emailAdress` | `string` | **Required** |
+| `password`    | `string` | **Required** |
+| `phoneNumber` | `string` | **Required** |
+| `street`      | `string` | **Required** |
+| `city`        | `string` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 201,
+    "result": {
+        "id": 42,
+        "firstName": "Jeroen",
+        "lastName": "van den Dullemen",
+        "isActive": true,
+        "emailAdress": "j.vddullemen@gmail.com",
+        "password": "$2b$10$Rcxwa/qmX0Hh.6a8dS3pZOjBvpPqkqBCrQgEOO.v/6MJy4lTmYLjq",
+        "phoneNumber": "0638719633",
+        "roles": ["editor", "guest"],
+        "street": "Amsterdamseweg 1",
+        "city": "Groningen"
+    }
+}
+```
+
+### Update user
+
+```http
+  PUT /api/user/:id
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Request body
+
+| Parameter     | Type     | Description  |
+| :------------ | :------- | :----------: |
+| `firstName`   | `string` | **Optional** |
+| `lastName`    | `string` | **Optional** |
+| `emailAdress` | `string` | **Optional** |
+| `password`    | `string` | **Optional** |
+| `phoneNumber` | `string` | **Optional** |
+| `street`      | `string` | **Optional** |
+| `city`        | `string` | **Optional** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        }
+}
+```
+
+### Delete user
+
+```http
+  DELETE /api/user/:id
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "message": "User has been deleted successfully."
+}
+```
+
+### Get all meals
+
+```http
+  GET /api/meal/
+```
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "result": [
+        {
+            "id": 1,
+            "isActive": true,
+            "isVega": false,
+            "isVegan": false,
+            "isToTakeHome": true,
+            "dateTime": "2022-03-22T16:35:00.000Z",
+            "maxAmountOfParticipants": 4,
+            "price": "12.75",
+            "imageUrl": "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
+            "createDate": "2022-02-26T17:12:40.048Z",
+            "updateDate": "2022-04-26T10:33:51.000Z",
+            "name": "Pasta Bolognese met tomaat, spekjes en kaas",
+            "description": "Een heerlijke klassieker! Altijd goed voor tevreden gesmikkel!",
+            "allergenes": ["gluten", "lactose"],
+            "cook": {
+                "id": 1,
+                "firstName": "Mariëtte",
+                "lastName": "van den Dullemen",
+                "isActive": true,
+                "emailAdress": "m.vandullemen@server.nl",
+                "password": "secret",
+                "phoneNumber": "",
+                "roles": [],
+                "street": "",
+                "city": ""
+            },
+            "participants": [
+                {
+                    "id": 1,
+                    "firstName": "Mariëtte",
+                    "lastName": "van den Dullemen",
+                    "isActive": true,
+                    "emailAdress": "m.vandullemen@server.nl",
+                    "password": "secret",
+                    "phoneNumber": "",
+                    "roles": [],
+                    "street": "",
+                    "city": ""
+                },
+                {
+                    "id": 3,
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "isActive": true,
+                    "emailAdress": "j.doe@server.com",
+                    "password": "secret",
+                    "phoneNumber": "06 12425475",
+                    "roles": ["editor", "guest"],
+                    "street": "",
+                    "city": ""
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "isActive": true,
+            "isVega": true,
+            "isVegan": false,
+            "isToTakeHome": false,
+            "dateTime": "2022-05-22T11:35:00.000Z",
+            "maxAmountOfParticipants": 4,
+            "price": "12.75",
+            "imageUrl": "https://static.ah.nl/static/recepten/img_RAM_PRD159322_1024x748_JPG.jpg",
+            "createDate": "2022-02-26T17:12:40.048Z",
+            "updateDate": "2022-04-25T10:56:05.000Z",
+            "name": "Aubergine uit de oven met feta, muntrijst en tomatensaus",
+            "description": "Door aubergines in de oven te roosteren worden ze heerlijk zacht. De balsamico maakt ze heerlijk zoet.",
+            "allergenes": ["noten"],
+            "cook": {
+                "id": 2,
+                "firstName": "John",
+                "lastName": "Doe",
+                "isActive": true,
+                "emailAdress": "j.doe@server.com",
+                "password": "secret",
+                "phoneNumber": "06 12425475",
+                "roles": ["editor", "guest"],
+                "street": "",
+                "city": ""
+            },
+            "participants": [
+                {
+                    "id": 2,
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "isActive": true,
+                    "emailAdress": "j.doe@server.com",
+                    "password": "secret",
+                    "phoneNumber": "06 12425475",
+                    "roles": ["editor", "guest"],
+                    "street": "",
+                    "city": ""
+                },
+                {
+                    "id": 4,
+                    "firstName": "Marieke",
+                    "lastName": "Van Dam",
+                    "isActive": false,
+                    "emailAdress": "m.vandam@server.nl",
+                    "password": "secret",
+                    "phoneNumber": "06-12345678",
+                    "roles": ["editor", "guest"],
+                    "street": "",
+                    "city": ""
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Get meal by id
+
+```http
+  GET /api/meal/:id
+```
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 201,
+    "result": {
+        "id": 37,
+        "isActive": true,
+        "isVega": true,
+        "isVegan": true,
+        "isToTakeHome": true,
+        "dateTime": "2022-05-20T06:30:53.000Z",
+        "maxAmountOfParticipants": 6,
+        "price": "6.75",
+        "imageUrl": "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
+        "createDate": "2022-05-20T20:59:00.707Z",
+        "updateDate": "2022-05-20T20:59:00.707Z",
+        "name": "Spaghetti Bolognese",
+        "description": "De pastaklassieker bij uitstek.",
+        "allergenes": ["gluten", "noten"],
+        "cook": {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        },
+        "participants": [
+            {
+                "id": 1,
+                "firstName": "Klaas",
+                "lastName": "Tilburg",
+                "isActive": true,
+                "emailAdress": "k.tilburg@holland.com",
+                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+                "phoneNumber": "0638719633",
+                "roles": [],
+                "street": "Hopstraat",
+                "city": "Amsterdam"
+            }
+        ]
+    }
+}
+```
+
+### Create meal
+
+```http
+  POST /api/meal/
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### Request body
+
+| Parameter                 | Type                 | Description  |
+| :------------------------ | :------------------- | :----------: |
+| `name`                    | `string`             | **Required** |
+| `description`             | `string`             | **Required** |
+| `isVega`                  | `boolean/number`     | **Required** |
+| `isVegan`                 | `boolean/number`     | **Required** |
+| `isToTakeHome`            | `boolean/number`     | **Required** |
+| `dateTime`                | `string`             | **Required** |
+| `imageUrl`                | `string`             | **Required** |
+| `maxAmountOfParticipants` | `number`             | **Required** |
+| `price`                   | `number`             | **Required** |
+| `allergenes`              | `array (of strings)` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 201,
+    "result": {
+        "id": 37,
+        "isActive": true,
+        "isVega": true,
+        "isVegan": true,
+        "isToTakeHome": true,
+        "dateTime": "2022-05-20T06:30:53.000Z",
+        "maxAmountOfParticipants": 6,
+        "price": "6.75",
+        "imageUrl": "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
+        "createDate": "2022-05-20T20:59:00.707Z",
+        "updateDate": "2022-05-20T20:59:00.707Z",
+        "name": "Spaghetti Bolognese",
+        "description": "De pastaklassieker bij uitstek.",
+        "allergenes": ["gluten", "noten"],
+        "cook": {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        },
+        "participants": [
+            {
+                "id": 1,
+                "firstName": "Klaas",
+                "lastName": "Tilburg",
+                "isActive": true,
+                "emailAdress": "k.tilburg@holland.com",
+                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+                "phoneNumber": "0638719633",
+                "roles": [],
+                "street": "Hopstraat",
+                "city": "Amsterdam"
+            }
+        ]
+    }
+}
+```
+
+### Update meal
+
+```http
+  PUT /api/meal/
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Request body (only one of the required fields are actually required)
+
+| Parameter                 | Type                 | Description  |
+| :------------------------ | :------------------- | :----------: |
+| `name`                    | `string`             | **Optional** |
+| `description`             | `string`             | **Optional** |
+| `isVega`                  | `boolean/number`     | **Optional** |
+| `isVegan`                 | `boolean/number`     | **Optional** |
+| `isToTakeHome`            | `boolean/number`     | **Optional** |
+| `dateTime`                | `string`             | **Optional** |
+| `imageUrl`                | `string`             | **Optional** |
+| `maxAmountOfParticipants` | `number`             | **Required** |
+| `price`                   | `number`             | **Required** |
+| `allergenes`              | `array (of strings)` | **Optional** |
+
+#### Response
+
+```json
+{
+    "status": 201,
+    "result": {
+        "id": 37,
+        "isActive": true,
+        "isVega": true,
+        "isVegan": true,
+        "isToTakeHome": true,
+        "dateTime": "2022-05-20T06:30:53.000Z",
+        "maxAmountOfParticipants": 6,
+        "price": "6.75",
+        "imageUrl": "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
+        "createDate": "2022-05-20T20:59:00.707Z",
+        "updateDate": "2022-05-20T20:59:00.707Z",
+        "name": "Spaghetti Bolognese",
+        "description": "De pastaklassieker bij uitstek.",
+        "allergenes": ["gluten", "noten"],
+        "cook": {
+            "id": 1,
+            "firstName": "Klaas",
+            "lastName": "Tilburg",
+            "isActive": true,
+            "emailAdress": "k.tilburg@holland.com",
+            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+            "phoneNumber": "0638719633",
+            "roles": [],
+            "street": "Hopstraat",
+            "city": "Amsterdam"
+        },
+        "participants": [
+            {
+                "id": 1,
+                "firstName": "Klaas",
+                "lastName": "Tilburg",
+                "isActive": true,
+                "emailAdress": "k.tilburg@holland.com",
+                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
+                "phoneNumber": "0638719633",
+                "roles": [],
+                "street": "Hopstraat",
+                "city": "Amsterdam"
+            }
+        ]
+    }
+}
+```
+
+### Delete meal
+
+```http
+  DELETE /api/meal/:id
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Response
+
+```json
+{
+    "status": 200,
+    "message": "Meal has been deleted successfully."
+}
+```
+
+### Meal participation
+
+```http
+  GET /api/meal/:id/participate
+```
+
+#### Header
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `token`   | `Bearer` | **Required** |
+
+#### URL parameters
+
+| Parameter | Type     | Description  |
+| :-------- | :------- | :----------: |
+| `id`      | `number` | **Required** |
+
+#### Response
+
+```json
+{
+    "currentlyParticipating": true,
+    "currentAmountOfParticipants": 3
+}
+```
+
+#### or
+
+```json
+{
+    "currentlyParticipating": false,
+    "currentAmountOfParticipants": 2
+}
+```
+
+#### depending on if you're already signed in for the meal occasion or not
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm run test
+```
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This application is of free use for any open source project.
+
+## FAQ
+
+#### Why are the parameters _emailAdress_ and _allergenes_ spelled wrong?
+
+This project is based on an API our teacher has made in the past. Unfortunately I had to write it the way he did. Otherwise the application wouldn't have survived the assertion tests they made.
+
+## Support
+
+For support, email mvdc2000@hotmail.nl and I'll answer your question as soon as possible.
