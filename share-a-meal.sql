@@ -84,13 +84,18 @@ CREATE TABLE `meal_participants_user` (
 LOCK TABLES `meal_participants_user` WRITE;
 /*!40000 ALTER TABLE `meal_participants_user` DISABLE KEYS */;
 INSERT INTO `meal_participants_user` VALUES 
+(1,1),
 (1,2),
 (1,3),
 (1,5),
+(2,2),
+(3,2),
 (2,4),
 (3,3),
 (3,4),
+(4,3),
 (4,2),
+(5,3),
 (5,4);
 /*!40000 ALTER TABLE `meal_participants_user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -125,11 +130,11 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES 
-(1,'Mariëtte','van den Dullemen',1,'m.vandullemen@server.nl','secret','','','',''),
-(2,'John','Doe',1,'j.doe@server.com','secret','06 12425475','editor,guest','',''),
-(3,'Herman','Huizinga',1,'h.huizinga@server.nl','secret','06-12345678','editor,guest','',''),
-(4,'Marieke','Van Dam',0,'m.vandam@server.nl','secret','06-12345678','editor,guest','',''),
-(5,'Henk','Tank',1,'h.tank@server.com','secret','06 12425495','editor,guest','','');
+(1,'Mariëtte','van den Dullemen',1,'m.vandullemen@server.nl','V3ryS3cr#t','','','',''),
+(2,'John','Doe',1,'j.doe@server.com','V3ryS3cr#t','06 12425475','editor,guest','',''),
+(3,'Herman','Huizinga',1,'h.huizinga@server.nl','V3ryS3cr#t','06-12345678','editor,guest','',''),
+(4,'Marieke','Van Dam',0,'m.vandam@server.nl','V3ryS3cr#t','06-12345678','editor,guest','',''),
+(5,'Henk','Tank',1,'h.tank@server.com','V3ryS3cr#t','06 12425495','editor,guest','','');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

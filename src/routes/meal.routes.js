@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
 const mealController = require("./../controllers/meal.controller");
 const authController = require("./../controllers/auth.controller");
 
@@ -29,3 +28,5 @@ router
 
     //UC-305 Delete a meal
     .delete(authController.validateToken, mealController.deleteMeal);
+
+router.route("/api/meal/:mealId/participate").get(authController.validateToken, mealController.participateMeal);

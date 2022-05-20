@@ -170,7 +170,9 @@ exports.addMeal = (req, res, next) => {
 
                                 meal = {
                                     ...meal,
-                                    participants,
+                                    participants: participants.sort((a, b) => {
+                                        return a.id - b.id;
+                                    }),
                                 };
 
                                 //return successful status + result
@@ -222,6 +224,8 @@ exports.updateMeal = (req, res, next) => {
             if (err) throw err;
 
             const oldMeal = results[0];
+
+            console.log(results.length);
 
             //if meal exists
             if (results.length === 1) {
@@ -285,7 +289,9 @@ exports.updateMeal = (req, res, next) => {
 
                                         meal = {
                                             ...meal,
-                                            participants,
+                                            participants: participants.sort((a, b) => {
+                                                return a.id - b.id;
+                                            }),
                                         };
 
                                         //return successful status + result
@@ -365,15 +371,18 @@ exports.getAllMeals = (req, res) => {
                             if (participantsAmount === participants.length) {
                                 meal = {
                                     ...meal,
-                                    participants,
+                                    participants: participants.sort((a, b) => {
+                                        return a.id - b.id;
+                                    }),
                                 };
+
                                 allMeals.push(meal);
                                 connection.release();
                                 if (amountOfMeals === allMeals.length) {
                                     //return successful status + result
                                     res.status(200).json({
                                         status: 200,
-                                        result: allMeals.sort(function (a, b) {
+                                        result: allMeals.sort((a, b) => {
                                             return a.id - b.id;
                                         }),
                                     });
@@ -450,7 +459,9 @@ exports.getMealByID = (req, res, next) => {
 
                             meal = {
                                 ...meal,
-                                participants,
+                                participants: participants.sort((a, b) => {
+                                    return a.id - b.id;
+                                }),
                             };
 
                             //return successful status + result
@@ -537,6 +548,37 @@ exports.deleteMeal = (req, res, next) => {
                         }
                     });
                 }
+            }
+        });
+    });
+};
+
+exports.participateMeal = (req, res, next) => {
+    //save parameter (id) in variable
+    const id = Number(req.params.mealId);
+
+    //check if parameter is a number
+    if (isNaN(id)) {
+        return next();
+    }
+
+    dbconnection.getConnection((err, connection) => {
+        if (err) throw err;
+
+        const getMealInfoQuery = "SELECT id, cookId, maxAmountOfParticipants, COUNT(meal_participants_user.userId) AS currentParticipants FROM meal JOIN meal_participants_user ON meal.id = meal_participants_user.mealId WHERE meal.id =  ?";
+
+        connection.query(getMealInfoQuery, id, (err, results, fields) => {
+            const cookId = results[0].cookId;
+            const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
+            const currentParticipants = results[0].currentParticipants;
+
+            if (results[0].id !== null) {
+                console.log("i");
+            } else {
+                return next({
+                    status: 404,
+                    message: "Meal does not exist.",
+                });
             }
         });
     });
