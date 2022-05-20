@@ -326,6 +326,9 @@ exports.updateUser = (req, res, next) => {
                             ...newUser,
                         };
 
+                        //encrypt password
+                        user.password = exports.encryptPassword(user.password);
+
                         const { firstName, lastName, emailAdress, password, phoneNumber, street, city } = user;
                         let updateArray = [];
                         let queryString = "UPDATE user SET";
@@ -346,7 +349,7 @@ exports.updateUser = (req, res, next) => {
                         }
 
                         if (password) {
-                            updateArray.push(exports.encryptPassword(password));
+                            updateArray.push(password);
                             queryString += " password = ?,";
                         }
 
