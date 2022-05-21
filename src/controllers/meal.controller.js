@@ -126,12 +126,12 @@ exports.addMeal = (req, res, next) => {
         //alter allergenes syntax if it is in the request body
         req.body.allergenes = req.body.allergenes.join(",");
 
-        const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+        // const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
 
         let { isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes } = req.body;
 
         const insertQuery = "INSERT INTO meal(isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, cookId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, date, allergenes, req.userId];
+        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, req.userId];
 
         //insert new meal into meals
         connection.query(insertQuery, insertArray, (err, results, fields) => {
@@ -256,10 +256,10 @@ exports.updateMeal = (req, res, next) => {
 
                     const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price, dateTime } = meal;
 
-                    const date = new Date(dateTime).toISOString().slice(0, 19).replace("T", " ");
+                    // const date = new Date(dateTime).toISOString().slice(0, 19).replace("T", " ");
 
                     //update meal
-                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, date, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, dateTime, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
