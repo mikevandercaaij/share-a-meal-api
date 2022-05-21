@@ -509,21 +509,23 @@ exports.deleteUser = (req, res, next) => {
     });
 };
 exports.formatUser = (results) => {
-    results.forEach((result) => {
-        if (result.isActive === 1) {
-            result.isActive = true;
-        } else {
-            result.isActive = false;
-        }
+    if (results.length > 0) {
+        results.forEach((result) => {
+            if (result.isActive === 1) {
+                result.isActive = true;
+            } else {
+                result.isActive = false;
+            }
 
-        if (result.roles === "") {
-            result.roles = [];
-        }
+            if (result.roles === "") {
+                result.roles = [];
+            }
 
-        if (typeof result.roles === "string") {
-            result.roles = result.roles.split(",");
-        }
-    });
+            if (typeof result.roles === "string") {
+                result.roles = result.roles.split(",");
+            }
+        });
+    }
 
     if (results.length === 1) {
         return results[0];
