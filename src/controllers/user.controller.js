@@ -174,6 +174,7 @@ exports.getAllUsers = (req, res, next) => {
                 if (count === 1) {
                     queryString += " AND ";
                 }
+                console.log(firstName);
                 count++;
                 queryString += `firstName = "${firstName}"`;
             }
