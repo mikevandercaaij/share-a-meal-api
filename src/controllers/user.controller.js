@@ -239,6 +239,8 @@ exports.getAllUsers = (req, res, next) => {
             //close connection
             connection.release();
 
+            console.log(results);
+
             //send back all results
             res.status(200).json({
                 status: 200,
