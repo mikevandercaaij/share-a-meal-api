@@ -407,7 +407,6 @@ exports.getAllMeals = (req, res) => {
                                 connection.release();
                                 if (amountOfMeals === allMeals.length) {
                                     console.log("all meals collected");
-                                    console.log(allMeals);
 
                                     //return successful status + result
                                     res.status(200).json({
@@ -453,6 +452,8 @@ exports.getMealByID = (req, res, next) => {
             return next();
         }
 
+        console.log("get meal by id");
+
         //get requested meal's data
         connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
             //throw error if something went wrong
@@ -494,9 +495,7 @@ exports.getMealByID = (req, res, next) => {
                                 }),
                             };
 
-                            console.log("get meal by id");
-
-                            console.log(meal);
+                            console.log("get meal by id collected");
 
                             //return successful status + result
                             res.status(200).json({
@@ -539,6 +538,8 @@ exports.deleteMeal = (req, res, next) => {
     if (isNaN(id)) {
         return next();
     }
+
+    console.log("begin delete meal");
 
     //create connection
     dbconnection.getConnection((err, connection) => {
@@ -598,6 +599,8 @@ exports.participateMeal = (req, res, next) => {
         return next();
     }
 
+    console.log("participate meal");
+
     dbconnection.getConnection((err, connection) => {
         if (err) throw err;
 
@@ -647,6 +650,8 @@ exports.participateMeal = (req, res, next) => {
                                     if (err) throw err;
                                     connection.release();
 
+                                    console.log("signed in");
+
                                     res.status(200).json({
                                         currentlyParticipating: true,
                                         currentAmountOfParticipants: currentParticipants + 1,
@@ -656,6 +661,8 @@ exports.participateMeal = (req, res, next) => {
                                 connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
                                     if (err) throw err;
                                     connection.release();
+
+                                    console.log("signed out");
 
                                     res.status(200).json({
                                         currentlyParticipating: false,
