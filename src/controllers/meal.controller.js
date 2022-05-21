@@ -171,7 +171,7 @@ exports.addMeal = (req, res, next) => {
                                     //return successful status + result
                                     res.status(201).json({
                                         status: 201,
-                                        result: meal,
+                                        result: meal[0],
                                     });
 
                                     res.end();
@@ -295,7 +295,7 @@ exports.updateMeal = (req, res, next) => {
                                         //return successful status + result
                                         res.status(200).json({
                                             status: 200,
-                                            result: meal,
+                                            result: meal[0],
                                         });
 
                                         res.end();
@@ -465,7 +465,7 @@ exports.getMealByID = (req, res, next) => {
                             //return successful status + result
                             res.status(200).json({
                                 status: 200,
-                                result: meal,
+                                result: meal[0],
                             });
 
                             res.end();
