@@ -560,8 +560,6 @@ exports.participateMeal = (req, res, next) => {
         return next();
     }
 
-    console.log("participate meal");
-
     dbconnection.getConnection((err, connection) => {
         if (err) throw err;
 
@@ -569,8 +567,6 @@ exports.participateMeal = (req, res, next) => {
 
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
-
-            console.log(results[0]);
 
             console.log("get all meal info + participants amount");
 
@@ -591,7 +587,7 @@ exports.participateMeal = (req, res, next) => {
 
                     console.log("get userid from meal (for cook check)");
 
-                    let count = 1;
+                    let count = 0;
 
                     results.forEach((participant) => {
                         if (participant.userId === req.userId && req.userId !== cookId) {
@@ -603,6 +599,9 @@ exports.participateMeal = (req, res, next) => {
                         count++;
                         if (results.length === count) {
                             console.log("every participant is checked (length is the same)");
+
+                            console.log(participantIsSignedUp);
+
                             if (participantIsCook) {
                                 return next({
                                     status: 400,
