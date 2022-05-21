@@ -224,10 +224,6 @@ exports.updateMeal = (req, res, next) => {
             return next();
         }
 
-        if (req.body.dateTime) {
-            req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
-        }
-
         const newMeal = req.body;
 
         connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
@@ -260,8 +256,10 @@ exports.updateMeal = (req, res, next) => {
 
                     const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price, dateTime } = meal;
 
+                    const date = new Date(dateTime).toISOString().slice(0, 19).replace("T", " ");
+
                     //update meal
-                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, dateTime, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, date, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
