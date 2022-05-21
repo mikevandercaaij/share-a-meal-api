@@ -224,9 +224,9 @@ exports.updateMeal = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        if (req.body.dateTime) {
-            req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
-        }
+        // if (req.body.dateTime) {
+        //     req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+        // }
 
         console.log(req.body.dateTime);
 
