@@ -214,7 +214,12 @@ exports.updateMeal = (req, res, next) => {
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
         if (err) throw err;
-        const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+
+        if (req.body.dateTime) {
+            req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+        }
+
+        console.log(req.body.dateTime);
 
         //save parameter (id) in variable
         const id = Number(req.params.id);
@@ -256,10 +261,12 @@ exports.updateMeal = (req, res, next) => {
 
                     const { name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, maxAmountOfParticipants, price, dateTime } = meal;
 
+                    console.log(dateTime);
+
                     // const date = new Date(dateTime).toISOString().slice(0, 19).replace("T", " ");
 
                     //update meal
-                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, date, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
+                    connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, dateTime, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
