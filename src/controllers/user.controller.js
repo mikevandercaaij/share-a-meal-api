@@ -237,14 +237,6 @@ exports.getAllUsers = (req, res, next) => {
             //close connection
             connection.release();
 
-            results.forEach((item) => {
-                if (item.isActive === 1) {
-                    item.isActive = true;
-                } else {
-                    item.isActive = false;
-                }
-            });
-
             //send back all results
             res.status(200).json({
                 status: 200,
