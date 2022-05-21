@@ -606,12 +606,12 @@ exports.participateMeal = (req, res, next) => {
                             //     });
                             // }
 
-                            if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
-                                return next({
-                                    status: 404,
-                                    message: "Max amount of participants has already been reached.",
-                                });
-                            }
+                            // if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
+                            //     return next({
+                            //         status: 404,
+                            //         message: "Max amount of participants has already been reached.",
+                            //     });
+                            // }
 
                             if (!participantIsSignedUp) {
                                 connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
