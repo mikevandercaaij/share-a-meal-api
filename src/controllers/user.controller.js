@@ -220,6 +220,8 @@ exports.getAllUsers = (req, res, next) => {
             }
 
             if (limit) {
+                count++;
+
                 queryString += ` LIMIT ${limit}`;
             }
 
