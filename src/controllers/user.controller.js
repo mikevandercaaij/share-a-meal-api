@@ -239,8 +239,6 @@ exports.getAllUsers = (req, res, next) => {
             //close connection
             connection.release();
 
-            console.log(results);
-
             //send back all results
             res.status(200).json({
                 status: 200,
@@ -333,8 +331,6 @@ exports.updateUser = (req, res, next) => {
             return next();
         }
 
-        console.log("update user");
-
         //set user object with given request body
         let user = req.body;
 
@@ -414,6 +410,9 @@ exports.updateUser = (req, res, next) => {
                         updateArray.push(id);
                         queryString = queryString.slice(0, -1) + " WHERE id = ?";
 
+                        console.log(queryString);
+                        console.log(updateArray);
+
                         //update user
                         connection.query(queryString, updateArray, (err, results, fields) => {
                             //throw error if something went wrong
@@ -460,8 +459,6 @@ exports.deleteUser = (req, res, next) => {
         return next();
     }
 
-    console.log("delete user");
-
     //create connection
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
@@ -484,8 +481,6 @@ exports.deleteUser = (req, res, next) => {
 
                         //close connection
                         connection.release();
-
-                        console.log("user deleted");
 
                         //if a row has been deleted
                         if (results.affectedRows === 1) {
