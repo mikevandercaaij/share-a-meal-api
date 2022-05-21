@@ -129,7 +129,7 @@ exports.addUser = (req, res, next) => {
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
-                            result: exports.formatUser(results),
+                            result: exports.formatUser(results)[0],
                         });
 
                         //end response process
@@ -261,7 +261,7 @@ exports.getUserProfile = (req, res) => {
 
             res.status(200).json({
                 status: 200,
-                result: exports.formatUser(results),
+                result: exports.formatUser(results)[0],
             });
 
             //end response process
@@ -298,7 +298,7 @@ exports.getUserByID = (req, res, next) => {
                 //return successful status + result
                 res.status(200).json({
                     status: 200,
-                    result: exports.formatUser(results),
+                    result: exports.formatUser(results)[0],
                 });
 
                 //end response process
@@ -424,7 +424,7 @@ exports.updateUser = (req, res, next) => {
                             //return successful status + updated user
                             res.status(200).json({
                                 status: 200,
-                                result: exports.formatUser([user]),
+                                result: exports.formatUser([user])[0],
                             });
 
                             //end response process
