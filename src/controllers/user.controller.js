@@ -174,7 +174,6 @@ exports.getAllUsers = (req, res, next) => {
                 if (count === 1) {
                     queryString += " AND ";
                 }
-                console.log(String(firstName));
                 count++;
                 queryString += `firstName = '${firstName}'`;
             }
@@ -231,23 +230,21 @@ exports.getAllUsers = (req, res, next) => {
                     message: "Maximum amount of parameters (2) has been surpassed.",
                 });
             }
-            //get all users
-            connection.query(queryString, (err, results, fields) => {
-                //throw error if something went wrong
-                if (err) throw err;
-
-                //close connection
-                connection.release();
-
-                console.log(results);
-
-                //send back all results
-                res.status(200).json({
-                    status: 200,
-                    result: exports.formatUser(results),
-                });
-            });
         }
+        //get all users
+        connection.query(queryString, (err, results, fields) => {
+            //throw error if something went wrong
+            if (err) throw err;
+
+            //close connection
+            connection.release();
+
+            //send back all results
+            res.status(200).json({
+                status: 200,
+                result: exports.formatUser(results),
+            });
+        });
     });
 };
 
