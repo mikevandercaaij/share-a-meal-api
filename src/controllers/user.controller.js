@@ -176,7 +176,7 @@ exports.getAllUsers = (req, res, next) => {
                 }
                 console.log(String(firstName));
                 count++;
-                queryString += `firstName = "${String(firstName)}"`;
+                queryString += `firstName = '${firstName}'`;
             }
 
             if (lastName) {
@@ -184,7 +184,7 @@ exports.getAllUsers = (req, res, next) => {
                     queryString += " AND ";
                 }
                 count++;
-                queryString += `lastName = "${lastName}"`;
+                queryString += `lastName = '${lastName}'`;
             }
 
             if (emailAdress) {
@@ -192,7 +192,7 @@ exports.getAllUsers = (req, res, next) => {
                     queryString += " AND ";
                 }
                 count++;
-                queryString += `emailAdress = "${emailAdress}"`;
+                queryString += `emailAdress = '${emailAdress}'`;
             }
 
             if (street) {
@@ -200,7 +200,7 @@ exports.getAllUsers = (req, res, next) => {
                     queryString += " AND ";
                 }
                 count++;
-                queryString += `street = "${street}"`;
+                queryString += `street = '${street}'`;
             }
 
             if (city) {
@@ -208,7 +208,7 @@ exports.getAllUsers = (req, res, next) => {
                     queryString += " AND ";
                 }
                 count++;
-                queryString += `city = "${city}"`;
+                queryString += `city = '${city}'`;
             }
 
             if (phoneNumber) {
@@ -216,7 +216,7 @@ exports.getAllUsers = (req, res, next) => {
                     queryString += " AND ";
                 }
                 count++;
-                queryString += `phoneNumber = "${phoneNumber}"`;
+                queryString += `phoneNumber = '${phoneNumber}'`;
             }
 
             if (limit) {
