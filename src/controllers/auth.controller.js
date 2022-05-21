@@ -1,5 +1,6 @@
 const assert = require("assert");
 const jwt = require("jsonwebtoken");
+const { userInfo } = require("os");
 const dbconnection = require("./../../database/dbconnection");
 // const validateEmail = require('../util/emailvalidator')
 const jwtSecretKey = require("./../config/config").jwtSecretKey;
@@ -15,7 +16,7 @@ module.exports = {
             }
             if (connection) {
                 // 1. Kijk of deze useraccount bestaat.
-                connection.query("SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName` FROM `user` WHERE `emailAdress` = ?", [req.body.emailAdress], (err, rows, fields) => {
+                connection.query("SELECT `id`, `emailAdress`, `password`, `firstName`, `lastName`, `isActive` FROM `user` WHERE `emailAdress` = ?", [req.body.emailAdress], (err, rows, fields) => {
                     connection.release();
                     if (err) {
                         res.status(500).json({
@@ -32,12 +33,16 @@ module.exports = {
                                 userId: userinfo.id,
                             };
 
-                            console.log(rows);
+                            if (rows[0].isActive === 1) {
+                                rows[0].isActive = true;
+                            } else {
+                                rows[0].isActive = false;
+                            }
 
                             jwt.sign(payload, jwtSecretKey, { expiresIn: "12d" }, function (err, token) {
                                 res.status(200).json({
                                     status: 200,
-                                    result: { ...userinfo, token },
+                                    result: { ...rows[0], token },
                                 });
                             });
                         } else {
