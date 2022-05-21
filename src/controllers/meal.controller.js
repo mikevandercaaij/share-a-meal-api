@@ -143,6 +143,9 @@ exports.addMeal = (req, res, next) => {
             //add cook as a participant
             connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
                 //get meal
+
+                console.log("meal added");
+
                 connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
@@ -179,6 +182,8 @@ exports.addMeal = (req, res, next) => {
                                             return a.id - b.id;
                                         }),
                                     };
+
+                                    console.log(meal);
 
                                     //return successful status + result
                                     res.status(201).json({
@@ -269,6 +274,8 @@ exports.updateMeal = (req, res, next) => {
                     connection.query("UPDATE meal SET name = ?, description = ?, isActive = ?, isVega = ?, isVegan = ?, isToTakeHome = ?, imageUrl = ?, dateTime = ?, allergenes = ?, maxAmountOfParticipants = ?, price = ? WHERE id = ?", [name, description, isActive, isVega, isVegan, isToTakeHome, imageUrl, dateTime, allergenes, maxAmountOfParticipants, price, id], (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
+
+                        console.log("meal updated");
 
                         connection.query("SELECT * FROM meal WHERE id = ?", id, (err, results, fields) => {
                             //close connection
