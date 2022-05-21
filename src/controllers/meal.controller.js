@@ -594,9 +594,8 @@ exports.participateMeal = (req, res, next) => {
                             participantIsSignedUp = true;
                         }
 
-                        console.log("total: " + results.length, "count: " + count);
-
                         count++;
+                        console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
                             console.log("every participant is checked (length is the same)");
 
