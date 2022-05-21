@@ -39,7 +39,7 @@ exports.validateMealCreate = (req, res, next) => {
         //if not return error
         return next({
             status: 400,
-            result: err.message,
+            message: err.message,
         });
     }
 };
@@ -111,7 +111,7 @@ exports.validateMealUpdate = (req, res, next) => {
         //if not return error
         return next({
             status: 400,
-            result: err.message,
+            message: err.message,
         });
     }
 };
@@ -125,11 +125,15 @@ exports.addMeal = (req, res, next) => {
 
         //alter allergenes syntax if it is in the request body
         req.body.allergenes = req.body.allergenes.join(",");
+        console.log(req.body.dateTime.split("'"));
 
         //Create insertQuery
         const bodyValues = Object.keys(req.body);
         const insertValues = Object.values(req.body);
+        insertValues = convertBoolToInt(insertValues);
         insertValues.push(req.userId);
+
+        console.log(insertValues);
         const insertQuery = "INSERT INTO meal(" + bodyValues.join(",") + ",cookId) VALUES (" + "?, ".repeat(insertValues.length - 1) + "?);";
 
         //insert new meal into meals
@@ -184,7 +188,6 @@ exports.addMeal = (req, res, next) => {
                                 //return successful status + result
                                 res.status(201).json({
                                     status: 201,
-                                    message: "Meal has been created successfully.",
                                     result: meal,
                                 });
 
@@ -680,4 +683,30 @@ const formatMeal = (results) => {
         return results[0];
     }
     return results;
+};
+
+const convertBoolToInt = (arr) => {
+    results.forEach((item) => {
+        let boolObj = {
+            isActive: item.isActive,
+            isVega: item.isVega,
+            isVegan: item.isVegan,
+            isToTakeHome: item.isToTakeHome,
+        };
+        let keys = Object.keys(boolObj);
+        keys.forEach((key) => {
+            if (boolObj[key] === true) {
+                boolObj[key] = 1;
+            } else {
+                boolObj[key] = 0;
+            }
+        });
+
+        arr.isActive = boolObj.isActive;
+        arr.isVega = boolObj.isVega;
+        arr.isVegan = boolObj.isVegan;
+        arr.isToTakeHome = boolObj.isToTakeHome;
+    });
+
+    return arr;
 };
