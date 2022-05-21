@@ -131,14 +131,18 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 | :-------- | :------- | :----------: |
 | `token`   | `Bearer` | **Required** |
 
-#### URL parameters
+#### URL parameters (a maximum of 2 parameters are tolerated)
 
-| Parameter   | Type             | Description  |
-| :---------- | :--------------- | :----------: |
-| `firstName` | `string`         | **Optional** |
-| `lastName`  | `string`         | **Optional** |
-| `limit`     | `number`         | **Optional** |
-| `isActive`  | `boolean/number` | **Optional** |
+| Parameter     | Type             | Description  |
+| :------------ | :--------------- | :----------: |
+| `firstName`   | `string`         | **Optional** |
+| `lastName`    | `string`         | **Optional** |
+| `emailAdress` | `string`         | **Optional** |
+| `street`      | `string`         | **Optional** |
+| `city`        | `string`         | **Optional** |
+| `phoneNumber` | `string`         | **Optional** |
+| `limit`       | `number`         | **Optional** |
+| `isActive`    | `boolean/number` | **Optional** |
 
 #### Response
 

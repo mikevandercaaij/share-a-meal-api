@@ -154,14 +154,14 @@ exports.getAllUsers = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        let { isActive, firstName, limit, lastName } = req.query;
+        let { isActive, firstName, limit, lastName, emailAdress, street, city, phoneNumber } = req.query;
 
         let queryString = "SELECT * FROM user";
 
-        if (isActive || firstName || limit || lastName) {
+        if (isActive || firstName || limit || lastName || emailAdress || street || city || phoneNumber) {
             let count = 0;
 
-            if (isActive || firstName || lastName) {
+            if (isActive || firstName || lastName || emailAdress || street || city || phoneNumber) {
                 queryString += " WHERE ";
             }
 
@@ -171,7 +171,7 @@ exports.getAllUsers = (req, res, next) => {
             }
 
             if (firstName) {
-                if (count > 0) {
+                if (count === 1) {
                     queryString += " AND ";
                 }
                 count++;
@@ -179,15 +179,54 @@ exports.getAllUsers = (req, res, next) => {
             }
 
             if (lastName) {
-                if (count > 0) {
+                if (count === 1) {
                     queryString += " AND ";
                 }
                 count++;
                 queryString += `lastName = "${lastName}"`;
             }
 
+            if (emailAdress) {
+                if (count === 1) {
+                    queryString += " AND ";
+                }
+                count++;
+                queryString += `emailAdress = "${emailAdress}"`;
+            }
+
+            if (street) {
+                if (count === 1) {
+                    queryString += " AND ";
+                }
+                count++;
+                queryString += `street = "${street}"`;
+            }
+
+            if (city) {
+                if (count === 1) {
+                    queryString += " AND ";
+                }
+                count++;
+                queryString += `city = "${city}"`;
+            }
+
+            if (phoneNumber) {
+                if (count === 1) {
+                    queryString += " AND ";
+                }
+                count++;
+                queryString += `phoneNumber = "${phoneNumber}"`;
+            }
+
             if (limit) {
                 queryString += ` LIMIT ${limit}`;
+            }
+
+            if (count > 2) {
+                return next({
+                    status: 400,
+                    message: "Maximum amount of parameters (2) has been surpassed.",
+                });
             }
         }
         //get all users
