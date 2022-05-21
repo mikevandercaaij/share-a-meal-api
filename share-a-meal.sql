@@ -85,9 +85,6 @@ LOCK TABLES `meal_participants_user` WRITE;
 /*!40000 ALTER TABLE `meal_participants_user` DISABLE KEYS */;
 INSERT INTO `meal_participants_user` VALUES 
 (1,1),
-(1,2),
-(1,3),
-(1,5),
 (2,2),
 (3,2),
 (2,4),

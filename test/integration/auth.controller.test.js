@@ -1,10 +1,11 @@
-// process.env.DB_DATABASE = process.env.DB_DATABASE || "share-a-meal-testdb";
+// process.env.DB_DATABASE = "share-a-meal-testdb";
 
 // const chai = require("chai");
 // const chaiHttp = require("chai-http");
 // const crypto = require("crypto");
 // const server = require("./../../index");
 // const dbconnection = require("./../../database/dbconnection");
+// const { assert } = require("console");
 
 // chai.should();
 // chai.use(chaiHttp);
@@ -104,13 +105,12 @@
 //                 .end((req, res) => {
 //                     res.should.be.an("object");
 //                     const { status, result } = res.body;
-//                     status.should.equals(200);
-//                     result.should.be.an("object");
-//                     result.should.have.property("id");
-//                     result.should.have.property("emailAdress");
-//                     result.should.have.property("firstName");
-//                     result.should.have.property("lastName");
-//                     result.should.have.property("token");
+//                     // status.should.equals(200);
+//                     // result.should.be.an("object");
+//                     // assert.deepEqual(result, {
+
+//                     // });
+//                     console.log(res.body);
 //                     done();
 //                 });
 //         });
