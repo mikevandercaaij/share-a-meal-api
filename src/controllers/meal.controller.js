@@ -358,7 +358,7 @@ exports.getAllMeals = (req, res) => {
 
                     meal = {
                         ...meal,
-                        cook: formatUser(results),
+                        cook: formatUser(results)[0],
                     };
 
                     dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", currentMeal.id, (err, results, fields) => {
@@ -443,7 +443,7 @@ exports.getMealByID = (req, res, next) => {
 
                     meal = {
                         ...meal,
-                        cook: formatUser(results),
+                        cook: formatUser(results)[0],
                     };
                 });
 
@@ -469,7 +469,7 @@ exports.getMealByID = (req, res, next) => {
                             //return successful status + result
                             res.status(200).json({
                                 status: 200,
-                                result: [{ ...meal }],
+                                result: meal,
                             });
 
                             res.end();
