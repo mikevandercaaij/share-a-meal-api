@@ -539,7 +539,7 @@ exports.formatUser = (results) => {
         }
         return results;
     } else {
-        return results;
+        return [];
     }
 };
 
