@@ -570,6 +570,8 @@ exports.participateMeal = (req, res, next) => {
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
 
+            console.log(results[0]);
+
             console.log("get all meal info + participants amount");
 
             const cookId = results[0].cookId;
