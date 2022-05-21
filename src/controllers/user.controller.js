@@ -128,8 +128,6 @@ exports.addUser = (req, res, next) => {
                         //close connection
                         connection.release();
 
-                        console.log(results);
-
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
@@ -240,6 +238,8 @@ exports.getAllUsers = (req, res, next) => {
 
             //close connection
             connection.release();
+
+            console.log(results);
 
             //send back all results
             res.status(200).json({
