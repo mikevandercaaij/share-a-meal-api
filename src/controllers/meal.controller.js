@@ -155,6 +155,8 @@ exports.addMeal = (req, res, next) => {
 
                     let meal = formatMeal(results);
 
+                    console.log("get meal info");
+
                     dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
@@ -163,6 +165,8 @@ exports.addMeal = (req, res, next) => {
                             ...meal,
                             cook: formatUser(results),
                         };
+
+                        console.log("add cook");
 
                         dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
                             //throw error if something went wrong
@@ -357,6 +361,8 @@ exports.getAllMeals = (req, res) => {
         //throw error if something went wrong
         if (err) throw err;
 
+        console.log("get all meals");
+
         //get all meals
         connection.query("SELECT * FROM meal", (err, results, fields) => {
             //throw error if something went wrong
@@ -400,6 +406,9 @@ exports.getAllMeals = (req, res) => {
                                 allMeals.push(meal);
                                 connection.release();
                                 if (amountOfMeals === allMeals.length) {
+                                    console.log("all meals collected");
+                                    console.log(allMeals);
+
                                     //return successful status + result
                                     res.status(200).json({
                                         status: 200,
@@ -485,6 +494,10 @@ exports.getMealByID = (req, res, next) => {
                                 }),
                             };
 
+                            console.log("get meal by id");
+
+                            console.log(meal);
+
                             //return successful status + result
                             res.status(200).json({
                                 status: 200,
@@ -555,6 +568,8 @@ exports.deleteMeal = (req, res, next) => {
 
                         //close connection
                         connection.release();
+
+                        console.log("deleted meal");
 
                         //if a row has been deleted
                         if (results.affectedRows === 1) {
