@@ -586,6 +586,8 @@ exports.participateMeal = (req, res, next) => {
                     let count = 0;
 
                     results.forEach((participant) => {
+                        console.log("cook of meal: " + cookId, "current participant: " + participant.userId, "Logged in as: " + req.userId);
+
                         if (participant.userId === req.userId && req.userId !== cookId) {
                             participantIsSignedUp = true;
                         }
@@ -593,7 +595,8 @@ exports.participateMeal = (req, res, next) => {
                         count++;
                         console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
-                            console.log(participantIsSignedUp);
+                            console.log("participantIsSignedUp" + participantIsSignedUp);
+                            console.log("participantIsCook" + participantIsSignedUp);
 
                             //Throw error if the logged in the user in the meals cook. Commented out due to teachers assertion tool
                             // if (participantIsCook) {
@@ -610,7 +613,7 @@ exports.participateMeal = (req, res, next) => {
                                 });
                             }
 
-                            if (!participantIsSignedUp) {
+                            if (!participantIsSignedUp && !participantIsCook) {
                                 connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
                                     if (err) throw err;
                                     connection.release();
@@ -680,8 +683,5 @@ const formatMeal = (results) => {
         }
     });
 
-    if (results.length === 1) {
-        return results[0];
-    }
     return results;
 };
