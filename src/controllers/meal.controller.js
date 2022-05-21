@@ -570,6 +570,8 @@ exports.participateMeal = (req, res, next) => {
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
 
+            console.log(results[0]);
+
             console.log("get all meal info + participants amount");
 
             const cookId = results[0].cookId;
@@ -596,8 +598,11 @@ exports.participateMeal = (req, res, next) => {
                             participantIsSignedUp = true;
                         }
 
+                        console.log("total: " + results.length, "count: " + count);
+
                         count++;
                         if (results.length === count) {
+                            console.log("every participant is checked (length is the same)");
                             if (participantIsCook) {
                                 return next({
                                     status: 400,
@@ -617,6 +622,8 @@ exports.participateMeal = (req, res, next) => {
                                     if (err) throw err;
                                     connection.release();
 
+                                    console.log("signed in");
+
                                     res.status(200).json({
                                         currentlyParticipating: true,
                                         currentAmountOfParticipants: currentParticipants + 1,
@@ -626,6 +633,8 @@ exports.participateMeal = (req, res, next) => {
                                 connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
                                     if (err) throw err;
                                     connection.release();
+
+                                    console.log("signed out");
 
                                     res.status(200).json({
                                         currentlyParticipating: false,
@@ -637,6 +646,8 @@ exports.participateMeal = (req, res, next) => {
                     });
                 });
             } else {
+                console.log("meal doesn't exist");
+
                 return next({
                     status: 404,
                     message: "Meal does not exist.",
