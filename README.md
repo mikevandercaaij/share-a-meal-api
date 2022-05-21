@@ -644,11 +644,11 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 | :-------- | :------- | :----------: |
 | `id`      | `number` | **Required** |
 
-#### Request body (only one of the required fields are actually required)
+#### Request body
 
 | Parameter                 | Type                 | Description  |
 | :------------------------ | :------------------- | :----------: |
-| `name`                    | `string`             | **Optional** |
+| `name`                    | `string`             | **Required** |
 | `description`             | `string`             | **Optional** |
 | `isVega`                  | `boolean/number`     | **Optional** |
 | `isVegan`                 | `boolean/number`     | **Optional** |

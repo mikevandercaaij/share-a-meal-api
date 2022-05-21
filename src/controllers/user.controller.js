@@ -12,7 +12,7 @@ exports.validateUserCreate = (req, res, next) => {
     try {
         const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const passwordRegex = /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/;
-        const phoneNumberRegex = /([\d] *){10}/;
+        const phoneNumberRegex = /^06[0-9]{8}$/;
 
         assert(typeof firstName === "string", "First Name must be a string.");
         assert(typeof lastName === "string", "Last Name must be a string.");
@@ -44,7 +44,7 @@ exports.validateUserUpdate = (req, res, next) => {
 
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const passwordRegex = /^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$/;
-    const phoneNumberRegex = /([\d] *){10}/;
+    const phoneNumberRegex = /^06[0-9]{8}$/;
 
     //check if all values are of a certain type
     try {
