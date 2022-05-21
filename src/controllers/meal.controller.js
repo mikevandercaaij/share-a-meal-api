@@ -138,7 +138,7 @@ exports.addMeal = (req, res, next) => {
                     const cookId = results[0].cookId;
                     delete results[0].cookId;
 
-                    let meal = formatMeal(results);
+                    let meal = formatMeal(results)[0];
 
                     dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                         //throw error if something went wrong
@@ -146,7 +146,7 @@ exports.addMeal = (req, res, next) => {
 
                         meal = {
                             ...meal,
-                            cook: formatUser(results),
+                            cook: formatUser(results)[0],
                         };
 
                         dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
@@ -171,7 +171,7 @@ exports.addMeal = (req, res, next) => {
                                     //return successful status + result
                                     res.status(201).json({
                                         status: 201,
-                                        result: meal[0],
+                                        result: meal,
                                     });
 
                                     res.end();
@@ -181,7 +181,7 @@ exports.addMeal = (req, res, next) => {
                             if (participantsAmount > 0) {
                                 results.forEach((participant) => {
                                     dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                        participants.push(formatUser(results));
+                                        participants.push(formatUser(results)[0]);
                                         callback();
                                     });
                                 });
@@ -269,7 +269,7 @@ exports.updateMeal = (req, res, next) => {
 
                                 meal = {
                                     ...meal,
-                                    cook: formatUser(results),
+                                    cook: formatUser(results)[0],
                                 };
                             });
 
@@ -292,10 +292,12 @@ exports.updateMeal = (req, res, next) => {
                                             }),
                                         };
 
+                                        console.log(meal[0]);
+
                                         //return successful status + result
                                         res.status(200).json({
                                             status: 200,
-                                            result: meal[0],
+                                            result: meal,
                                         });
 
                                         res.end();
@@ -305,7 +307,7 @@ exports.updateMeal = (req, res, next) => {
                                 if (participantsAmount > 0) {
                                     results.forEach((participant) => {
                                         dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                            participants.push(formatUser(results));
+                                            participants.push(formatUser(results)[0]);
                                             callback();
                                         });
                                     });
@@ -347,6 +349,8 @@ exports.getAllMeals = (req, res) => {
                 delete currentMeal.cookId;
 
                 let meal = formatMeal([currentMeal])[0];
+
+                console.log(currentMeal);
 
                 dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                     //throw error if something went wrong
