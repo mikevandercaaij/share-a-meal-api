@@ -32,6 +32,8 @@ module.exports = {
                                 userId: userinfo.id,
                             };
 
+                            console.log(rows);
+
                             jwt.sign(payload, jwtSecretKey, { expiresIn: "12d" }, function (err, token) {
                                 res.status(200).json({
                                     status: 200,
