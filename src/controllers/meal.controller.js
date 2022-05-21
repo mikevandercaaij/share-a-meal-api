@@ -576,7 +576,7 @@ exports.participateMeal = (req, res, next) => {
                 connection.query("SELECT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
                     if (err) throw err;
 
-                    let participantIsCook = false;
+                    // let participantIsCook = false;
                     let participantIsSignedUp = false;
 
                     if (req.userId === cookId) {
@@ -588,7 +588,8 @@ exports.participateMeal = (req, res, next) => {
                     results.forEach((participant) => {
                         console.log("cook of meal: " + cookId, "current participant: " + participant.userId, "Logged in as: " + req.userId);
 
-                        if (participant.userId === req.userId && req.userId !== cookId) {
+                        if (participant.userId === req.userId) {
+                            console.log("jup");
                             participantIsSignedUp = true;
                         }
 
