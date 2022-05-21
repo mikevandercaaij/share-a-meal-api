@@ -126,6 +126,8 @@ exports.addUser = (req, res, next) => {
                         //close connection
                         connection.release();
 
+                        console.log(results);
+
                         //return successful status + result
                         res.status(201).json({
                             status: 201,
@@ -525,6 +527,8 @@ exports.formatUser = (results) => {
                 result.roles = result.roles.split(",");
             }
         });
+    } else {
+        results = [];
     }
 
     if (results.length === 1) {
