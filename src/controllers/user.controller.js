@@ -228,24 +228,24 @@ exports.getAllUsers = (req, res, next) => {
                     status: 400,
                     message: "Maximum amount of parameters (2) has been surpassed.",
                 });
-            } else {
-                //get all users
-                connection.query(queryString, (err, results, fields) => {
-                    //throw error if something went wrong
-                    if (err) throw err;
-
-                    //close connection
-                    connection.release();
-
-                    console.log(results);
-
-                    //send back all results
-                    res.status(200).json({
-                        status: 200,
-                        result: exports.formatUser(results),
-                    });
-                });
             }
+        } else {
+            //get all users
+            connection.query(queryString, (err, results, fields) => {
+                //throw error if something went wrong
+                if (err) throw err;
+
+                //close connection
+                connection.release();
+
+                console.log(results);
+
+                //send back all results
+                res.status(200).json({
+                    status: 200,
+                    result: exports.formatUser(results),
+                });
+            });
         }
     });
 };
