@@ -127,7 +127,6 @@ exports.addMeal = (req, res, next) => {
         req.body.allergenes = req.body.allergenes.join(",");
 
         const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
-        console.log(date);
 
         let { isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes } = req.body;
 
@@ -223,6 +222,10 @@ exports.updateMeal = (req, res, next) => {
         //check if parameter is a number
         if (isNaN(id)) {
             return next();
+        }
+
+        if (req.body.dateTime) {
+            req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
         }
 
         const newMeal = req.body;
