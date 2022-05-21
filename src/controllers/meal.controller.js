@@ -125,19 +125,13 @@ exports.addMeal = (req, res, next) => {
 
         //alter allergenes syntax if it is in the request body
         req.body.allergenes = req.body.allergenes.join(",");
-        console.log(req.body.dateTime.split("'"));
 
-        //Create insertQuery
-        const bodyValues = Object.keys(req.body);
-        const insertValues = Object.values(req.body);
-        insertValues = convertBoolToInt(insertValues);
-        insertValues.push(req.userId);
+        let { isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes } = req.body;
 
-        console.log(insertValues);
-        const insertQuery = "INSERT INTO meal(" + bodyValues.join(",") + ",cookId) VALUES (" + "?, ".repeat(insertValues.length - 1) + "?);";
+        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, req.userId];
 
         //insert new meal into meals
-        connection.query(insertQuery, insertValues, (err, results, fields) => {
+        connection.query("INSERT INTO meal(isActive,isVega,isVegan,isToTakeHome,maxAmountOfParticipants,price,imageUrl,name,description,dateTime,allergenes,cookId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CONVERT(?, DATETIME), ?, ?);", insertArray, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
@@ -164,47 +158,47 @@ exports.addMeal = (req, res, next) => {
                             ...meal,
                             cook: formatUser(results),
                         };
-                    });
 
-                    dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
-                        //throw error if something went wrong
-                        if (err) throw err;
+                        dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
+                            //throw error if something went wrong
+                            if (err) throw err;
 
-                        let participantsAmount = results.length;
+                            let participantsAmount = results.length;
 
-                        let participants = [];
+                            let participants = [];
 
-                        const callback = () => {
-                            if (participantsAmount === participants.length) {
-                                connection.release();
+                            const callback = () => {
+                                if (participantsAmount === participants.length) {
+                                    connection.release();
 
-                                meal = {
-                                    ...meal,
-                                    participants: participants.sort((a, b) => {
-                                        return a.id - b.id;
-                                    }),
-                                };
+                                    meal = {
+                                        ...meal,
+                                        participants: participants.sort((a, b) => {
+                                            return a.id - b.id;
+                                        }),
+                                    };
 
-                                //return successful status + result
-                                res.status(201).json({
-                                    status: 201,
-                                    result: meal,
+                                    //return successful status + result
+                                    res.status(201).json({
+                                        status: 201,
+                                        result: meal,
+                                    });
+
+                                    res.end();
+                                }
+                            };
+
+                            if (participantsAmount > 0) {
+                                results.forEach((participant) => {
+                                    dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                        participants.push(formatUser(results));
+                                        callback();
+                                    });
                                 });
-
-                                res.end();
+                            } else {
+                                callback();
                             }
-                        };
-
-                        if (participantsAmount > 0) {
-                            results.forEach((participant) => {
-                                dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                    participants.push(formatUser(results));
-                                    callback();
-                                });
-                            });
-                        } else {
-                            callback();
-                        }
+                        });
                     });
                 });
             });
