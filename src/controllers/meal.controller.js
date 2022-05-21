@@ -568,6 +568,8 @@ exports.participateMeal = (req, res, next) => {
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
 
+            console.log(results[0]);
+
             const cookId = results[0].cookId;
             const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
             const currentParticipants = results[0].currentParticipants;
