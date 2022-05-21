@@ -511,6 +511,9 @@ exports.deleteUser = (req, res, next) => {
     });
 };
 exports.formatUser = (results) => {
+    console.log(results);
+    console.log(results.length);
+
     if (results.length > 0) {
         results.forEach((result) => {
             if (result.isActive === 1) {
