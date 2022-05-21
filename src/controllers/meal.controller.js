@@ -144,9 +144,13 @@ exports.addMeal = (req, res, next) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
+                        const cook = formatUser(results)[0];
+
+                        delete cook.password;
+
                         meal = {
                             ...meal,
-                            cook: formatUser(results)[0],
+                            cook,
                         };
 
                         dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
@@ -181,6 +185,7 @@ exports.addMeal = (req, res, next) => {
                             if (participantsAmount > 0) {
                                 results.forEach((participant) => {
                                     dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                        delete formatUser(results)[0].password;
                                         participants.push(formatUser(results)[0]);
                                         callback();
                                     });
@@ -267,9 +272,13 @@ exports.updateMeal = (req, res, next) => {
                                 //throw error if something went wrong
                                 if (err) throw err;
 
+                                const cook = formatUser(results)[0];
+
+                                delete cook.password;
+
                                 meal = {
                                     ...meal,
-                                    cook: formatUser(results)[0],
+                                    cook,
                                 };
                             });
 
@@ -305,6 +314,7 @@ exports.updateMeal = (req, res, next) => {
                                 if (participantsAmount > 0) {
                                     results.forEach((participant) => {
                                         dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                            delete formatUser(results)[0].password;
                                             participants.push(formatUser(results)[0]);
                                             callback();
                                         });
@@ -352,9 +362,13 @@ exports.getAllMeals = (req, res) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
+                    const cook = formatUser(results)[0];
+
+                    delete cook.password;
+
                     meal = {
                         ...meal,
-                        cook: formatUser(results)[0],
+                        cook,
                     };
 
                     dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", currentMeal.id, (err, results, fields) => {
@@ -393,6 +407,7 @@ exports.getAllMeals = (req, res) => {
                         if (participantsAmount > 0) {
                             results.forEach((participant) => {
                                 dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                    delete formatUser(results)[0].password;
                                     participants.push(formatUser(results)[0]);
                                     callback();
                                 });
@@ -437,9 +452,13 @@ exports.getMealByID = (req, res, next) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
+                    const cook = formatUser(results)[0];
+
+                    delete cook.password;
+
                     meal = {
                         ...meal,
-                        cook: formatUser(results)[0],
+                        cook,
                     };
                 });
 
@@ -475,6 +494,7 @@ exports.getMealByID = (req, res, next) => {
                     if (participantsAmount > 0) {
                         results.forEach((participant) => {
                             dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                delete formatUser(results)[0].password;
                                 participants.push(formatUser(results)[0]);
                                 callback();
                             });
@@ -586,26 +606,18 @@ exports.participateMeal = (req, res, next) => {
                     let count = 0;
 
                     results.forEach((participant) => {
-                        console.log("cook of meal: " + cookId, "current participant: " + participant.userId, "Logged in as: " + req.userId);
-
                         if (participant.userId === req.userId) {
                             participantIsSignedUp = true;
                         }
 
                         count++;
-                        console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
-                            console.log("participantIsSignedUp: " + participantIsSignedUp);
-                            console.log("participantIsCook: " + participantIsCook);
-
                             if (participantIsCook) {
                                 return next({
                                     status: 400,
                                     message: "The cook must be a participant at all times.",
                                 });
                             }
-
-                            console.log("currentParticipants: " + currentParticipants, "maxAmountOfParticipants: " + maxAmountOfParticipants);
 
                             if (currentParticipants === maxAmountOfParticipants) {
                                 return next({
@@ -619,8 +631,6 @@ exports.participateMeal = (req, res, next) => {
                                     if (err) throw err;
                                     connection.release();
 
-                                    console.log("signed in");
-
                                     res.status(200).json({
                                         status: 200,
                                         result: {
@@ -633,8 +643,6 @@ exports.participateMeal = (req, res, next) => {
                                 connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
                                     if (err) throw err;
                                     connection.release();
-
-                                    console.log("signed out");
 
                                     res.status(200).json({
                                         status: 200,
