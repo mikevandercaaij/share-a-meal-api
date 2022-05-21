@@ -184,6 +184,7 @@ exports.addMeal = (req, res, next) => {
                                 //return successful status + result
                                 res.status(201).json({
                                     status: 201,
+                                    message: "Meal has been created successfully.",
                                     result: meal,
                                 });
 
