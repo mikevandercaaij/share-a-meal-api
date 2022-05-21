@@ -513,33 +513,34 @@ exports.deleteUser = (req, res, next) => {
     });
 };
 exports.formatUser = (results) => {
-    console.log(results);
-    console.log(results.length);
+    if (typeof results !== "undefined") {
+        if (results.length > 0) {
+            results.forEach((result) => {
+                if (result.isActive === 1) {
+                    result.isActive = true;
+                } else {
+                    result.isActive = false;
+                }
 
-    if (results.length > 0) {
-        results.forEach((result) => {
-            if (result.isActive === 1) {
-                result.isActive = true;
-            } else {
-                result.isActive = false;
-            }
+                if (result.roles === "") {
+                    result.roles = [];
+                }
 
-            if (result.roles === "") {
-                result.roles = [];
-            }
+                if (typeof result.roles === "string") {
+                    result.roles = result.roles.split(",");
+                }
+            });
+        } else {
+            results = [];
+        }
 
-            if (typeof result.roles === "string") {
-                result.roles = result.roles.split(",");
-            }
-        });
+        if (results.length === 1) {
+            return results[0];
+        }
+        return results;
     } else {
-        results = [];
+        return [];
     }
-
-    if (results.length === 1) {
-        return results[0];
-    }
-    return results;
 };
 
 exports.encryptPassword = (password) => {
