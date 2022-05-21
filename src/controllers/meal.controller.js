@@ -128,70 +128,70 @@ exports.addMeal = (req, res, next) => {
             const newestMealId = results.insertId;
 
             //add cook as a participant
-            connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
-                //get meal
+            // connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
+            //get meal
 
-                connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
+            connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
+                //throw error if something went wrong
+                if (err) throw err;
+
+                const cookId = results[0].cookId;
+                delete results[0].cookId;
+
+                let meal = formatMeal(results);
+
+                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
-                    const cookId = results[0].cookId;
-                    delete results[0].cookId;
+                    meal = {
+                        ...meal,
+                        cook: formatUser(results),
+                    };
 
-                    let meal = formatMeal(results);
-
-                    dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                    dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
-                        meal = {
-                            ...meal,
-                            cook: formatUser(results),
+                        let participantsAmount = results.length;
+
+                        let participants = [];
+
+                        const callback = () => {
+                            if (participantsAmount === participants.length) {
+                                connection.release();
+
+                                meal = {
+                                    ...meal,
+                                    participants: participants.sort((a, b) => {
+                                        return a.id - b.id;
+                                    }),
+                                };
+
+                                //return successful status + result
+                                res.status(201).json({
+                                    status: 201,
+                                    result: meal[0],
+                                });
+
+                                res.end();
+                            }
                         };
 
-                        dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
-                            //throw error if something went wrong
-                            if (err) throw err;
-
-                            let participantsAmount = results.length;
-
-                            let participants = [];
-
-                            const callback = () => {
-                                if (participantsAmount === participants.length) {
-                                    connection.release();
-
-                                    meal = {
-                                        ...meal,
-                                        participants: participants.sort((a, b) => {
-                                            return a.id - b.id;
-                                        }),
-                                    };
-
-                                    //return successful status + result
-                                    res.status(201).json({
-                                        status: 201,
-                                        result: meal[0],
-                                    });
-
-                                    res.end();
-                                }
-                            };
-
-                            if (participantsAmount > 0) {
-                                results.forEach((participant) => {
-                                    dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                        participants.push(formatUser(results));
-                                        callback();
-                                    });
+                        if (participantsAmount > 0) {
+                            results.forEach((participant) => {
+                                dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                    participants.push(formatUser(results));
+                                    callback();
                                 });
-                            } else {
-                                callback();
-                            }
-                        });
+                            });
+                        } else {
+                            callback();
+                        }
                     });
                 });
             });
+            // });
         });
     });
 };
