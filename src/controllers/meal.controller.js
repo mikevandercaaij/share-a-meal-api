@@ -224,9 +224,9 @@ exports.updateMeal = (req, res, next) => {
         //throw error if something went wrong
         if (err) throw err;
 
-        // if (req.body.dateTime) {
-        //     req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
-        // }
+        if (req.body.dateTime) {
+            req.body.dateTime = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+        }
 
         console.log(req.body.dateTime);
 
@@ -704,6 +704,7 @@ const formatMeal = (results) => {
         result.isVega = boolObj.isVega;
         result.isVegan = boolObj.isVegan;
         result.isToTakeHome = boolObj.isToTakeHome;
+        result.price = parseFloat(result.price);
 
         if (result.allergenes === "") {
             result.allergenes = [];
