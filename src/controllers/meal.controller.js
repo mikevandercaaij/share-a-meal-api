@@ -122,16 +122,15 @@ exports.addMeal = (req, res, next) => {
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
         if (err) throw err;
+        const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
 
         //alter allergenes syntax if it is in the request body
         req.body.allergenes = req.body.allergenes.join(",");
 
-        // const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
-
         let { isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes } = req.body;
 
         const insertQuery = "INSERT INTO meal(isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, cookId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, req.userId];
+        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, date, allergenes, req.userId];
 
         //insert new meal into meals
         connection.query(insertQuery, insertArray, (err, results, fields) => {
