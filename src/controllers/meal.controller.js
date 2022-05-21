@@ -126,12 +126,16 @@ exports.addMeal = (req, res, next) => {
         //alter allergenes syntax if it is in the request body
         req.body.allergenes = req.body.allergenes.join(",");
 
+        const date = new Date(req.body.dateTime).toISOString().slice(0, 19).replace("T", " ");
+        console.log(date);
+
         let { isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes } = req.body;
 
-        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, req.userId];
+        const insertQuery = "INSERT INTO meal(isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, dateTime, allergenes, cookId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        const insertArray = [isActive, isVega, isVegan, isToTakeHome, maxAmountOfParticipants, price, imageUrl, name, description, date, allergenes, req.userId];
 
         //insert new meal into meals
-        connection.query("INSERT INTO meal(isActive,isVega,isVegan,isToTakeHome,maxAmountOfParticipants,price,imageUrl,name,description,dateTime,allergenes,cookId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CONVERT(?, DATETIME), ?, ?);", insertArray, (err, results, fields) => {
+        connection.query(insertQuery, insertArray, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
 
