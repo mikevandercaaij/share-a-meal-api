@@ -128,70 +128,70 @@ exports.addMeal = (req, res, next) => {
             const newestMealId = results.insertId;
 
             //add cook as a participant
-            // connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
-            //get meal
+            connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [newestMealId, req.userId], (err, results, fields) => {
+                //get meal
 
-            connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
-                //throw error if something went wrong
-                if (err) throw err;
-
-                const cookId = results[0].cookId;
-                delete results[0].cookId;
-
-                let meal = formatMeal(results);
-
-                dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
+                connection.query("SELECT * FROM meal WHERE id = ?", newestMealId, (err, results, fields) => {
                     //throw error if something went wrong
                     if (err) throw err;
 
-                    meal = {
-                        ...meal,
-                        cook: formatUser(results),
-                    };
+                    const cookId = results[0].cookId;
+                    delete results[0].cookId;
 
-                    dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
+                    let meal = formatMeal(results);
+
+                    dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
-                        let participantsAmount = results.length;
-
-                        let participants = [];
-
-                        const callback = () => {
-                            if (participantsAmount === participants.length) {
-                                connection.release();
-
-                                meal = {
-                                    ...meal,
-                                    participants: participants.sort((a, b) => {
-                                        return a.id - b.id;
-                                    }),
-                                };
-
-                                //return successful status + result
-                                res.status(201).json({
-                                    status: 201,
-                                    result: meal[0],
-                                });
-
-                                res.end();
-                            }
+                        meal = {
+                            ...meal,
+                            cook: formatUser(results),
                         };
 
-                        if (participantsAmount > 0) {
-                            results.forEach((participant) => {
-                                dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                    participants.push(formatUser(results));
-                                    callback();
+                        dbconnection.query("SELECT DISTINCT userId FROM meal_participants_user WHERE mealId = ?", newestMealId, (err, results, fields) => {
+                            //throw error if something went wrong
+                            if (err) throw err;
+
+                            let participantsAmount = results.length;
+
+                            let participants = [];
+
+                            const callback = () => {
+                                if (participantsAmount === participants.length) {
+                                    connection.release();
+
+                                    meal = {
+                                        ...meal,
+                                        participants: participants.sort((a, b) => {
+                                            return a.id - b.id;
+                                        }),
+                                    };
+
+                                    //return successful status + result
+                                    res.status(201).json({
+                                        status: 201,
+                                        result: meal[0],
+                                    });
+
+                                    res.end();
+                                }
+                            };
+
+                            if (participantsAmount > 0) {
+                                results.forEach((participant) => {
+                                    dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
+                                        participants.push(formatUser(results));
+                                        callback();
+                                    });
                                 });
-                            });
-                        } else {
-                            callback();
-                        }
+                            } else {
+                                callback();
+                            }
+                        });
                     });
                 });
             });
-            // });
         });
     });
 };
@@ -261,7 +261,7 @@ exports.updateMeal = (req, res, next) => {
                             const cookId = results[0].cookId;
                             delete results[0].cookId;
 
-                            let meal = formatMeal(results);
+                            let meal = formatMeal(results)[0];
 
                             dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                                 //throw error if something went wrong
@@ -346,7 +346,7 @@ exports.getAllMeals = (req, res) => {
                 const cookId = currentMeal.cookId;
                 delete currentMeal.cookId;
 
-                let meal = formatMeal([currentMeal]);
+                let meal = formatMeal([currentMeal])[0];
 
                 dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                     //throw error if something went wrong
@@ -393,7 +393,7 @@ exports.getAllMeals = (req, res) => {
                         if (participantsAmount > 0) {
                             results.forEach((participant) => {
                                 dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                    participants.push(formatUser(results));
+                                    participants.push(formatUser(results)[0]);
                                     callback();
                                 });
                             });
@@ -431,7 +431,7 @@ exports.getMealByID = (req, res, next) => {
                 const cookId = results[0].cookId;
                 delete results[0].cookId;
 
-                let meal = formatMeal(results);
+                let meal = formatMeal(results)[0];
 
                 dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                     //throw error if something went wrong
@@ -465,7 +465,7 @@ exports.getMealByID = (req, res, next) => {
                             //return successful status + result
                             res.status(200).json({
                                 status: 200,
-                                result: meal[0],
+                                result: [{ ...meal }],
                             });
 
                             res.end();
@@ -475,7 +475,7 @@ exports.getMealByID = (req, res, next) => {
                     if (participantsAmount > 0) {
                         results.forEach((participant) => {
                             dbconnection.query("SELECT * FROM user WHERE id = ?", participant.userId, (err, results, fields) => {
-                                participants.push(formatUser(results));
+                                participants.push(formatUser(results)[0]);
                                 callback();
                             });
                         });
@@ -568,8 +568,6 @@ exports.participateMeal = (req, res, next) => {
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
 
-            console.log(results[0]);
-
             const cookId = results[0].cookId;
             const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
             const currentParticipants = results[0].currentParticipants;
@@ -578,7 +576,7 @@ exports.participateMeal = (req, res, next) => {
                 connection.query("SELECT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
                     if (err) throw err;
 
-                    // let participantIsCook = false;
+                    let participantIsCook = false;
                     let participantIsSignedUp = false;
 
                     if (req.userId === cookId) {
@@ -591,7 +589,6 @@ exports.participateMeal = (req, res, next) => {
                         console.log("cook of meal: " + cookId, "current participant: " + participant.userId, "Logged in as: " + req.userId);
 
                         if (participant.userId === req.userId) {
-                            console.log("jup");
                             participantIsSignedUp = true;
                         }
 
@@ -599,21 +596,23 @@ exports.participateMeal = (req, res, next) => {
                         console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
                             console.log("participantIsSignedUp: " + participantIsSignedUp);
+                            console.log("participantIsCook: " + participantIsCook);
 
-                            //Throw error if the logged in the user in the meals cook. Commented out due to teachers assertion tool
-                            // if (participantIsCook) {
-                            //     return next({
-                            //         status: 400,
-                            //         message: "The cook must be a participant at all times.",
-                            //     });
-                            // }
+                            if (participantIsCook) {
+                                return next({
+                                    status: 400,
+                                    message: "The cook must be a participant at all times.",
+                                });
+                            }
 
-                            // if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
-                            //     return next({
-                            //         status: 404,
-                            //         message: "Max amount of participants has already been reached.",
-                            //     });
-                            // }
+                            console.log("currentParticipants: " + currentParticipants, "maxAmountOfParticipants: " + maxAmountOfParticipants);
+
+                            if (currentParticipants === maxAmountOfParticipants) {
+                                return next({
+                                    status: 404,
+                                    message: "Max amount of participants has already been reached.",
+                                });
+                            }
 
                             if (!participantIsSignedUp) {
                                 connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
@@ -623,8 +622,11 @@ exports.participateMeal = (req, res, next) => {
                                     console.log("signed in");
 
                                     res.status(200).json({
-                                        currentlyParticipating: true,
-                                        currentAmountOfParticipants: currentParticipants + 1,
+                                        status: 200,
+                                        result: {
+                                            currentlyParticipating: true,
+                                            currentAmountOfParticipants: currentParticipants + 1,
+                                        },
                                     });
                                 });
                             } else {
@@ -635,8 +637,11 @@ exports.participateMeal = (req, res, next) => {
                                     console.log("signed out");
 
                                     res.status(200).json({
-                                        currentlyParticipating: false,
-                                        currentAmountOfParticipants: currentParticipants - 1,
+                                        status: 200,
+                                        result: {
+                                            currentlyParticipating: false,
+                                            currentAmountOfParticipants: currentParticipants - 1,
+                                        },
                                     });
                                 });
                             }
@@ -684,6 +689,5 @@ const formatMeal = (results) => {
             result.allergenes = result.allergenes.split(",");
         }
     });
-
     return results;
 };
