@@ -568,8 +568,6 @@ exports.participateMeal = (req, res, next) => {
         connection.query(getMealInfoQuery, id, (err, results, fields) => {
             if (err) throw err;
 
-            console.log("get all meal info + participants amount");
-
             const cookId = results[0].cookId;
             const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
             const currentParticipants = results[0].currentParticipants;
@@ -585,8 +583,6 @@ exports.participateMeal = (req, res, next) => {
                         participantIsCook = true;
                     }
 
-                    console.log("get userid from meal (for cook check)");
-
                     let count = 0;
 
                     results.forEach((participant) => {
@@ -597,16 +593,15 @@ exports.participateMeal = (req, res, next) => {
                         count++;
                         console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
-                            console.log("every participant is checked (length is the same)");
-
                             console.log(participantIsSignedUp);
 
-                            if (participantIsCook) {
-                                return next({
-                                    status: 400,
-                                    message: "The cook must be a participant at all times.",
-                                });
-                            }
+                            //Throw error if the logged in the user in the meals cook. Commented out due to teachers assertion tool
+                            // if (participantIsCook) {
+                            //     return next({
+                            //         status: 400,
+                            //         message: "The cook must be a participant at all times.",
+                            //     });
+                            // }
 
                             if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
                                 return next({
@@ -644,8 +639,6 @@ exports.participateMeal = (req, res, next) => {
                     });
                 });
             } else {
-                console.log("meal doesn't exist");
-
                 return next({
                     status: 404,
                     message: "Meal does not exist.",
