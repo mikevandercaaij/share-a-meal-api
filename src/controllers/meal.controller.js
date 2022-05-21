@@ -54,25 +54,12 @@ exports.validateMealUpdate = (req, res, next) => {
     //check if all values are of a certain type
 
     try {
-        if (name || price || maxAmountOfParticipants) {
-            if (name) {
-                assert(typeof name === "string", "Name must be a string.");
-            }
+        assert(typeof name === "string", "Name must be a string.");
 
-            if (price) {
-                assert(typeof price === "number", "Price must be a number.");
-            }
+        assert(typeof price === "number", "Price must be a number.");
 
-            if (maxAmountOfParticipants) {
-                assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
-                assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
-            }
-        } else {
-            return next({
-                status: 400,
-                message: "Request body must include name, price or maxAmountOfParticipants.",
-            });
-        }
+        assert(typeof maxAmountOfParticipants === "number", "MaxAmountOfParticipants must be a number.");
+        assert(Number(maxAmountOfParticipants) > 1, "MaxAmountOfParticipants must be greater 1.");
 
         if (dateTime) {
             assert(typeof dateTime === "string", "DateTime must be a string");
@@ -320,8 +307,8 @@ exports.updateMeal = (req, res, next) => {
                                         };
 
                                         //return successful status + result
-                                        res.status(201).json({
-                                            status: 201,
+                                        res.status(200).json({
+                                            status: 200,
                                             result: meal,
                                         });
 
@@ -575,7 +562,7 @@ exports.deleteMeal = (req, res, next) => {
                         //if a row has been deleted
                         if (results.affectedRows === 1) {
                             //send successful status
-                            res.status(201).json({
+                            res.status(200).json({
                                 status: 200,
                                 message: "Meal has been deleted successfully.",
                             });
