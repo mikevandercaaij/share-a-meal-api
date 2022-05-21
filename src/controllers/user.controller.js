@@ -328,8 +328,6 @@ exports.updateUser = (req, res, next) => {
 
         const newUser = req.body;
 
-        console.log(newUser.phoneNumber);
-
         //check if parameter is a number
         if (isNaN(id)) {
             return next();
