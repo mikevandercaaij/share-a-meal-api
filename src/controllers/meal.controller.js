@@ -292,8 +292,6 @@ exports.updateMeal = (req, res, next) => {
                                             }),
                                         };
 
-                                        console.log(meal[0]);
-
                                         //return successful status + result
                                         res.status(200).json({
                                             status: 200,
@@ -349,8 +347,6 @@ exports.getAllMeals = (req, res) => {
                 delete currentMeal.cookId;
 
                 let meal = formatMeal([currentMeal])[0];
-
-                console.log(currentMeal);
 
                 dbconnection.query("SELECT * FROM user WHERE id = ?", cookId, (err, results, fields) => {
                     //throw error if something went wrong

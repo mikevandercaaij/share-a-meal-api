@@ -410,9 +410,6 @@ exports.updateUser = (req, res, next) => {
                         updateArray.push(id);
                         queryString = queryString.slice(0, -1) + " WHERE id = ?";
 
-                        console.log(queryString);
-                        console.log(updateArray);
-
                         //update user
                         connection.query(queryString, updateArray, (err, results, fields) => {
                             //throw error if something went wrong
