@@ -97,6 +97,8 @@ exports.addUser = (req, res, next) => {
         //put request body in a variable
         const { firstName, lastName, emailAdress, password, street, city, phoneNumber } = req.body;
 
+        console.log(req.body);
+
         connection.query("SELECT COUNT(emailAdress) as count FROM user WHERE emailAdress = ?", emailAdress, (err, results, fields) => {
             //throw error if something went wrong
             if (err) throw err;
