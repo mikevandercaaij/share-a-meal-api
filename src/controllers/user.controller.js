@@ -333,6 +333,8 @@ exports.updateUser = (req, res, next) => {
             return next();
         }
 
+        console.log("update user");
+
         //set user object with given request body
         let user = req.body;
 
@@ -458,6 +460,8 @@ exports.deleteUser = (req, res, next) => {
         return next();
     }
 
+    console.log("delete user");
+
     //create connection
     dbconnection.getConnection((err, connection) => {
         //throw error if something went wrong
@@ -480,6 +484,8 @@ exports.deleteUser = (req, res, next) => {
 
                         //close connection
                         connection.release();
+
+                        console.log("user deleted");
 
                         //if a row has been deleted
                         if (results.affectedRows === 1) {
