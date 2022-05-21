@@ -601,86 +601,91 @@ exports.participateMeal = (req, res, next) => {
 
     console.log("participate meal");
 
-    dbconnection.getConnection((err, connection) => {
-        if (err) throw err;
-
-        const getMealInfoQuery = "SELECT id, cookId, maxAmountOfParticipants, COUNT(meal_participants_user.userId) AS currentParticipants FROM meal JOIN meal_participants_user ON meal.id = meal_participants_user.mealId WHERE meal.id =  ?";
-
-        connection.query(getMealInfoQuery, id, (err, results, fields) => {
-            const cookId = results[0].cookId;
-            const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
-            const currentParticipants = results[0].currentParticipants;
-
-            if (results[0].id !== null) {
-                connection.query("SELECT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
-                    if (err) throw err;
-
-                    let participantIsCook = false;
-                    let participantIsSignedUp = false;
-
-                    if (req.userId === cookId) {
-                        participantIsCook = true;
-                    }
-
-                    let count = 1;
-
-                    results.forEach((participant) => {
-                        if (participant.userId === req.userId && req.userId !== cookId) {
-                            participantIsSignedUp = true;
-                        }
-
-                        count++;
-                        if (results.length === count) {
-                            if (participantIsCook) {
-                                return next({
-                                    status: 400,
-                                    message: "The cook must be a participant at all times.",
-                                });
-                            }
-
-                            if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
-                                return next({
-                                    status: 404,
-                                    message: "Max amount of participants has already been reached.",
-                                });
-                            }
-
-                            if (!participantIsSignedUp) {
-                                connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
-                                    if (err) throw err;
-                                    connection.release();
-
-                                    console.log("signed in");
-
-                                    res.status(200).json({
-                                        currentlyParticipating: true,
-                                        currentAmountOfParticipants: currentParticipants + 1,
-                                    });
-                                });
-                            } else {
-                                connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
-                                    if (err) throw err;
-                                    connection.release();
-
-                                    console.log("signed out");
-
-                                    res.status(200).json({
-                                        currentlyParticipating: false,
-                                        currentAmountOfParticipants: currentParticipants - 1,
-                                    });
-                                });
-                            }
-                        }
-                    });
-                });
-            } else {
-                return next({
-                    status: 404,
-                    message: "Meal does not exist.",
-                });
-            }
-        });
+    res.status(200).json({
+        status: 200,
+        message: "jooeee",
     });
+
+    // dbconnection.getConnection((err, connection) => {
+    //     if (err) throw err;
+
+    //     const getMealInfoQuery = "SELECT id, cookId, maxAmountOfParticipants, COUNT(meal_participants_user.userId) AS currentParticipants FROM meal JOIN meal_participants_user ON meal.id = meal_participants_user.mealId WHERE meal.id =  ?";
+
+    //     connection.query(getMealInfoQuery, id, (err, results, fields) => {
+    //         const cookId = results[0].cookId;
+    //         const maxAmountOfParticipants = results[0].maxAmountOfParticipants;
+    //         const currentParticipants = results[0].currentParticipants;
+
+    //         if (results[0].id !== null) {
+    //             connection.query("SELECT userId FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
+    //                 if (err) throw err;
+
+    //                 let participantIsCook = false;
+    //                 let participantIsSignedUp = false;
+
+    //                 if (req.userId === cookId) {
+    //                     participantIsCook = true;
+    //                 }
+
+    //                 let count = 1;
+
+    //                 results.forEach((participant) => {
+    //                     if (participant.userId === req.userId && req.userId !== cookId) {
+    //                         participantIsSignedUp = true;
+    //                     }
+
+    //                     count++;
+    //                     if (results.length === count) {
+    //                         if (participantIsCook) {
+    //                             return next({
+    //                                 status: 400,
+    //                                 message: "The cook must be a participant at all times.",
+    //                             });
+    //                         }
+
+    //                         if (currentParticipants === maxAmountOfParticipants && !participantIsSignedUp) {
+    //                             return next({
+    //                                 status: 404,
+    //                                 message: "Max amount of participants has already been reached.",
+    //                             });
+    //                         }
+
+    //                         if (!participantIsSignedUp) {
+    //                             connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
+    //                                 if (err) throw err;
+    //                                 connection.release();
+
+    //                                 console.log("signed in");
+
+    //                                 res.status(200).json({
+    //                                     currentlyParticipating: true,
+    //                                     currentAmountOfParticipants: currentParticipants + 1,
+    //                                 });
+    //                             });
+    //                         } else {
+    //                             connection.query("DELETE FROM meal_participants_user WHERE mealId = ? AND userId = ?", [id, req.userId], (err, results, fields) => {
+    //                                 if (err) throw err;
+    //                                 connection.release();
+
+    //                                 console.log("signed out");
+
+    //                                 res.status(200).json({
+    //                                     currentlyParticipating: false,
+    //                                     currentAmountOfParticipants: currentParticipants - 1,
+    //                                 });
+    //                             });
+    //                         }
+    //                     }
+    //                 });
+    //             });
+    //         } else {
+    //             return next({
+    //                 status: 404,
+    //                 message: "Meal does not exist.",
+    //             });
+    //         }
+    //     });
+    // });
 };
 
 const formatMeal = (results) => {
