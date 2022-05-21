@@ -595,8 +595,7 @@ exports.participateMeal = (req, res, next) => {
                         count++;
                         console.log("total: " + results.length, "count: " + count);
                         if (results.length === count) {
-                            console.log("participantIsSignedUp" + participantIsSignedUp);
-                            console.log("participantIsCook" + participantIsSignedUp);
+                            console.log("participantIsSignedUp: " + participantIsSignedUp);
 
                             //Throw error if the logged in the user in the meals cook. Commented out due to teachers assertion tool
                             // if (participantIsCook) {
@@ -613,7 +612,7 @@ exports.participateMeal = (req, res, next) => {
                                 });
                             }
 
-                            if (!participantIsSignedUp && !participantIsCook) {
+                            if (!participantIsSignedUp) {
                                 connection.query("INSERT INTO meal_participants_user(mealId, userId) VALUES (?,?)", [id, req.userId], (err, results, fields) => {
                                     if (err) throw err;
                                     connection.release();
