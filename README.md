@@ -63,14 +63,21 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 #### Response
 
 ```json
+{
     "status": 200,
     "result": {
         "id": 41,
-        "emailAdress": "test@student.com",
-        "firstName": "Mike",
-        "lastName": "van den Caaij",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQxLCJpYXQiOjE2NTMwNjAwNzgsImV4cCI6MTY1NDA5Njg3OH0.hs4TpYhyJB2mx9qAx6LZwCN_cdCHSheQqvGYyIVfAN4"
+        "firstName": "Mikee",
+        "lastName": "van den Dullemen",
+        "isActive": true,
+        "emailAdress": "test@student.avans.nl",
+        "phoneNumber": "0638719633",
+        "roles": "editor,guest",
+        "street": "dsa",
+        "city": "das",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQxLCJpYXQiOjE2NTMyMjYwMDQsImV4cCI6MTY1NDI2MjgwNH0.jd-T6irYCA_50KyhCReefy8mCKayaya-TjpSPem_KMA"
     }
+}
 ```
 
 ### Get all users
@@ -156,7 +163,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "lastName": "Tilburg",
             "isActive": true,
             "emailAdress": "k.tilburg@holland.com",
-            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
             "phoneNumber": "0638719633",
             "roles": [],
             "street": "Hopstraat",
@@ -189,20 +195,17 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 ```json
 {
     "status": 200,
-    "result": [
-        {
-            "id": 1,
-            "firstName": "Klaas",
-            "lastName": "Tilburg",
-            "isActive": true,
-            "emailAdress": "k.tilburg@holland.com",
-            "password": "$2b$10$N2YcqlA5/Di1MO5lzLhm0uGsqHlxB4FixO8J03Ug2VMGv16z6Ixry",
-            "phoneNumber": "0638719633",
-            "roles": [],
-            "street": "Hopstraat",
-            "city": "Amsterdam"
-        }
-    ]
+    "result": {
+        "id": 1,
+        "firstName": "Klaas",
+        "lastName": "Tilburg",
+        "isActive": true,
+        "emailAdress": "k.tilburg@holland.com",
+        "phoneNumber": "0638719633",
+        "roles": [],
+        "street": "Hopstraat",
+        "city": "Amsterdam"
+    }
 }
 ```
 
@@ -269,18 +272,20 @@ For a lot of request you'll need to be logged in first. After logging in you're 
 ```json
 {
     "status": 201,
-    "result": {
-        "id": 42,
-        "firstName": "Jeroen",
-        "lastName": "van den Dullemen",
-        "isActive": true,
-        "emailAdress": "j.vddullemen@gmail.com",
-        "password": "$2b$10$Rcxwa/qmX0Hh.6a8dS3pZOjBvpPqkqBCrQgEOO.v/6MJy4lTmYLjq",
-        "phoneNumber": "0638719633",
-        "roles": ["editor", "guest"],
-        "street": "Amsterdamseweg 1",
-        "city": "Groningen"
-    }
+    "result": [
+        {
+            "id": 42,
+            "firstName": "Jeroen",
+            "lastName": "van den Dullemen",
+            "isActive": true,
+            "emailAdress": "j.vddullemen@gmail.com",
+            "password": "$2b$10$Rcxwa/qmX0Hh.6a8dS3pZOjBvpPqkqBCrQgEOO.v/6MJy4lTmYLjq",
+            "phoneNumber": "0638719633",
+            "roles": ["editor", "guest"],
+            "street": "Amsterdamseweg 1",
+            "city": "Groningen"
+        }
+    ]
 }
 ```
 
@@ -396,7 +401,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                 "lastName": "van den Dullemen",
                 "isActive": true,
                 "emailAdress": "m.vandullemen@server.nl",
-                "password": "secret",
                 "phoneNumber": "",
                 "roles": [],
                 "street": "",
@@ -409,7 +413,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                     "lastName": "van den Dullemen",
                     "isActive": true,
                     "emailAdress": "m.vandullemen@server.nl",
-                    "password": "secret",
                     "phoneNumber": "",
                     "roles": [],
                     "street": "",
@@ -421,7 +424,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                     "lastName": "Doe",
                     "isActive": true,
                     "emailAdress": "j.doe@server.com",
-                    "password": "secret",
                     "phoneNumber": "06 12425475",
                     "roles": ["editor", "guest"],
                     "street": "",
@@ -450,7 +452,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                 "lastName": "Doe",
                 "isActive": true,
                 "emailAdress": "j.doe@server.com",
-                "password": "secret",
                 "phoneNumber": "06 12425475",
                 "roles": ["editor", "guest"],
                 "street": "",
@@ -463,7 +464,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                     "lastName": "Doe",
                     "isActive": true,
                     "emailAdress": "j.doe@server.com",
-                    "password": "secret",
                     "phoneNumber": "06 12425475",
                     "roles": ["editor", "guest"],
                     "street": "",
@@ -475,7 +475,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                     "lastName": "Van Dam",
                     "isActive": false,
                     "emailAdress": "m.vandam@server.nl",
-                    "password": "secret",
                     "phoneNumber": "06-12345678",
                     "roles": ["editor", "guest"],
                     "street": "",
@@ -525,7 +524,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "lastName": "Tilburg",
             "isActive": true,
             "emailAdress": "k.tilburg@holland.com",
-            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
             "phoneNumber": "0638719633",
             "roles": [],
             "street": "Hopstraat",
@@ -538,7 +536,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                 "lastName": "Tilburg",
                 "isActive": true,
                 "emailAdress": "k.tilburg@holland.com",
-                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
                 "phoneNumber": "0638719633",
                 "roles": [],
                 "street": "Hopstraat",
@@ -602,7 +599,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "lastName": "Tilburg",
             "isActive": true,
             "emailAdress": "k.tilburg@holland.com",
-            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
             "phoneNumber": "0638719633",
             "roles": [],
             "street": "Hopstraat",
@@ -615,7 +611,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                 "lastName": "Tilburg",
                 "isActive": true,
                 "emailAdress": "k.tilburg@holland.com",
-                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
                 "phoneNumber": "0638719633",
                 "roles": [],
                 "street": "Hopstraat",
@@ -685,7 +680,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
             "lastName": "Tilburg",
             "isActive": true,
             "emailAdress": "k.tilburg@holland.com",
-            "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
             "phoneNumber": "0638719633",
             "roles": [],
             "street": "Hopstraat",
@@ -698,7 +692,6 @@ For a lot of request you'll need to be logged in first. After logging in you're 
                 "lastName": "Tilburg",
                 "isActive": true,
                 "emailAdress": "k.tilburg@holland.com",
-                "password": "$2b$10$DU3728ri3QpXLbxTH3iBCOOtjwFDFGrSNOVQ4Ly8HMgK/HUHcCUrK",
                 "phoneNumber": "0638719633",
                 "roles": [],
                 "street": "Hopstraat",

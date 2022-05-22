@@ -39,6 +39,8 @@ module.exports = {
                                 rows[0].isActive = false;
                             }
 
+                            delete rows[0].password;
+
                             jwt.sign(payload, jwtSecretKey, { expiresIn: "12d" }, function (err, token) {
                                 res.status(200).json({
                                     status: 200,

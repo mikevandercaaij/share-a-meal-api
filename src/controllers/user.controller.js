@@ -230,8 +230,6 @@ exports.getAllUsers = (req, res, next) => {
                     message: "Maximum amount of parameters (2) has been surpassed.",
                 });
             }
-
-            console.log(queryString);
         }
         //get all users
         connection.query(queryString, (err, results, fields) => {
