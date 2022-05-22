@@ -243,10 +243,18 @@ exports.getAllUsers = (req, res, next) => {
 
             let count = 0;
 
+            if (results.length === 0) {
+                //send back all results
+                res.status(200).json({
+                    status: 200,
+                    result: [],
+                });
+            }
+
             results.forEach((result) => {
                 delete result.password;
                 count++;
-                if (results.length === count || results.length === 0) {
+                if (results.length === count) {
                     //send back all results
                     res.status(200).json({
                         status: 200,
