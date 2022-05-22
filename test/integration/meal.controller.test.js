@@ -312,7 +312,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     assert.deepEqual(result, [
                         {
                             id: 1,
-                            isActive: false,
+                            isActive: true,
                             isVega: false,
                             isVegan: false,
                             isToTakeHome: true,
@@ -363,7 +363,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                         },
                         {
                             id: 2,
-                            isActive: false,
+                            isActive: true,
                             isVega: false,
                             isVegan: false,
                             isToTakeHome: true,
@@ -434,7 +434,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
 
                     assert.deepEqual(result, {
                         id: 1,
-                        isActive: false,
+                        isActive: true,
                         isVega: false,
                         isVegan: false,
                         isToTakeHome: true,
