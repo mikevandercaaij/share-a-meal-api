@@ -546,24 +546,29 @@ exports.deleteMeal = (req, res, next) => {
                         message: "You are not the owner of this meal",
                     });
                 } else {
-                    connection.query("DELETE FROM meal WHERE id = ?", id, (err, results, fields) => {
+                    connection.query("DELETE FROM meal_participants_user WHERE mealId = ?", id, (err, results, fields) => {
                         //throw error if something went wrong
                         if (err) throw err;
 
-                        //close connection
-                        connection.release();
+                        connection.query("DELETE FROM meal WHERE id = ?", id, (err, results, fields) => {
+                            //throw error if something went wrong
+                            if (err) throw err;
 
-                        //if a row has been deleted
-                        if (results.affectedRows === 1) {
-                            //send successful status
-                            res.status(200).json({
-                                status: 200,
-                                message: "Meal has been deleted successfully.",
-                            });
+                            //close connection
+                            connection.release();
 
-                            //end response process
-                            res.end();
-                        }
+                            //if a row has been deleted
+                            if (results.affectedRows === 1) {
+                                //send successful status
+                                res.status(200).json({
+                                    status: 200,
+                                    message: "Meal has been deleted successfully.",
+                                });
+
+                                //end response process
+                                res.end();
+                            }
+                        });
                     });
                 }
             }
