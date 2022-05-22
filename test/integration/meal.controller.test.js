@@ -236,6 +236,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
                     maxAmountOfParticipants: 6,
                     price: 6.75,
+                    allergenes: ["lactose"],
                 })
                 .end((req, res) => {
                     res.should.be.an("object");
@@ -256,7 +257,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                         updateDate: result.updateDate,
                         name: "Spaghetti Bolognese",
                         description: "De pastaklassieker bij uitstek.",
-                        allergenes: [],
+                        allergenes: ["lactose"],
                         cook: {
                             id: 1,
                             firstName: "first",
