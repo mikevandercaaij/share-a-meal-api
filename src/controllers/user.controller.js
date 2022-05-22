@@ -158,7 +158,7 @@ exports.getAllUsers = (req, res, next) => {
 
         let queryString = "SELECT * FROM user";
 
-        if (typeof isActive === "boolean" || firstName || typeof limit === "number" || lastName || emailAdress || street || city || phoneNumber) {
+        if (isActive || firstName || limit || lastName || emailAdress || street || city || phoneNumber) {
             let count = 0;
 
             if (isActive || firstName || lastName || emailAdress || street || city || phoneNumber) {
