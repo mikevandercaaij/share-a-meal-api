@@ -239,10 +239,18 @@ exports.getAllUsers = (req, res, next) => {
             //close connection
             connection.release();
 
-            //send back all results
-            res.status(200).json({
-                status: 200,
-                result: exports.formatUser(results),
+            let count = 0;
+
+            results.forEach((result) => {
+                delete result.password;
+                count++;
+                if (results.length === count) {
+                    //send back all results
+                    res.status(200).json({
+                        status: 200,
+                        result: exports.formatUser(results),
+                    });
+                }
             });
         });
     });
@@ -472,30 +480,36 @@ exports.deleteUser = (req, res, next) => {
                 });
             } else {
                 if (req.userId === id) {
-                    connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
-                        //throw error if something went wrong
+                    connection.query("DELETE FROM meal_participants_user WHERE userId = ?", id, (err, results, fields) => {
                         if (err) throw err;
+                        connection.query("DELETE FROM meal WHERE cookId = ?", id, (err, results, fields) => {
+                            if (err) throw err;
+                            connection.query("DELETE FROM user WHERE id = ?", id, (err, results, fields) => {
+                                //throw error if something went wrong
+                                if (err) throw err;
 
-                        //close connection
-                        connection.release();
+                                //close connection
+                                connection.release();
 
-                        //if a row has been deleted
-                        if (results.affectedRows === 1) {
-                            //send successful status
-                            res.status(200).json({
-                                status: 200,
-                                message: "User has been deleted successfully.",
+                                //if a row has been deleted
+                                if (results.affectedRows === 1) {
+                                    //send successful status
+                                    res.status(200).json({
+                                        status: 200,
+                                        message: "User has been deleted successfully.",
+                                    });
+
+                                    //end response process
+                                    res.end();
+                                } else {
+                                    //if no rows have been affected, return fitting error (very unlikely)
+                                    return next({
+                                        status: 409,
+                                        message: "No user has been deleted",
+                                    });
+                                }
                             });
-
-                            //end response process
-                            res.end();
-                        } else {
-                            //if no rows have been affected, return fitting error (very unlikely)
-                            return next({
-                                status: 409,
-                                message: "No user has been deleted",
-                            });
-                        }
+                        });
                     });
                 } else {
                     res.status(403).json({
