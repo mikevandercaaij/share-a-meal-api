@@ -230,6 +230,8 @@ exports.getAllUsers = (req, res, next) => {
                     message: "Maximum amount of parameters (2) has been surpassed.",
                 });
             }
+
+            console.log(queryString);
         }
         //get all users
         connection.query(queryString, (err, results, fields) => {
@@ -244,7 +246,7 @@ exports.getAllUsers = (req, res, next) => {
             results.forEach((result) => {
                 delete result.password;
                 count++;
-                if (results.length === count) {
+                if (results.length === count || results.length === 0) {
                     //send back all results
                     res.status(200).json({
                         status: 200,
