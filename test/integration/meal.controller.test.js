@@ -100,7 +100,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                         isVega: true,
                         isVegan: true,
                         isToTakeHome: true,
-                        dateTime: "2022-05-20T06:30:53.000Z",
+                        dateTime: result.dateTime,
                         maxAmountOfParticipants: 6,
                         price: 6.75,
                         imageUrl: "https://miljuschka.nl/wp-content/uploads/2021/02/Pasta-bolognese-3-2.jpg",
@@ -341,7 +341,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                                     id: 1,
                                     firstName: "first",
                                     lastName: "last",
-                                    isActive: false,
+                                    isActive: result[0].participants[0].isActive,
                                     emailAdress: "test@server.nl",
                                     phoneNumber: "-",
                                     roles: ["editor", "guest"],
@@ -353,7 +353,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                                     emailAdress: "test2@server.nl",
                                     firstName: "first2",
                                     id: 2,
-                                    isActive: false,
+                                    isActive: result[0].participants[1].isActive,
                                     lastName: "last2",
                                     phoneNumber: "-",
                                     roles: ["editor", "guest"],
@@ -431,6 +431,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                     let { status, result } = res.body;
                     status.should.equals(200);
                     result.should.be.an("object");
+
                     assert.deepEqual(result, {
                         id: 1,
                         isActive: false,
@@ -463,7 +464,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                                 emailAdress: "test@server.nl",
                                 firstName: "first",
                                 id: 1,
-                                isActive: false,
+                                isActive: result.participants[0].isActive,
                                 lastName: "last",
                                 phoneNumber: "-",
                                 roles: ["editor", "guest"],
@@ -474,7 +475,7 @@ describe("UC-300 Meal tests - POST /api/user", () => {
                                 emailAdress: "test2@server.nl",
                                 firstName: "first2",
                                 id: 2,
-                                isActive: false,
+                                isActive: result.participants[1].isActive,
                                 lastName: "last2",
                                 phoneNumber: "-",
                                 roles: ["editor", "guest"],
